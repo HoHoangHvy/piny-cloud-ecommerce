@@ -32,7 +32,7 @@ return new class extends Migration
 
             //Foreign Keys
             $table->foreign('host_id')->references('id')->on('customers');
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('manually_created_by')->references('id')->on('users');
         });
     }
 
