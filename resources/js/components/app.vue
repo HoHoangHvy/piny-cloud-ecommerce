@@ -1,9 +1,8 @@
 <script setup>
-    import Header from './header.vue' // Adjust the path as necessary
+    import Header from './header.vue'
 </script>
 
 <template>
-    <Header />
     <main>
         <router-view/>
     </main>
