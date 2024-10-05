@@ -1,0 +1,20 @@
+{
+    "LBL_DASHBOARD": "Bảng tin",
+    "LBL_MENU": "Tuy chon",
+    "LBL_CALENDAR": "Lịch biểu",
+    "LBL_PROFILE": "Thông tin cá nhân",
+    "LBL_MODULES": "Mô-đun",
+    "LBL_ADMIN_CONFIG": "Cấu hình quản trị",
+    "LBL_CUSTOMERS": "Khách hàng",
+    "LBL_ORDERS": "Đơn hàng",
+    "LBL_TEAMS": "Chi nhánh",
+    "LBL_USER_MANAGEMENT": "Quản lý nguời dùng",
+    "LBL_EMPLOYEES": "Nhân viên",
+    "LBL_PERMISSIONS": "Phân quyền",
+    "LBL_ROLES": "Vai trò",
+    "LBL_PRODUCTS": "Sản phẩm",
+    "LBL_INTERNAL_MANAGEMENT": "Quản lý nội bộ",
+    "LBL_TYPE_TO_SEARCH": "Nhập để tìm kiếm...",
+    "LBL_HOME": "Trang chủ",
+    "LBL_ABOUT_US": "Về chúng tôi"
+}
