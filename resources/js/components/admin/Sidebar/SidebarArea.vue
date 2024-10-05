@@ -4,7 +4,7 @@ import {onClickOutside} from '@vueuse/core'
 import {ref} from 'vue'
 import SidebarItem from './SidebarItem.vue'
 import {useI18n} from 'vue-i18n';
-import LanguageSwitcher from '../../languageSwitcher.vue';
+import LanguageSwitcher from '../languageSwitcher.vue';
 
 const {t} = useI18n();
 const target = ref(null)
