@@ -2,7 +2,9 @@
 import { useSidebarStore } from '../../../store/sidebar.ts'
 import { useRoute } from 'vue-router'
 import SidebarDropdown from './SidebarDropdown.vue'
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const sidebarStore = useSidebarStore()
 
 const props = defineProps(['item', 'index'])
@@ -34,7 +36,7 @@ const handleItemClick = () => {
     >
       <span v-html="item.icon"></span>
 
-      {{ item.label }}
+      {{ t(item.label) }}
 
       <svg
         v-if="item.children"

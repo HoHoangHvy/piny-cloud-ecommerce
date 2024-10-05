@@ -18,6 +18,7 @@ import FormElementsView from "../../views/admin/Forms/FormElementsView.vue";
 import ProfileView from "../../views/admin/ProfileView.vue";
 import CalendarView from "../../views/admin/CalendarView.vue";
 import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
+import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
 
 const routes = [
     {
@@ -148,6 +149,14 @@ const routes = [
                 component: SignupView,
                 meta: {
                     title: 'Signup'
+                }
+            },
+            {
+                path: 'users',
+                name: 'users',
+                component: UserManagement,
+                meta: {
+                    title: 'User Management'
                 }
             }
         ]

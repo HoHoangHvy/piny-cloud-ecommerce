@@ -1,11 +1,3 @@
-<template>
-  <div class="admin-layout">
-    <Header />
-    <main>
-        <router-view/>
-    </main>
-  </div>
-</template>
 
 <script>
 import Header from "../components/header.vue";
@@ -24,6 +16,15 @@ export default {
   }
 }
 </script>
+
+<template>
+  <div class="customer-layout">
+    <Header />
+    <main>
+        <router-view/>
+    </main>
+  </div>
+</template>
 
 <style scoped>
 .admin-layout {

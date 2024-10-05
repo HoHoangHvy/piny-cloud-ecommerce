@@ -1,0 +1,20 @@
+{
+    "LBL_DASHBOARD": "Dashboard",
+    "LBL_MENU": "Menu",
+    "LBL_CALENDAR": "Calendar",
+    "LBL_MODULES": "Modules",
+    "LBL_ADMIN_CONFIG": "Admin Configuration",
+    "LBL_PROFILE": "Profile",
+    "LBL_CUSTOMERS": "Customers",
+    "LBL_ORDERS": "Orders",
+    "LBL_TEAMS": "Teams",
+    "LBL_USER_MANAGEMENT": "User Management",
+    "LBL_PERMISSIONS": "Permissions",
+    "LBL_ROLES": "Roles",
+    "LBL_EMPLOYEES": "Employees",
+    "LBL_PRODUCTS": "Products",
+    "LBL_INTERNAL_MANAGEMENT": "Internal Management",
+    "LBL_TYPE_TO_SEARCH": "Type to search...",
+    "LBL_HOME": "Home",
+    "LBL_ABOUT_US": "About us"
+}

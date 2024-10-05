@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useSidebarStore } from '../../../store/sidebar.ts'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n';
 
 const sidebarStore = useSidebarStore()
-
+const { t } = useI18n()
 const props = defineProps(['items', 'page'])
 const items = ref(props.items)
 
@@ -26,7 +27,7 @@ const handleItemClick = (index: number) => {
             '!text-white': childItem.label === sidebarStore.selected
           }"
         >
-          {{ childItem.label }}
+          {{ t(childItem.label) }}
         </router-link>
       </li>
     </template>
