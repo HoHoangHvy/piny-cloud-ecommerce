@@ -18,4 +18,8 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./resources', import.meta.url))
         },
     },
+    server : {
+        port: 8080,
+        host: '0.0.0.0'
+    }
 })
