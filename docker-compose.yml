@@ -25,7 +25,7 @@ services:
         container_name: app
         build:
             context: ./
-            dockerfile: Dockerfile.app
+            dockerfile: Dockerfile
         volumes:
             - ./:/var/www/html
             - ./php/php.ini:/usr/local/etc/php/conf.d/local.ini

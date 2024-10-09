@@ -59,20 +59,22 @@ COPY ./.env.example ./.env
 RUN chmod +x /usr/local/bin/entrypoint.sh && \
     usermod -u ${USER_ID} ${USER_NAME} && \
     groupmod -g ${GROUP_ID} ${GROUP_NAME} && \
+    chown -R ${USER_NAME}:${GROUP_NAME} $WORKDIR && \
     chown -R ${USER_NAME}:${GROUP_NAME} /var/www && \
     chown -R ${USER_NAME}:${GROUP_NAME} /var/log/ && \
     chown -R ${USER_NAME}:${GROUP_NAME} /etc/supervisor/conf.d/ && \
     chown -R ${USER_NAME}:${GROUP_NAME} $PHP_INI_DIR/conf.d/ && \
     chown -R ${USER_NAME}:${GROUP_NAME} /tmp && \
     chmod -Rvc 777 $WORKDIR/storage && \
+    chmod -R 777 $WORKDIR/vendor && \
     chmod -Rvc 777 $WORKDIR/bootstrap/cache
 
 # Switch to www-data User
 USER www-data
+RUN composer install --no-autoloader --no-scripts
 
 # Expose Port
 EXPOSE 9000
-
 # Define Entrypoint and Command
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["php-fpm"]
