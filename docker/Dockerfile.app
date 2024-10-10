@@ -8,8 +8,12 @@ VOLUME $WORKDIR/storage
 
 WORKDIR $WORKDIR
 
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
 COPY docker/php/php.ini $PHP_INI_DIR/conf.d/
 COPY docker/php/opcache.ini $PHP_INI_DIR/conf.d/
+COPY docker/php/xdebug.ini $PHP_INI_DIR/conf.d/
 COPY docker/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
 COPY ./.env.example ./.env
 
