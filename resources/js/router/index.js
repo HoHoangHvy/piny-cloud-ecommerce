@@ -19,6 +19,7 @@ import ProfileView from "../../views/admin/ProfileView.vue";
 import CalendarView from "../../views/admin/CalendarView.vue";
 import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
+import SignInOTP from "../components/signInOTP.vue";
 
 const routes = [
     {
@@ -39,6 +40,14 @@ const routes = [
                 component: about,
                 meta: {
                     permission: 'owner'
+                }
+            },
+            {
+                path: 'sign-in-otp',
+                name: 'Sign in OTP',
+                component: SignInOTP,
+                meta: {
+                    permission: "owner"
                 }
             }
         ]
