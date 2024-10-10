@@ -12,6 +12,10 @@ import store from './store'
 import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 import { createPinia } from 'pinia'
 import VueApexCharts from 'vue3-apexcharts'
+import axios from 'axios';
+
+axios.defaults.withCredentials = true
+axios.defaults.baseURL = 'http://localhost/';
 
 createApp(app)
     .use(router)

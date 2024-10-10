@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,10 @@ Route::get('/', function () {
 Route::get('/{pathMatch}', function() {
     return view('welcome');
 })->where('pathMatch', '.*');
+
+Route::get('/auth/login', [AuthenticatedSessionController::class, 'create'])
+    ->middleware(['guest'])
+    ->name('login');
+
+Route::post('/auth/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware(['guest']);
