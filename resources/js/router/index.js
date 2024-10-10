@@ -56,14 +56,6 @@ const routes = [
                 }
             },
             {
-                path: 'login',
-                name: 'admin-login',
-                component: AdminLogin,
-                meta: {
-                    permission: 'owner'
-                }
-            },
-            {
                 path: 'calendar',
                 name: 'calendar',
                 component: CalendarView,
@@ -160,7 +152,15 @@ const routes = [
                 }
             }
         ]
-    }
+    },
+    {
+        path: '/admin/login',
+        name: 'admin-login',
+        component: AdminLogin,
+        meta: {
+            permission: 'owner'
+        }
+    },
 ]
 const router = createRouter({
     history: createWebHistory(),
