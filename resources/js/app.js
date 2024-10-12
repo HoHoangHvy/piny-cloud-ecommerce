@@ -15,7 +15,7 @@ import VueApexCharts from 'vue3-apexcharts'
 import axios from 'axios';
 
 axios.defaults.withCredentials = true
-axios.defaults.baseURL = 'http://localhost/';
+axios.defaults.baseURL = 'http://localhost:81/';
 
 createApp(app)
     .use(router)

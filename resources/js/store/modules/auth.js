@@ -20,9 +20,10 @@ const actions = {
     },
 
     async LogIn({commit}, user) {
-        debugger
-        await axios.post("auth/login", user);
-        await commit("setUser", user.get("username"));
+        axios.get('sanctum/csrf-cookie').then(async response => {
+            await axios.post("api/login", user);
+            await commit("setUser", user.get("username"));
+        })
     },
 
     async CreatePost({ dispatch }, post) {
