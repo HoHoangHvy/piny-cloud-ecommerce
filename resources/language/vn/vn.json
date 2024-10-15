@@ -16,5 +16,21 @@
     "LBL_INTERNAL_MANAGEMENT": "Quản lý nội bộ",
     "LBL_TYPE_TO_SEARCH": "Nhập để tìm kiếm...",
     "LBL_HOME": "Trang chủ",
-    "LBL_ABOUT_US": "Về chúng tôi"
+    "LBL_ABOUT_US": "Về chúng tôi",
+
+
+
+
+
+    "LBL_LIMIT": "Giới hạn!",
+    "LBL_GET_DISCOUNT": "Nhận mã khuyến mãi",
+    "LBL_GET_CLAIM": "Nhận",
+    "LBL_DURATION_1": "Tất cả sản phẩm",
+    "LBL_DURATION_2": "| Từ 01/09/2024 - 05/09/2024",
+    "LBL_DURATION_3": "01/09/2024 - 05/09/2024",
+    "LBL_FILTER": "Lọc",
+    "LBL_SORT": "Sắp xếp",
+    "LBL_CATEGORY": "Phân loại",
+    "LBL_PREVIOUS": "Trước",
+    "LBL_NEXT": "Tiếp"
 }
