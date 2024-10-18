@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\AuthenticationController;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 /*
@@ -21,17 +25,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(
     function(){
-        Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-            ->middleware('guest')
-            ->name('login');
-        $limiter = config('fortify.limiters.login');
-        Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-            ->middleware(array_filter([
-                'guest',
-                $limiter ? 'throttle:'.$limiter : null,
-            ]));
+        Route::post('/me', []);
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
             ->name('logout');
-
     }
 );
+
+Route::post('/login', [AuthenticationController::class, 'login']);

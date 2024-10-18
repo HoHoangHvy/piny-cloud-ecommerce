@@ -1,56 +1,51 @@
 //store/modules/auth.js
 
 import axios from 'axios';
+import router from "@/js/router/index.js";
 const state = {
     user: null,
-    posts:null
+    token: localStorage.getItem('token') || null,
+    status: "",
 };
 const getters = {
-    isAuthenticated: (state) => !!state.user,
-    StatePosts: (state) => state.posts,
-    StateUser: (state) => state.user,
+    isLoggedIn: state => !!state.token,
+    isAuthenticated: (state) => !!state.token,
+    authStatus: (state) => state.status,
+    isAdmin: (state) => state.user.is_admin,
 };
 const actions = {
-    async Register({dispatch}, form) {
-        await axios.post('register', form)
-        let UserForm = new FormData()
-        UserForm.append('username', form.username)
-        UserForm.append('password', form.password)
-        await dispatch('LogIn', UserForm)
-    },
-
-    async LogIn({commit}, user) {
-        axios.get('sanctum/csrf-cookie').then(async response => {
-            await axios.post("api/login", user);
-            await commit("setUser", user.get("username"));
+    async login({commit}, user) {
+        axios.get('sanctum/csrf-cookie').then(response => {
+            axios.post('login', user)
+                .then(
+                    response => {
+                        debugger
+                        const res = response.data;
+                        const token = res.data.token
+                        const user = res.data.user
+                        localStorage.setItem('token', token)
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+                        commit('authSuccess', token, user)
+                        if(user.is_admin) {
+                            router.push('/admin')
+                        } else {
+                            router.push('/')
+                        }
+                    }
+                )
+                .catch(
+                    error => {
+                        console.log(error)
+                    }
+                );
         })
-    },
-
-    async CreatePost({ dispatch }, post) {
-        await axios.post("post", post);
-        return await dispatch("GetPosts");
-    },
-
-    async GetPosts({ commit }) {
-        let response = await axios.get("posts");
-        commit("setPosts", response.data);
-    },
-
-    async LogOut({ commit }) {
-        let user = null;
-        commit("logout", user);
     },
 };
 const mutations = {
-    setUser(state, username) {
-        state.user = username;
-    },
-
-    setPosts(state, posts) {
-        state.posts = posts;
-    },
-    logout(state, user) {
+    authSuccess(state, token, user) {
         state.user = user;
+        state.token = token;
+        state.status = "success";
     },
 };
 export default {

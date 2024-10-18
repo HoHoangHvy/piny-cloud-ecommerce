@@ -14,7 +14,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(["LogIn"]),
+        ...mapActions(["login"]),
         async submit() {
             debugger
             const User = new FormData();
@@ -22,14 +22,7 @@ export default {
             User.append("password", this.form.password);
             try {
                 debugger
-                axios.get('sanctum/csrf-cookie').then(() => {
-                    axios.post("api/login", User).then(response => {
-                        this.$router.push("/admin");
-                        this.showError = false
-                    }).catch(error => {
-                        this.showError = true
-                    });
-                });
+                await this.login(User);
             } catch (error) {
                 this.showError = true
             }

@@ -19,11 +19,16 @@ import ProfileView from "../../views/admin/ProfileView.vue";
 import CalendarView from "../../views/admin/CalendarView.vue";
 import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
+import store from "@/js/store/index.js";
 
 const routes = [
     {
         path: '/',
         component: CustomerLayout,
+        meta: {
+            permission: 'owner',
+            requiresAuth: true
+        },
         children: [
             {
                 path: '',
@@ -46,6 +51,9 @@ const routes = [
     {
         path: '/admin',
         component: AdminLayout,
+        meta: {
+            requiresAuthAdmin: true
+        },
         children: [
             {
                 path: '',  // This empty path makes it the default child route
@@ -112,22 +120,6 @@ const routes = [
                 }
             },
             {
-                path: 'ui-elements/alerts',
-                name: 'alerts',
-                component: AlertsView,
-                meta: {
-                    title: 'Alerts'
-                }
-            },
-            {
-                path: 'ui-elements/buttons',
-                name: 'buttons',
-                component: ButtonsView,
-                meta: {
-                    title: 'Buttons'
-                }
-            },
-            {
                 path: 'auth/signin',
                 name: 'signin',
                 component: SigninView,
@@ -158,7 +150,8 @@ const routes = [
         name: 'admin-login',
         component: AdminLogin,
         meta: {
-            permission: 'owner'
+            permission: 'owner',
+            requiresAuth: false
         }
     },
 ]
@@ -166,5 +159,25 @@ const router = createRouter({
     history: createWebHistory(),
     routes
 })
+router.beforeEach((to, from, next) => {
+    debugger
+    if (to.matched.some(record => record.meta.requiresAuthAdmin)) {
+        if (store.getters.isLoggedIn) {
+            next()
+            return
+        }
+        next('admin/login')
+    } else {
+        if(to.matched.some(record => record.meta.requiresAuth)) {
+            if (store.getters.isLoggedIn) {
+                next()
+                return
+            }
+            next('/login')
+        } else {
+            next()
+        }
+    }
 
+});
 export default router
