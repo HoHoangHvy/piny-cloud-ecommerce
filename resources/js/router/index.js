@@ -20,6 +20,10 @@ import CalendarView from "../../views/admin/CalendarView.vue";
 import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
 import SignInOTP from "../components/signInOTP.vue";
+import SignInPassWord from "../components/signInPassWord.vue";
+import SignUp from "../components/signUp.vue";
+import OrderPage from "../components/orderPage.vue";
+
 
 const routes = [
     {
@@ -49,7 +53,31 @@ const routes = [
                 meta: {
                     permission: "owner"
                 }
-            }
+            },
+            {
+                path: 'sign-in-password',
+                name: 'Sign in password',
+                component: SignInPassWord,
+                meta: {
+                    permission: "owner"
+                }
+            },
+            {
+                path: "sign-up",
+                name: 'Sign Up',
+                component: SignUp,
+                meta: {
+                    permission: "owner"
+                }
+            },
+            {
+                path: "order-page",
+                name: 'Order page',
+                component: OrderPage,
+                meta: {
+                    permission: "owner"
+                }
+            },
         ]
     },
     {
