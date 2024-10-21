@@ -16,11 +16,25 @@
     "LBL_INTERNAL_MANAGEMENT": "Internal Management",
     "LBL_TYPE_TO_SEARCH": "Type to search...",
     "LBL_HOME": "Home",
+    "LBL_ABOUT_US": "About us",
     "LBL_MY_PROFILE": "My Profile",
     "LBL_SETTINGS": "Settings",
     "LBL_SIGNOUT": "Sign Out",
-    "LBL_ABOUT_US": "About us",
 
+
+
+
+    "LBL_LIMIT": "Limited time!",
+    "LBL_GET_DISCOUNT": "Get special discount",
+    "LBL_GET_CLAIM": "Claim",
+    "LBL_DURATION_1": "All kind of product",
+    "LBL_DURATION_2": "| From 01/09/2024 - 05/09/2024",
+    "LBL_DURATION_3": "01/09/2024 - 05/09/2024",
+    "LBL_FILTER": "Filter",
+    "LBL_SORT": "Sort",
+    "LBL_CATEGORY": "Categories",
+    "LBL_PREVIOUS": "Previous",
+    "LBL_NEXT": "Next",
 
     "LBL_PINY_CLOUD_BREAD_AND_TEA": "Piny Cloud Bread and Tea",
     "LBL_FULL_NAME": "Full name",

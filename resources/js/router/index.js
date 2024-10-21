@@ -19,6 +19,7 @@ import ProfileView from "../../views/admin/ProfileView.vue";
 import CalendarView from "../../views/admin/CalendarView.vue";
 import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
+import MenuView from "@/js/components/MenuView.vue";
 import SignInOTP from "../components/signInOTP.vue";
 import SignInPassWord from "../components/signInPassWord.vue";
 import SignUp from "../components/signUp.vue";
@@ -47,6 +48,14 @@ const routes = [
                 path: 'about',
                 name: 'About us',
                 component: about,
+                meta: {
+                    permission: 'owner'
+                }
+            },
+            {
+                path: 'menu',
+                name: 'Menu',
+                component: MenuView,
                 meta: {
                     permission: 'owner'
                 }

@@ -19,6 +19,22 @@
     "LBL_MY_PROFILE": "Thông tin",
     "LBL_SETTINGS": "Cài đặt",
     "LBL_SIGNOUT": "Đăng xuất",
+
+
+
+
+
+    "LBL_LIMIT": "Giới hạn!",
+    "LBL_GET_DISCOUNT": "Nhận mã khuyến mãi",
+    "LBL_GET_CLAIM": "Nhận",
+    "LBL_DURATION_1": "Tất cả sản phẩm",
+    "LBL_DURATION_2": "| Từ 01/09/2024 - 05/09/2024",
+    "LBL_DURATION_3": "01/09/2024 - 05/09/2024",
+    "LBL_FILTER": "Lọc",
+    "LBL_SORT": "Sắp xếp",
+    "LBL_CATEGORY": "Phân loại",
+    "LBL_PREVIOUS": "Trước",
+    "LBL_NEXT": "Tiếp",
     "LBL_ABOUT_US": "Về chúng tôi",
 
 
