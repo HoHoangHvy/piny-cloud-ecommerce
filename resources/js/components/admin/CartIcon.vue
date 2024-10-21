@@ -1,6 +1,6 @@
 <template>
     <div class="icon_cart cursor-pointer">
-        <svg class="w-[70px] h-[70px] lg:w-[100px] lg:h-[100px]" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="w-[70px] h-[70px] lg:w-[80px] lg:h-[80px]" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g filter="url(#filter0_d_194_33054)">
                 <path d="M104 50C104 77.6142 81.6142 100 54 100C26.3858 100 4 77.6142 4 50C4 22.3858 26.3858 0 54 0C81.6142 0 104 22.3858 104 50Z" fill="#513219"/>
                 <path d="M104 50C104 77.6142 81.6142 100 54 100C26.3858 100 4 77.6142 4 50C4 22.3858 26.3858 0 54 0C81.6142 0 104 22.3858 104 50Z" fill="#513219"/>

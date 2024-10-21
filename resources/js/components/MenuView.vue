@@ -5,14 +5,18 @@ import ButtonDefault from "@/js/components/admin/Buttons/ButtonDefault.vue";
 const {t} = useI18n();
 import {reactive, ref, computed} from 'vue';
 import FilterPopup from './FilterPopup.vue';
-import SortPopup from "@/js/components/SortPopup.vue";
 import DetailsProduct from "@/js/components/DetailsProduct.vue";
 import CartIcon from "@/js/components/admin/CartIcon.vue";
 import CartPopup from "@/js/components/CartPopup.vue";
 
 
+
 const currentPopup = ref(null);
-const selectedCategory = ref(null)
+const selectedCategory = ref(null);
+const searchText = ref('Day la gia tri gan ban dau');
+const searchTextInput = ref('')
+const isOpen = ref(false)
+
 
 const listProduct = [
     {
@@ -20,28 +24,51 @@ const listProduct = [
         name: 'Black coffee',
         price: '20.000',
         category: 'c01',
-        img: 'https://thuytinhluminarc.com/wp-content/uploads/2022/08/hinh-tach-ca-phe-2.jpg'
+        img: 'https://thuytinhluminarc.com/wp-content/uploads/2022/08/hinh-tach-ca-phe-2.jpg',
+        topping: [
+            { name: 'Whipped Cream', price: '5.000' },
+            { name: 'Chocolate Sauce', price: '7.000' }
+        ]
     },
     {
         id: 'sp02',
         name: 'Capuchino',
         price: '40.000',
         category: 'c02',
-        img: 'https://131340465.cdn6.editmysite.com/uploads/1/3/1/3/131340465/s196254156684441514_p1067_i1_w4029.jpeg?width=2560&optimize=medium'
+        img: 'https://131340465.cdn6.editmysite.com/uploads/1/3/1/3/131340465/s196254156684441514_p1067_i1_w4029.jpeg?width=2560&optimize=medium',
+        topping: [
+            { name: 'Whipped Cream', price: '5.000' },
+            { name: 'Chocolate Sauce', price: '7.000' },
+            { name: 'Chocolate Sauce', price: '7.000' }
+        ]
     },
     {
         id: 'sp03',
         name: 'Banh mi hoa cuc',
         price: '20.000',
         category: 'c03',
-        img: 'https://cdn.tgdd.vn/2021/11/CookDish/banh-mi-hoa-cuc-la-gi-banh-mi-hoa-cuc-mua-o-dau-va-gia-banh-avt-1200x676.jpg'
+        img: 'https://cdn.tgdd.vn/2021/11/CookDish/banh-mi-hoa-cuc-la-gi-banh-mi-hoa-cuc-mua-o-dau-va-gia-banh-avt-1200x676.jpg',
+        topping: [
+            { name: 'Whipped Cream', price: '5.000' },
+            { name: 'Chocolate Sauce', price: '7.000' },
+            { name: 'Chocolate Sauce', price: '7.000' },
+            { name: 'Chocolate Sauce', price: '7.000' },
+            { name: 'Chocolate Sauce', price: '7.000' }
+
+        ]
     },
     {
         id: 'sp04',
         name: 'Banh mi hoa cuc',
         price: '20.000',
         category: 'c04',
-        img: 'https://cdn.tgdd.vn/2021/11/CookDish/banh-mi-hoa-cuc-la-gi-banh-mi-hoa-cuc-mua-o-dau-va-gia-banh-avt-1200x676.jpg'
+        img: 'https://cdn.tgdd.vn/2021/11/CookDish/banh-mi-hoa-cuc-la-gi-banh-mi-hoa-cuc-mua-o-dau-va-gia-banh-avt-1200x676.jpg',
+        topping: [
+            { name: 'Whipped Cream', price: '5.000' },
+            { name: 'Chocolate Sauce', price: '7.000' },
+            { name: 'Chocolate Sauce', price: '7.000' },
+            { name: 'Chocolate Sauce', price: '7.000' }
+        ]
     }
 ]
 
@@ -68,9 +95,17 @@ const listCategory = [
     }
 ]
 
-const openPopup = (popupName) => {
-    currentPopup.value = popupName;
-}
+// const openPopup = (popupName) => {
+//     currentPopup.value = popupName;
+// }
+const selectedProduct = ref(null); // Biến lưu sản phẩm được chọn
+
+const openPopup = (popupName, product = null) => {
+    if (arguments.length === 2 && popupName === 'details' && product) {
+        selectedProduct.value = product;
+    }
+    currentPopup.value = popupName;  // Mở popup theo tên
+};
 
 const closePopup = () => {
     currentPopup.value = null;
@@ -84,14 +119,17 @@ const filteredProducts = computed(() => {
 const filterByCategory = (categoryId) => {
     selectedCategory.value = categoryId
 }
-
-
-
+const changeSearchText = () => {
+    searchText.value = searchTextInput.value; //Tất cả ca bi lin quan nh searchText, tag, category se duoc luu trong bien filterSearch o component filterPopup
+    //tam thoi render lai san pham
+    selectedCategory.value = null;
+}
 </script>
 
 <template>
     <CartIcon @click="openPopup('cart')"/>
     <CartPopup :isVisible="currentPopup === 'cart'" @closePopup="closePopup"/>
+    <DetailsProduct :isVisible="currentPopup === 'details'" :selectedProduct="selectedProduct"  @closePopup="closePopup" />
     <div class="marketing flex flex-row justify-between items-center w-[90%] h-[200px] lg:w-[1100px] lg:h-[350px] m-auto mt-4 lg:mt-10 ">
         <div class="market_content flex flex-col justify-between h-full pt-5 pl-5 pb-5 lg:pt-10 lg:pl-20 lg:pb-10">
             <button class="market_content_btn w-[130px] h-auto lg:w-[200px] lg:h-[50px] lg:ml-5 ">
@@ -142,7 +180,7 @@ const filterByCategory = (categoryId) => {
 
     <div class="search flex flex-row justify-center mt-4 mb-0 lg:mt-9 lg:mb-5 lg:ml-[120px]">
         <div class="search_btn flex flex-row lg:w[1000px]">
-            <input type="text" placeholder="Search" class="search_input ml-4.5 w-[200px] lg:w-[440px]">
+            <input type="text" v-model="searchTextInput" @keydown.enter="changeSearchText" placeholder="Search" class="search_input ml-4.5 w-[200px] lg:w-[440px]">
             <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Search Icon" class="search-icon w-3 h-3 lg:w-5 lg:h-5 mr-3">
         </div>
         <button @click="openPopup('filter')" class="search_btn flex flex-row gap-1 cursor-pointer hoverBtn">
@@ -152,20 +190,35 @@ const filterByCategory = (categoryId) => {
             <label class="mr-2 hidden md:block cursor-pointer">{{t('LBL_FILTER')}}</label>
         </button>
         <!-- Sử dụng component pop-up -->
-        <FilterPopup :isVisible="currentPopup === 'filter'" @closePopup="closePopup" />
-        <button @click="openPopup('sort')" class="search_btn flex flex-row gap-1 cursor-pointer hoverBtn">
-            <svg class="ml-2 mr-2 lg:mr-0" width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <rect x="0.5" y="0.480469" width="21" height="16" fill="url(#pattern0_233_37694)" fill-opacity="0.6"/>
-                <defs>
-                    <pattern id="pattern0_233_37694" patternContentUnits="objectBoundingBox" width="1" height="1">
-                        <use xlink:href="#image0_233_37694" transform="matrix(0.00793651 0 0 0.0104167 0.119048 0)"/>
-                    </pattern>
-                    <image id="image0_233_37694" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAADq0lEQVR4nO2bTYhVZRjHH7VINEKC8CMRpYUgRERS4saFCxGiTS1tp+iiIHe5utauoHa5zEVQwxUcvHPP//+emcEDLVrEQMKAC0FRCCJIsaywL0+cmEWMc8frnXvu8zznPD94tsN9f7/3fNx7zogEQRAEQRAEQRAEQRAEwQBIljEc6KD2jRPyueoGjADUPUIjACNAq68REtcARgDtXcg4AvRFsKmnoBVuS6e1F029uThx4SsE2A7grgEZ5YTnFwA7xQIA3jUgpJzkpJTeESt0Op31AL7RlsLJzbfdbneDWCLLshcB/GlATlnnAPgLwMtiEQAftyDAR2KVXq+3ieR1bUmsb27meb5ZLEPyiAFRZR2TUnpdPEDyK21ZHPMA+FK8MD8/v5XknQbJvzs7O7tDPJFl2QltcRzfHBdvlGW5DsDlBuz+r6u1iEdI7iV5X1siR58/AOwTzwD40IDIcsT5QLwD4CmSVw3ILB9nAFwrimKjNAEAhwA8cCT/AYDD0iQAnHcU4HNpGimlZwH86ED+TwCekyZC8m0HAY5JkwEwa1j+Zbf3/MNCcjeAX7Vl8+H5HcAL0gZInjG4+9+XtlAUxRMkvzMkf3FhYeFJaRMppVdJ/qMtv/oMKaWD0kZInjMQ4DNpKwCeIfm9ovwfpqent0ibAfCWVoCU0pva6zcBgEsKAaC9bjPMzc3tAnBvgvJ/y/N8j/a6TQHg9KQCAHhPe73m6Ha7GwAsTED+lep7iPZ6TZJSeql69a/GAH/nef6K9jpNQ/LTGnf/J9rrM0+v19sE4EYN8m8VRfG09vpckGXZ0RqOgDe01+UKkhfGKL+rvR539Pv9bWN6vfHnmZmZ57XX4xKSp8YQ4KT2OtzS6XTWrzVA9Te01+EarjGA9ud3Dx0HWPp55U71xC3Lsv3iEToNQPLs8v8xAHBAvEGHAZbLdx2BzgIMku82Ah0FGPbpXhWh3++/Jh6gowBLr9tMDRvBxYWZjgKMEGFRrEPjAarTzvIHPMNGAHBbrEPDAf53wZ0aJUL1PUGsQ6MBVrjbubA8QvWYleQXA+R3xAM0GGCVW82hIriRbzHAo+7zHxXBlXxrAYaQX652Tagu2OINGgnwGPIHHgkuoYEAI8hvTgQqB1iD/P/G5WnHSoAxyPd1wbUUIOQrBgj5igFCvmKAkK8YIOQrBgj5igFCviIhX5GQH/LbCePnBfUAZat/29GGId9fAMTOHx8hXxnGzvcRAHHaqYeQrwyN7fx/AW8ESSMauvT3AAAAAElFTkSuQmCC"/>
-                </defs>
-            </svg>
-            <label class="mr-2 hidden md:block cursor-pointer">{{t('LBL_SORT')}}</label>
-        </button>
-        <SortPopup :isVisible="currentPopup === 'sort'" @closePopup="closePopup" />
+        <FilterPopup :isVisible="currentPopup === 'filter'" :searchText="searchText"  @closePopup="closePopup" />
+        <div class="sort">
+            <button @click="isOpen = !isOpen" class="search_btn flex flex-row gap-1 cursor-pointer hoverBtn relative">
+                <svg class="ml-2 mr-2 lg:mr-0" width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <rect x="0.5" y="0.480469" width="21" height="16" fill="url(#pattern0_233_37694)" fill-opacity="0.6"/>
+                    <defs>
+                        <pattern id="pattern0_233_37694" patternContentUnits="objectBoundingBox" width="1" height="1">
+                            <use xlink:href="#image0_233_37694" transform="matrix(0.00793651 0 0 0.0104167 0.119048 0)"/>
+                        </pattern>
+                        <image id="image0_233_37694" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAADq0lEQVR4nO2bTYhVZRjHH7VINEKC8CMRpYUgRERS4saFCxGiTS1tp+iiIHe5utauoHa5zEVQwxUcvHPP//+emcEDLVrEQMKAC0FRCCJIsaywL0+cmEWMc8frnXvu8zznPD94tsN9f7/3fNx7zogEQRAEQRAEQRAEQRAEwQBIljEc6KD2jRPyueoGjADUPUIjACNAq68REtcARgDtXcg4AvRFsKmnoBVuS6e1F029uThx4SsE2A7grgEZ5YTnFwA7xQIA3jUgpJzkpJTeESt0Op31AL7RlsLJzbfdbneDWCLLshcB/GlATlnnAPgLwMtiEQAftyDAR2KVXq+3ieR1bUmsb27meb5ZLEPyiAFRZR2TUnpdPEDyK21ZHPMA+FK8MD8/v5XknQbJvzs7O7tDPJFl2QltcRzfHBdvlGW5DsDlBuz+r6u1iEdI7iV5X1siR58/AOwTzwD40IDIcsT5QLwD4CmSVw3ILB9nAFwrimKjNAEAhwA8cCT/AYDD0iQAnHcU4HNpGimlZwH86ED+TwCekyZC8m0HAY5JkwEwa1j+Zbf3/MNCcjeAX7Vl8+H5HcAL0gZInjG4+9+XtlAUxRMkvzMkf3FhYeFJaRMppVdJ/qMtv/oMKaWD0kZInjMQ4DNpKwCeIfm9ovwfpqent0ibAfCWVoCU0pva6zcBgEsKAaC9bjPMzc3tAnBvgvJ/y/N8j/a6TQHg9KQCAHhPe73m6Ha7GwAsTED+lep7iPZ6TZJSeql69a/GAH/nef6K9jpNQ/LTGnf/J9rrM0+v19sE4EYN8m8VRfG09vpckGXZ0RqOgDe01+UKkhfGKL+rvR539Pv9bWN6vfHnmZmZ57XX4xKSp8YQ4KT2OtzS6XTWrzVA9Te01+EarjGA9ud3Dx0HWPp55U71xC3Lsv3iEToNQPLs8v8xAHBAvEGHAZbLdx2BzgIMku82Ah0FGPbpXhWh3++/Jh6gowBLr9tMDRvBxYWZjgKMEGFRrEPjAarTzvIHPMNGAHBbrEPDAf53wZ0aJUL1PUGsQ6MBVrjbubA8QvWYleQXA+R3xAM0GGCVW82hIriRbzHAo+7zHxXBlXxrAYaQX652Tagu2OINGgnwGPIHHgkuoYEAI8hvTgQqB1iD/P/G5WnHSoAxyPd1wbUUIOQrBgj5igFCvmKAkK8YIOQrBgj5igFCviIhX5GQH/LbCePnBfUAZat/29GGId9fAMTOHx8hXxnGzvcRAHHaqYeQrwyN7fx/AW8ESSMauvT3AAAAAElFTkSuQmCC"/>
+                    </defs>
+                </svg>
+                <label class="mr-2 hidden md:block cursor-pointer">{{t('LBL_SORT')}}</label>
+                <div v-if="isOpen" class="up absolute right-0 top-[120%] z-50 bg-white shadow-lg p-4 rounded-md w-[150px] flex flex-col space-y-2">
+                    <div class="active flex flex-row items-center justify-between">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="size-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                        </svg>
+                        <div class="text-black-2 text-right text-sm font-semibold font-['Inter']">Giá: Giảm dần</div>
+                    </div>
+                    <div class="inactive flex flex-row items-center justify-between">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d0d0d0" class="size-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+                        </svg>
+                        <div class="text-[#d0d0d0] text-right text-sm font-semibold font-['Inter']">Giá: Tang dần</div>
+                    </div>
+                </div>
+            </button>
+        </div>
     </div>
 
     <div class="container max-w-[1200px] mx-auto px-4 lg:px-4 grid grid-cols-12 gap-4 mt-1 lg:mt-5">
@@ -195,13 +248,13 @@ const filterByCategory = (categoryId) => {
         <div class="col-span-12 lg:col-span-9 grid grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
             <div v-for="product in filteredProducts" :key="product.id" class="p-4 cursor-pointer">
                 <img :src="product.img" alt="Black Coffee" class="w-full rounded shadow-lg rounded-lg w-[147px] h-[148px] lg:w-full lg:h-[256px]">
-                <div class="product_content flex flex-row justnify-between">
+                <div class="product_content flex flex-row justify-between">
                     <div class="product_label">
                         <h3 class="mt-4 font-bold text-black">{{product.name}}</h3>
                         <p class="text-gray-600 text-xs lg:text-sm">{{product.price}} VND</p>
                     </div>
                     <div class="product_btn mb-3 lg:mb-0">
-                        <button @click="openPopup('details')" class="add_btn flex mt-7 lg:mt-5 justify-center items-center mr-2 w-[24px] h-[24px] lg:w-[30px] lg:h-[30px]">
+                        <button @click="openPopup('details',product)" class="add_btn flex mt-7 lg:mt-5 justify-center items-center mr-2 w-[24px] h-[24px] lg:w-[30px] lg:h-[30px]">
                             <svg class="w-[20px] h-[20px] lg:w-[25px] lg:h-[25px]" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <rect x="0.487305" y="0.785645" width="21.2651" height="19.5254" fill="url(#pattern0_196_33256)"/>
                                 <defs>
@@ -213,7 +266,6 @@ const filterByCategory = (categoryId) => {
                             </svg>
                         </button>
                     </div>
-                    <DetailsProduct :isVisible="currentPopup === 'details'" @closePopup="closePopup" />
                 </div>
             </div>
         </div>
@@ -254,7 +306,6 @@ body {
         flex-shrink: 0;
         border-radius: 28px;
         background: linear-gradient(180deg, rgba(153, 125, 108, 0.74) 0%, rgba(49, 31, 21, 0.74) 100%);
-
         box-shadow: 0px 4px 4px 0px (0, 0, 0, 0.25);
     }
     .market_content_btn {

@@ -1,91 +1,39 @@
 <template>
     <div v-if="isVisible" class="overlay fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center" @click="close">
-        <div class="bg-white p-5 lg:p-8 rounded-lg shadow-lg max-w-md h-[50%] w-[65%] lg:h-[70%] lg:w-full relative" @click.stop>
-            <div class="flex flex-row items-center justify-between">
-                <p class="text-black text-2xl font-semibold font-['Inter'] leading-[28.80px]">ORDER FOR GROUP</p>
-                <button class="for_group_order">MMO08724</button>
+        <div class="bg-white p-5 lg:p-8 rounded-lg shadow-lg max-w-md w-[90%] h-auto lg:w-full relative" @click.stop>
+            <div class="flex flex-row items-center justify-center lg:justify-start mb-2">
+                <p class="text-black text-2xl font-semibold font-['Inter'] leading-[28.80px]">ORDER</p>
             </div>
             <div class="details_topping flex flex-col justify-between">
-                <div class="flex flex-row items-center justify-between border-b border-gray-300 pb-2">
-                    <input type="checkbox">
-                    <div class="topping_content">
-                        <p>Milk foam</p>
-                        <p>10.000 VND</p>
+                <div v-for="cart in listCart" :key="cart.id" class="flex flex-row items-center justify-between border-b border-gray-300 pb-3 pt-2">
+                    <input type="checkbox" class="form-checkbox h-3 w-3 lg:h-4 lg:w-4 border-gray-400 rounded accent-[#4d2f19] text-white w-1/12">
+                    <div class="topping_content w-5/12 ml-2">
+                        <p class="text-black-2 font-bold">{{cart.name}}</p>
+                        <p class="text-[14px] leading-none">{{cart.note}} VND</p>
                     </div>
-                    <div class="qnt flex flex-row">
+                    <div class="qnt flex flex-row justify-end w-2/12 mr-3 text-black-2">
                         <div class="">-</div>
-                        <div class="">1</div>
+                        <div class="ml-1 mr-1 w-[14px] text-center text-black-2">{{cart.qnt}}</div>
                         <div class="">+</div>
                     </div>
-                    <div class="price">140.000 VND</div>
-                    <div class="trash_icon">
-                        <svg width="18" height="32" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <rect width="18" height="32" fill="url(#pattern0_427_53595)"/>
-                            <defs>
-                                <pattern id="pattern0_427_53595" patternContentUnits="objectBoundingBox" width="1" height="1">
-                                    <use xlink:href="#image0_427_53595" transform="matrix(0.0104167 0 0 0.00585938 0 0.21875)"/>
-                                </pattern>
-                                <image id="image0_427_53595" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAABr0lEQVR4nO2XMU4DQRAEN+EvwCsJkQAL/mJNG97gDD4CDkFaZMkRIb5T7Z2rpEmR3dW9QGsiIiIiIiIDkeQuST/z7unvccnhdyXw4Xcl8OH31UqYMay+hKPzVwAN3cC4AD6E+ATxQQQ6+gXyCaKhGxgXwIeQS36CRERERERE6H+Mcun/eNEBRQF8SHEBfFDxCVrntdGhA4oC+JDiAvig4hM0zZuamd/sqX8eDh1QFKAAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEB+To3tIx7n210qupjgKD6HFdV7210kmzooDLfPbTRqarbJD8rbP/3bre7bkugql7owDL9bdpS2O/3V1X1NkBofaJ7PX6ntiROEp6P0x0gwP6fO332zeLC//s7oaqejn9BVNVhAaEfTp/1cbvd3tD5iYiIiIhIWx2/CUGmBOIce/cAAAAASUVORK5CYII="/>
-                            </defs>
+                    <div class="price w-3/12 text-right text-black-2 text-[16px] flex justify-end">
+                        {{cart.price}}d
+                    </div>
+                    <div class="trash_icon w-1/12 flex items-center justify-end">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="size-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                         </svg>
-                    </div>
-                </div>
-                <div class="flex flex-row items-center justify-between border-b border-gray-300 pb-2">
-                    <input type="checkbox">
-                    <div class="topping_content">
-                        <p>Milk foam</p>
-                        <p>10.000 VND</p>
-                    </div>
-                    <div class="qnt flex flex-row">
-                        <div class="">-</div>
-                        <div class="">1</div>
-                        <div class="">+</div>
-                    </div>
-                    <div class="price">140.000 VND</div>
-                    <div class="trash_icon">
-                        <svg width="18" height="32" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <rect width="18" height="32" fill="url(#pattern0_427_53595)"/>
-                            <defs>
-                                <pattern id="pattern0_427_53595" patternContentUnits="objectBoundingBox" width="1" height="1">
-                                    <use xlink:href="#image0_427_53595" transform="matrix(0.0104167 0 0 0.00585938 0 0.21875)"/>
-                                </pattern>
-                                <image id="image0_427_53595" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAABr0lEQVR4nO2XMU4DQRAEN+EvwCsJkQAL/mJNG97gDD4CDkFaZMkRIb5T7Z2rpEmR3dW9QGsiIiIiIiIDkeQuST/z7unvccnhdyXw4Xcl8OH31UqYMay+hKPzVwAN3cC4AD6E+ATxQQQ6+gXyCaKhGxgXwIeQS36CRERERERE6H+Mcun/eNEBRQF8SHEBfFDxCVrntdGhA4oC+JDiAvig4hM0zZuamd/sqX8eDh1QFKAAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEB+To3tIx7n210qupjgKD6HFdV7210kmzooDLfPbTRqarbJD8rbP/3bre7bkugql7owDL9bdpS2O/3V1X1NkBofaJ7PX6ntiROEp6P0x0gwP6fO332zeLC//s7oaqejn9BVNVhAaEfTp/1cbvd3tD5iYiIiIhIWx2/CUGmBOIce/cAAAAASUVORK5CYII="/>
-                            </defs>
-                        </svg>
-                    </div>
-                </div>
-                <div class="flex flex-row items-center justify-between border-b border-gray-300 pb-2">
-                    <input type="checkbox">
-                    <div class="topping_content">
-                        <p>Milk foam</p>
-                        <p>10.000 VND</p>
-                    </div>
-                    <div class="qnt flex flex-row">
-                        <div class="">-</div>
-                        <div class="">1</div>
-                        <div class="">+</div>
-                    </div>
-                    <div class="price">140.000 VND</div>
-                    <div class="trash_icon">
-                        <svg width="18" height="32" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <rect width="18" height="32" fill="url(#pattern0_427_53595)"/>
-                            <defs>
-                                <pattern id="pattern0_427_53595" patternContentUnits="objectBoundingBox" width="1" height="1">
-                                    <use xlink:href="#image0_427_53595" transform="matrix(0.0104167 0 0 0.00585938 0 0.21875)"/>
-                                </pattern>
-                                <image id="image0_427_53595" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAABr0lEQVR4nO2XMU4DQRAEN+EvwCsJkQAL/mJNG97gDD4CDkFaZMkRIb5T7Z2rpEmR3dW9QGsiIiIiIiIDkeQuST/z7unvccnhdyXw4Xcl8OH31UqYMay+hKPzVwAN3cC4AD6E+ATxQQQ6+gXyCaKhGxgXwIeQS36CRERERERE6H+Mcun/eNEBRQF8SHEBfFDxCVrntdGhA4oC+JDiAvig4hM0zZuamd/sqX8eDh1QFKAAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEBCkChGxoXoAAUuqFxAQpAoRsaF6AAFLqhcQEKQKEbGhegABS6oXEB+To3tIx7n210qupjgKD6HFdV7210kmzooDLfPbTRqarbJD8rbP/3bre7bkugql7owDL9bdpS2O/3V1X1NkBofaJ7PX6ntiROEp6P0x0gwP6fO332zeLC//s7oaqejn9BVNVhAaEfTp/1cbvd3tD5iYiIiIhIWx2/CUGmBOIce/cAAAAASUVORK5CYII="/>
-                            </defs>
-                        </svg>
+
                     </div>
                 </div>
             </div>
-            <div class="total flex items-center justify-end">
+            <div class="total flex items-center justify-end mt-5 text-black-2 font-bold">
                 <div class="">Total:</div>
                 <div class="">120.000 VND</div>
             </div>
-            <div class="filter_btn flex items-center justify-center lg:justify-end mt-15">
-                <button @click="close" class="hidden md:block bg-gray-300 text-gray-700 px-4 py-2 rounded">Cancel</button>
-                <button @click="close" class="active_btn mt-4 bg-gray-300 text-gray-700 px-4 py-2 rounded">Pay</button>
+            <div class="filter_btn flex items-center justify-center lg:justify-end mt-5">
+                <button @click="close" class="bg-gray-300 text-gray-700 px-4 py-2 rounded text-black-2 font-bold">Cancel</button>
+                <button @click="close" class="active_btn mt-4 bg-gray-300 text-gray-700 px-4 py-2 rounded text-white font-bold">Pay</button>
 
             </div>
         </div>
@@ -93,6 +41,38 @@
 </template>
 <script setup>
 import { defineProps, defineEmits } from 'vue';
+
+const listCart = [
+    {
+        id: 'lc01',
+        name: 'Black coffee',
+        note: 'M, Hot',
+        qnt: '2',
+        price: '100.000'
+    },
+    {
+        id: 'lc02',
+        name: 'Black coffee',
+        note: 'M, Hot',
+        qnt: '1',
+        price: '100.000'
+    },
+    {
+        id: 'lc03',
+        name: 'Black coffee',
+        note: 'M, Hot',
+        qnt: '1',
+        price: '100.000'
+    },
+    {
+        id: 'lc04',
+        name: 'Black coffee and tea',
+        note: 'M, Hot, Sweet',
+        qnt: '2',
+        price: '50.000'
+    }
+]
+
 
 const props = defineProps({
     isVisible: {
@@ -130,39 +110,14 @@ const close = () => {
     margin: 5px;
 
 }
-.inactive_btn {
-    display: inline-flex;
-    height: 38px;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    border-radius: 50px;
-    background: rgba(153, 125, 108, 0.12);
-    padding: 14px;
-    margin: 5px;
-
+.topping_content p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 @media (max-width: 700px) {
     .active_btn {
         height: 28px;
-    }
-
-    .inactive_btn {
-        height: 28px;
-    }
-
-    .for_group_order {
-        display: flex;
-        width: 150px;
-        height: 34px;
-        padding: 10px 78px;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        flex-shrink: 0;
-        border-radius: 20px;
-        background: #FFF;
-        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     }
 }
 
