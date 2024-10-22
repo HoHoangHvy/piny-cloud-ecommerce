@@ -18,6 +18,8 @@ defineOptions({
 | Privacy Policy | Terms of Service | Follow us on: [Social Media Links]
             </span>
         </div>
+
+
     </footer>
 </template>
 

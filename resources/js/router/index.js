@@ -19,6 +19,8 @@ import ProfileView from "../../views/admin/ProfileView.vue";
 import CalendarView from "../../views/admin/CalendarView.vue";
 import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
+import productDetailPage from "../components/admin/productDetailPage.vue";
+import UserInfoPage from "../components/admin/UserInfoPage.vue";
 import MenuView from "@/js/components/MenuView.vue";
 import SignInOTP from "../components/signInOTP.vue";
 import SignInPassWord from "../components/signInPassWord.vue";
@@ -48,6 +50,22 @@ const routes = [
                 path: 'about',
                 name: 'About us',
                 component: about,
+                meta: {
+                    permission: 'owner'
+                }
+            },
+            {
+                path: 'productdetail',
+                name: 'Product Detail',
+                component: productDetailPage,
+                meta: {
+                    permission: 'owner'
+                }
+            },
+            {
+                path: 'userinfo',
+                name: 'User Info',
+                component: UserInfoPage,
                 meta: {
                     permission: 'owner'
                 }
@@ -94,6 +112,7 @@ const routes = [
             },
         ]
     },
+
     {
         path: '/admin',
         component: AdminLayout,
