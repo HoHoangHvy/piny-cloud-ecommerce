@@ -19,7 +19,8 @@ import ProfileView from "../../views/admin/ProfileView.vue";
 import CalendarView from "../../views/admin/CalendarView.vue";
 import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
-
+import productDetailPage from "../components/admin/productDetailPage.vue";
+import UserInfoPage from "../components/admin/UserInfoPage.vue";
 const routes = [
     {
         path: '/',
@@ -40,9 +41,26 @@ const routes = [
                 meta: {
                     permission: 'owner'
                 }
+            },
+            {
+                path: 'productdetail',
+                name: 'Product Detail',
+                component: productDetailPage,
+                meta: {
+                    permission: 'owner'
+                }
+            },
+            {
+                path: 'userinfo',
+                name: 'User Info',
+                component: UserInfoPage,
+                meta: {
+                    permission: 'owner'
+                }
             }
         ]
     },
+
     {
         path: '/admin',
         component: AdminLayout,
