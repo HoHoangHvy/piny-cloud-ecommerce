@@ -19,5 +19,56 @@
     "LBL_MY_PROFILE": "Thông tin",
     "LBL_SETTINGS": "Cài đặt",
     "LBL_SIGNOUT": "Đăng xuất",
-    "LBL_ABOUT_US": "Về chúng tôi"
+
+
+
+
+
+    "LBL_LIMIT": "Giới hạn!",
+    "LBL_GET_DISCOUNT": "Nhận mã khuyến mãi",
+    "LBL_GET_CLAIM": "Nhận",
+    "LBL_DURATION_1": "Tất cả sản phẩm",
+    "LBL_DURATION_2": "| Từ 01/09/2024 - 05/09/2024",
+    "LBL_DURATION_3": "01/09/2024 - 05/09/2024",
+    "LBL_FILTER": "Lọc",
+    "LBL_SORT": "Sắp xếp",
+    "LBL_CATEGORY": "Phân loại",
+    "LBL_PREVIOUS": "Trước",
+    "LBL_NEXT": "Tiếp",
+    "LBL_ABOUT_US": "Về chúng tôi",
+
+
+    "LBL_PINY_CLOUD_BREAD_AND_TEA": "Tiệm Trà & Bánh Piny Cloud",
+    "LBL_FULL_NAME": "Tên",
+    "LBL_PHONE_NUMBER": "Số điện thoại",
+    "LBL_EMAIL": "Email",
+    "LBL_PASSWORD": "Mật khẩu",
+    "LBL_CONFIRM_PASSWORD": "Xác nhận mật khẩu",
+    "LBL_SIGNUP": "Đăng ký",
+    "LBL_ALREADY_HAVE_AN_ACCOUNT?": "Bạn đã có tài khoản?",
+    "LBL_SIGNIN": "Đăng nhập",
+    "LBL_DONT_HAVE_AN_ACCOUNT?": "Bạn chưa có tài khoản?",
+    "LBL_FORGOT_PASSWORD?": "Quên mật khẩu?",
+    "LBL_OR_LOGIN_WITH_PASSWORD": "Đăng nhập với mật khẩu",
+    "LBL_OTP_AUTHENTICATION": "Xác thực OTP",
+    "LBL_A_VERIFICATION_CODE_IS_SENT_TO_YOUR_NUMBER": "Mã xác thực đã được gửi đến số điện thoại của bạn",
+    "LBL_YOU_DID_NOT_RECEIVE_THE_CODE_RESEND": "Bạn không nhận được mã. Gửi lại?",
+    "LBL_RESEND": "Gửi lại",
+    "LBL_DELIVERY":"Giao hàng",
+    "LBL_ADDRESS":"Địa chỉ",
+    "LBL_DELIVERY_TIME":"Thời gian nhận hàng",
+    "LBL_NOTE":"Ghi chú",
+    "LBL_ORDER_DETAILS":"Chi tiết đơn hàng",
+    "LBL_PAYMENT_INFOMATION":"Thông tin thanh toán",
+    "LBL_PAYMENT_METHOD":"Hình thức thanh toán",
+    "LBL_PAY":"THANH TOÁN",
+    "LBL_PRICE":"Giá",
+    "LBL_DISCOUNT":"Giảm giá",
+    "LBL_VOUCHER":"Khuyến mãi",
+    "LBL_DELIVERY_FEE":"Phí giao hàng",
+    "LBL_TOTAL":"Tổng cộng",
+    "LBL_RECIPIENT_NAME":"Tên người nhận",
+    "LBL_CASH": "Tiền mặt",
+    "LBL_CLOSE":"Đóng",
+    "LBL_USE_NOW": "Sử dụng ngay"
 }

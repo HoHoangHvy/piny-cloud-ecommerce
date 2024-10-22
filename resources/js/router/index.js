@@ -21,10 +21,22 @@ import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
 import productDetailPage from "../components/admin/productDetailPage.vue";
 import UserInfoPage from "../components/admin/UserInfoPage.vue";
+import MenuView from "@/js/components/MenuView.vue";
+import SignInOTP from "../components/signInOTP.vue";
+import SignInPassWord from "../components/signInPassWord.vue";
+import SignUp from "../components/signUp.vue";
+import OrderPage from "../components/orderPage.vue";
+
+import store from "@/js/store/index.js";
+
 const routes = [
     {
         path: '/',
         component: CustomerLayout,
+        meta: {
+            permission: 'owner',
+            requiresAuth: true
+        },
         children: [
             {
                 path: '',
@@ -57,26 +69,61 @@ const routes = [
                 meta: {
                     permission: 'owner'
                 }
-            }
+            },
+            {
+                path: 'menu',
+                name: 'Menu',
+                component: MenuView,
+                meta: {
+                    permission: 'owner'
+                }
+            },
+            {
+                path: 'sign-in-otp',
+                name: 'Sign in OTP',
+                component: SignInOTP,
+                meta: {
+                    permission: "owner"
+                }
+            },
+            {
+                path: 'sign-in-password',
+                name: 'Sign in password',
+                component: SignInPassWord,
+                meta: {
+                    permission: "owner"
+                }
+            },
+            {
+                path: "sign-up",
+                name: 'Sign Up',
+                component: SignUp,
+                meta: {
+                    permission: "owner"
+                }
+            },
+            {
+                path: "order-page",
+                name: 'Order page',
+                component: OrderPage,
+                meta: {
+                    permission: "owner"
+                }
+            },
         ]
     },
 
     {
         path: '/admin',
         component: AdminLayout,
+        meta: {
+            requiresAuthAdmin: true
+        },
         children: [
             {
                 path: '',  // This empty path makes it the default child route
                 name: 'admin-dashboard',
                 component: ECommerceView,
-                meta: {
-                    permission: 'owner'
-                }
-            },
-            {
-                path: 'login',
-                name: 'admin-login',
-                component: AdminLogin,
                 meta: {
                     permission: 'owner'
                 }
@@ -138,22 +185,6 @@ const routes = [
                 }
             },
             {
-                path: 'ui-elements/alerts',
-                name: 'alerts',
-                component: AlertsView,
-                meta: {
-                    title: 'Alerts'
-                }
-            },
-            {
-                path: 'ui-elements/buttons',
-                name: 'buttons',
-                component: ButtonsView,
-                meta: {
-                    title: 'Buttons'
-                }
-            },
-            {
                 path: 'auth/signin',
                 name: 'signin',
                 component: SigninView,
@@ -178,11 +209,40 @@ const routes = [
                 }
             }
         ]
-    }
+    },
+    {
+        path: '/admin/login',
+        name: 'admin-login',
+        component: AdminLogin,
+        meta: {
+            permission: 'owner',
+            requiresAuth: false
+        }
+    },
 ]
 const router = createRouter({
     history: createWebHistory(),
     routes
 })
+router.beforeEach((to, from, next) => {
+    debugger
+    if (to.matched.some(record => record.meta.requiresAuthAdmin)) {
+        if (store.getters.isLoggedIn) {
+            next()
+            return
+        }
+        next('admin/login')
+    } else {
+        if(to.matched.some(record => record.meta.requiresAuth)) {
+            if (store.getters.isLoggedIn) {
+                next()
+                return
+            }
+            next('/login')
+        } else {
+            next()
+        }
+    }
 
+});
 export default router
