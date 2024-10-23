@@ -11,7 +11,8 @@ const getters = {
     isLoggedIn: state => !!state.token,
     isAuthenticated: (state) => !!state.token,
     authStatus: (state) => state.status,
-    isAdmin: (state) => state.user.is_admin,
+    isAdmin: (state) => state.user ? state.user.is_admin : false,
+    userType: (state) => state.user ? state.user.user_type : null
 };
 const actions = {
     async login({commit}, user) {
@@ -25,7 +26,7 @@ const actions = {
                         const user = res.data.user
                         localStorage.setItem('token', token)
                         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-                        commit('authSuccess', token, user)
+                        commit('authSuccess', {token, user})
                         if(user.is_admin) {
                             router.push('/admin')
                         } else {
@@ -42,9 +43,10 @@ const actions = {
     },
 };
 const mutations = {
-    authSuccess(state, token, user) {
-        state.user = user;
-        state.token = token;
+    authSuccess(state, args) {
+        debugger
+        state.user = args.user;
+        state.token = args.token;
         state.status = "success";
     },
 };

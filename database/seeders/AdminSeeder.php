@@ -21,6 +21,7 @@ class AdminSeeder extends Seeder
             'email_verified_at' => now(),
             'is_admin' => true,
             'api_token' => Str::random(80),
+            'user_type' => 'user',
         ])->assignRole('admin');
     }
 }

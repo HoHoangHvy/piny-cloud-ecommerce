@@ -79,30 +79,6 @@ const routes = [
                 }
             },
             {
-                path: 'sign-in-otp',
-                name: 'Sign in OTP',
-                component: SignInOTP,
-                meta: {
-                    permission: "owner"
-                }
-            },
-            {
-                path: 'sign-in-password',
-                name: 'Sign in password',
-                component: SignInPassWord,
-                meta: {
-                    permission: "owner"
-                }
-            },
-            {
-                path: "sign-up",
-                name: 'Sign Up',
-                component: SignUp,
-                meta: {
-                    permission: "owner"
-                }
-            },
-            {
                 path: "order-page",
                 name: 'Order page',
                 component: OrderPage,
@@ -112,7 +88,30 @@ const routes = [
             },
         ]
     },
-
+    {
+        path: '/login',
+        name: 'Sign in OTP',
+        component: SignInOTP,
+        meta: {
+            permission: "owner"
+        }
+    },
+    {
+        path: '/login-password',
+        name: 'Sign in password',
+        component: SignInPassWord,
+        meta: {
+            permission: "owner"
+        }
+    },
+    {
+        path: "/register",
+        name: 'Sign Up',
+        component: SignUp,
+        meta: {
+            permission: "owner"
+        }
+    },
     {
         path: '/admin',
         component: AdminLayout,
@@ -227,14 +226,14 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     debugger
     if (to.matched.some(record => record.meta.requiresAuthAdmin)) {
-        if (store.getters.isLoggedIn) {
+        if (store.getters.isLoggedIn && store.getters.userType === 'user') {
             next()
             return
         }
         next('admin/login')
     } else {
         if(to.matched.some(record => record.meta.requiresAuth)) {
-            if (store.getters.isLoggedIn) {
+            if (store.getters.isLoggedIn && store.getters.userType === 'customer') {
                 next()
                 return
             }

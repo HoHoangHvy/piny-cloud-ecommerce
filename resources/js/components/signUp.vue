@@ -100,7 +100,7 @@ const togglePassword = () => {
 
                         <div class="flex items-center space-x-2">
                             <label for="already_have_an_account" class="text-sm font-inter text-black dark:text-gray-400">{{t('LBL_ALREADY_HAVE_AN_ACCOUNT?')}}</label>
-                            <a href="http://127.0.0.1:8000/sign-in-OTP" class="hover:underline text-[#4D2F19]" target="_blank">{{t('LBL_SIGNIN')}}</a>
+                            <a href="http://127.0.0.1:8000/login" class="hover:underline text-[#4D2F19]" target="_blank">{{t('LBL_SIGNIN')}}</a>
                         </div>
 
                     </form>

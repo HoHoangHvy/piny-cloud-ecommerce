@@ -19,12 +19,12 @@
                             />
                         </div>
                         <div>
-                            <a href="http://127.0.0.1:8000/sign-in-password" class="text-sm font-inter text-black dark:text-gray-400 hover:underline">{{ t('LBL_OR_LOGIN_WITH_PASSWORD') }}</a>
+                            <a href="http://127.0.0.1:8000/login-password" class="text-sm font-inter text-black dark:text-gray-400 hover:underline">{{ t('LBL_OR_LOGIN_WITH_PASSWORD') }}</a>
                         </div>
                         <button type="submit" class="w-full text-white bg-[#4D2F19] hover:bg-[#4D2F19] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#4D2F19] dark:hover:bg-[#4D2F19] dark:focus:ring-primary-800">{{ t('LBL_SIGNIN') }}</button>
                         <div class="flex items-center space-x-2">
                             <label for="dont_have_an_account" class="text-sm font-inter text-black dark:text-gray-400">{{ t('LBL_DONT_HAVE_AN_ACCOUNT?') }}</label>
-                            <a href="http://127.0.0.1:8000/sign-up" class="hover:underline font-inter text-[#4D2F19]" target="_blank">{{ t('LBL_SIGNUP') }}</a>
+                            <a href="http://127.0.0.1:8000/register" class="hover:underline font-inter text-[#4D2F19]" target="_blank">{{ t('LBL_SIGNUP') }}</a>
                         </div>
                     </form>
                 </div>
