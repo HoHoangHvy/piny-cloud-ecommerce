@@ -191,7 +191,7 @@ function closeVoucherModal() {
                                 </dl>
                                 <!--Voucher-->
                                 <!-- Trigger Voucher -->
-                                <dt class="font-bold hover:underline cursor-pointer text-[#4D2F19]" @click="openVoucherModal">{{ t('LBL_VOUCHER')}}</dt>
+                                <dt class="font-bold hover:underline cursor-pointer text-lg text-[#4D2F19]" @click="openVoucherModal">{{ t('LBL_VOUCHER')}}</dt>
                                 <!-- Voucher Popup Modal -->
                                 <div v-if="voucherModalVisible" class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center">
                                     <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
