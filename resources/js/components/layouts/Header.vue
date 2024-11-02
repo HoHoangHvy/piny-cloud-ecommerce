@@ -6,13 +6,13 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const {t} = useI18n();
-
 const user = {
     name: 'Tom Cook',
     email: 'tom@example.com',
     imageUrl:
         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
+const currentPopup = ref(null);
 
 const navigation = ref([
     {name: 'LBL_HOME', href: '/', current: route.path === '/'},
@@ -61,7 +61,19 @@ const userNavigation = [
 
 import {defineOptions, ref, watch} from 'vue'
 import LanguageSwitcher from "@/js/components/admin/languageSwitcher.vue";
+import store from "@/js/store/index.js";
+import SignInPopup from "@/js/components/popup/signInPopup.vue";
 
+const openPopup = (popupName, product = null) => {
+    if (arguments.length === 2 && popupName === 'details' && product) {
+        selectedProduct.value = product;
+    }
+    currentPopup.value = popupName;  // Mở popup theo tên
+};
+
+const closePopup = () => {
+    currentPopup.value = null;
+}
 defineOptions({
     name: 'Header'
 })
@@ -137,7 +149,7 @@ defineOptions({
                         </div>
                     </div>
                 </div>
-                <div class="hidden md:block">
+                <div class="hidden md:block" v-if="store.getters.isLoggedIn">
                     <div class="ml-4 flex items-center md:ml-6">
                         <button type="button"
                                 class="relative rounded-full bg-yellow-900 p-1 text-white hover:text-white hover:bg-yellow-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
@@ -179,6 +191,16 @@ defineOptions({
                             </transition>
                         </Menu>
                     </div>
+                </div>
+                <div v-if="!store.getters.isLoggedIn">
+                    <button @click="openPopup('sign-in')"
+                                 class="text-yellow-900 bg-white hover:bg-yellow-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                        {{ t('LBL_SIGNIN') }}
+                    </button>
+                    <button @click="openPopup('sign-up')"
+                                 class="text-white bg-yellow-900 hover:bg-yellow-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
+                        {{ t('LBL_SIGNUP') }}
+                    </button>
                 </div>
                 <div class="-mr-2 flex md:hidden">
                     <!-- Mobile menu button -->
@@ -225,4 +247,5 @@ defineOptions({
             </div>
         </DisclosurePanel>
     </Disclosure>
+    <SignInPopup :isVisible="currentPopup === 'sign-in'" @closePopup="closePopup"/>
 </template>

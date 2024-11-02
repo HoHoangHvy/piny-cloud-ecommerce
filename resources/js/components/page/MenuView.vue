@@ -4,10 +4,10 @@ import ButtonDefault from "@/js/components/admin/Buttons/ButtonDefault.vue";
 
 const {t} = useI18n();
 import {reactive, ref, computed} from 'vue';
-import FilterPopup from './FilterPopup.vue';
-import DetailsProduct from "@/js/components/DetailsProduct.vue";
+import FilterPopup from '../popup/FilterPopup.vue';
+import DetailsProduct from "@/js/components/page/DetailsProduct.vue";
 import CartIcon from "@/js/components/admin/CartIcon.vue";
-import CartPopup from "@/js/components/CartPopup.vue";
+import CartPopup from "@/js/components/popup/CartPopup.vue";
 
 
 

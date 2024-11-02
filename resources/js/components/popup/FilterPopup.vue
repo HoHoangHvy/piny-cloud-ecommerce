@@ -175,15 +175,6 @@ watch(() => props.searchText, (newValue) => {
 </script>
 
 <style scoped>
-.overlay {
-    background-color: rgba(0, 0, 0, 0.5); /* Màu đen với độ trong suốt 70% */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 50; /* Đảm bảo lớp này hiển thị phía trên */
-}
 .active_btn {
     display: inline-flex;
     height: 38px;

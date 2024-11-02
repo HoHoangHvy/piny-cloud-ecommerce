@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
-import home from '../components/homePage.vue'
-import about from '../components/aboutPage.vue'
-import notFound from '../components/notFoundPage.vue'
+import home from '../components/page/homePage.vue'
+import about from '../components/page/aboutPage.vue'
+import notFound from '../components/page/notFoundPage.vue'
 import AdminLayout from "../layouts/AdminLayout.vue";
 import AdminDashboard from "../components/admin/adminDashboard.vue";
 import AdminLogin from "../components/admin/adminLogin.vue";
@@ -21,11 +21,11 @@ import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
 import productDetailPage from "../components/admin/productDetailPage.vue";
 import UserInfoPage from "../components/admin/UserInfoPage.vue";
-import MenuView from "@/js/components/MenuView.vue";
-import SignInOTP from "../components/signInOTP.vue";
-import SignInPassWord from "../components/signInPassWord.vue";
-import SignUp from "../components/signUp.vue";
-import OrderPage from "../components/orderPage.vue";
+import MenuView from "@/js/components/page/MenuView.vue";
+import SignInOTP from "../components/page/signInOTP.vue";
+import SignInPassWord from "../components/page/signInPassWord.vue";
+import SignUp from "../components/page/signUp.vue";
+import OrderPage from "../components/page/orderPage.vue";
 
 import store from "@/js/store/index.js";
 

@@ -1,6 +1,6 @@
 <script>
-import Header from "../components/header.vue";
-import FooterCustomer from "@/js/components/Footer.vue";
+import Header from "../components/layouts/Header.vue";
+import FooterCustomer from "@/js/components/layouts/Footer.vue";
 
 export default {
     name: 'CustomerLayout',
