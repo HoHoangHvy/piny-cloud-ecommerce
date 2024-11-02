@@ -45,6 +45,7 @@
     "LBL_SIGNUP": "Sign up",
     "LBL_ALREADY_HAVE_AN_ACCOUNT?": "Already have an account?",
     "LBL_SIGNIN": "Sign in",
+    "LBL_GET_OTP": "Get OTP",
     "LBL_DONT_HAVE_AN_ACCOUNT?": "Don't have an account?",
     "LBL_FORGOT_PASSWORD?": "Forgot password?",
     "LBL_OR_LOGIN_WITH_PASSWORD": "Or login with password",

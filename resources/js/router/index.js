@@ -35,7 +35,6 @@ const routes = [
         component: CustomerLayout,
         meta: {
             permission: 'owner',
-            requiresAuth: true
         },
         children: [
             {

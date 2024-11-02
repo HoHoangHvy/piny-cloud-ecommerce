@@ -47,6 +47,7 @@
     "LBL_SIGNUP": "Đăng ký",
     "LBL_ALREADY_HAVE_AN_ACCOUNT?": "Bạn đã có tài khoản?",
     "LBL_SIGNIN": "Đăng nhập",
+    "LBL_GET_OTP": "Nhận mã OTP",
     "LBL_DONT_HAVE_AN_ACCOUNT?": "Bạn chưa có tài khoản?",
     "LBL_FORGOT_PASSWORD?": "Quên mật khẩu?",
     "LBL_OR_LOGIN_WITH_PASSWORD": "Đăng nhập với mật khẩu",
