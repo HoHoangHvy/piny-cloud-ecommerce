@@ -7,10 +7,13 @@ import { ref } from 'vue';
 
 // Biến trạng thái mật khẩu hiển thị/ẩn
 const showPassword = ref(false);
-
+const showConfirmPassword = ref(false);
 // Hàm chuyển đổi trạng thái hiển thị/ẩn mật khẩu
 const togglePassword = () => {
     showPassword.value = !showPassword.value;
+};
+const toggleConfirmPassword = () => {
+    showConfirmPassword.value = !showConfirmPassword.value;
 };
 
 </script>
@@ -72,7 +75,7 @@ const togglePassword = () => {
                             </label>
                             <div class="flex items-center relative">
                                 <input
-                                    :type="showPassword ? 'text' : 'password'"
+                                    :type="showConfirmPassword ? 'text' : 'password'"
                                     name="password"
                                     id="password"
                                     placeholder=""
@@ -81,9 +84,9 @@ const togglePassword = () => {
                                 />
 
                                 <!-- SVG biểu tượng mắt -->
-                                <span @click="togglePassword" class="input-icon cursor-pointer">
+                                <span @click="toggleConfirmPassword" class="input-icon cursor-pointer">
                                     <!-- Biểu tượng SVG đôi mắt -->
-                                    <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-gray-700 dark:text-gray-300">
+                                    <svg v-if="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-gray-700 dark:text-gray-300">
                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-.739 2.467-2.488 4.573-4.737 5.717a9.956 9.956 0 01-9.622 0C4.946 16.573 3.197 14.467 2.458 12z" />
                                     </svg>
@@ -100,7 +103,7 @@ const togglePassword = () => {
 
                         <div class="flex items-center space-x-2">
                             <label for="already_have_an_account" class="text-sm font-inter text-black dark:text-gray-400">{{t('LBL_ALREADY_HAVE_AN_ACCOUNT?')}}</label>
-                            <a href="http://127.0.0.1:8000/sign-in-OTP" class="hover:underline text-[#4D2F19]" target="_blank">{{t('LBL_SIGNIN')}}</a>
+                            <a href="http://127.0.0.1:8000/sign-in" class="hover:underline text-[#4D2F19]" target="_parent">{{t('LBL_SIGNIN')}}</a>
                         </div>
 
                     </form>

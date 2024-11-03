@@ -19,10 +19,10 @@ import ProfileView from "../../views/admin/ProfileView.vue";
 import CalendarView from "../../views/admin/CalendarView.vue";
 import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
-import SignInOTP from "../components/signInOTP.vue";
-import SignInPassWord from "../components/signInPassWord.vue";
 import SignUp from "../components/signUp.vue";
-import OrderPage from "../components/orderPage.vue";
+import SignIn from "../components/signIn.vue";
+import ForgotPassword from "../components/forgotPassword.vue";
+import Order from "../components/order.vue";
 
 
 const routes = [
@@ -47,22 +47,6 @@ const routes = [
                 }
             },
             {
-                path: 'sign-in-otp',
-                name: 'Sign in OTP',
-                component: SignInOTP,
-                meta: {
-                    permission: "owner"
-                }
-            },
-            {
-                path: 'sign-in-password',
-                name: 'Sign in password',
-                component: SignInPassWord,
-                meta: {
-                    permission: "owner"
-                }
-            },
-            {
                 path: "sign-up",
                 name: 'Sign Up',
                 component: SignUp,
@@ -71,13 +55,29 @@ const routes = [
                 }
             },
             {
-                path: "order-page",
-                name: 'Order page',
-                component: OrderPage,
+                path: "order",
+                name: 'Order',
+                component: Order,
                 meta: {
                     permission: "owner"
                 }
             },
+            {
+                path: "sign-in",
+                name: 'Sign in',
+                component: SignIn,
+                meta: {
+                    permission: "owner"
+                }
+            },
+            {
+                path: "sign-in/forgot-password",
+                name: 'Forgot password',
+                component: ForgotPassword,
+                meta: {
+                    permission: "owner"
+                }
+            }
         ]
     },
     {

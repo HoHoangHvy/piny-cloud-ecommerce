@@ -54,5 +54,20 @@
     "LBL_RECIPIENT_NAME":"Recipient name",
     "LBL_CASH": "Cash",
     "LBL_CLOSE":"Close",
-    "LBL_USE_NOW": "Use now"
+    "LBL_USE_NOW": "Use now",
+    "LBL_BACK_TO_SIGN_IN_WITH_OTP": "Back to sign in with otp",
+    "LBL_SEND_CODE": "Send code",
+    "LBL_BACK_TO_SIGN_IN": "Back to sign in",
+    "LBL_ENTER_CODE": "Enter code",
+    "LBL_VERIFY_CODE": "Verify code",
+    "LBL_NEW_PASSWORD": "New password",
+    "LBL_CONFIRM_RESET": "Confirm reset",
+    "LBL_PASSWORDS_DO_NOT_MATCH": "Passwords do not match",
+    "LBL_ENTER_PASSWORD": "Enter password",
+    "LBL_ENTER_PHONE_NUMBER": "Enter phone number",
+    "LBL_TODAY": "Today",
+    "LBL_TOMORROW": "Tomorrow",
+    "LBL_DAY_AFTER_TOMORROW": "Day after tomorrow",
+    "LBL_UPDATE_SUCCESSFUL": "Update successful",
+    "LBL_OK": "Ok"
 }
