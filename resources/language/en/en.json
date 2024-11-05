@@ -22,20 +22,6 @@
     "LBL_SIGNOUT": "Sign Out",
 
 
-
-
-    "LBL_LIMIT": "Limited time!",
-    "LBL_GET_DISCOUNT": "Get special discount",
-    "LBL_GET_CLAIM": "Claim",
-    "LBL_DURATION_1": "All kind of product",
-    "LBL_DURATION_2": "| From 01/09/2024 - 05/09/2024",
-    "LBL_DURATION_3": "01/09/2024 - 05/09/2024",
-    "LBL_FILTER": "Filter",
-    "LBL_SORT": "Sort",
-    "LBL_CATEGORY": "Categories",
-    "LBL_PREVIOUS": "Previous",
-    "LBL_NEXT": "Next",
-
     "LBL_PINY_CLOUD_BREAD_AND_TEA": "Piny Cloud Bread and Tea",
     "LBL_FULL_NAME": "Full name",
     "LBL_PHONE_NUMBER": "Phone number",
@@ -45,7 +31,6 @@
     "LBL_SIGNUP": "Sign up",
     "LBL_ALREADY_HAVE_AN_ACCOUNT?": "Already have an account?",
     "LBL_SIGNIN": "Sign in",
-    "LBL_GET_OTP": "Get OTP",
     "LBL_DONT_HAVE_AN_ACCOUNT?": "Don't have an account?",
     "LBL_FORGOT_PASSWORD?": "Forgot password?",
     "LBL_OR_LOGIN_WITH_PASSWORD": "Or login with password",
@@ -69,5 +54,21 @@
     "LBL_RECIPIENT_NAME":"Recipient name",
     "LBL_CASH": "Cash",
     "LBL_CLOSE":"Close",
-    "LBL_USE_NOW": "Use now"
+    "LBL_USE_NOW": "Use now",
+
+
+
+
+    "LBL_LIMIT": "Limited time!",
+    "LBL_GET_DISCOUNT": "Get special discount",
+    "LBL_GET_CLAIM": "Claim",
+    "LBL_DURATION_1": "All kind of product",
+    "LBL_DURATION_2": "| From 01/09/2024 - 05/09/2024",
+    "LBL_DURATION_3": "01/09/2024 - 05/09/2024",
+    "LBL_FILTER": "Filter",
+    "LBL_SORT": "Sort",
+    "LBL_CATEGORY": "Categories",
+    "LBL_PREVIOUS": "Previous",
+    "LBL_NEXT": "Next",
+    "LBL_GET_OTP": "Get OTP"
 }

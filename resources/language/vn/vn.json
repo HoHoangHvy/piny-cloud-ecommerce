@@ -20,10 +20,6 @@
     "LBL_SETTINGS": "Cài đặt",
     "LBL_SIGNOUT": "Đăng xuất",
 
-
-
-
-
     "LBL_LIMIT": "Giới hạn!",
     "LBL_GET_DISCOUNT": "Nhận mã khuyến mãi",
     "LBL_GET_CLAIM": "Nhận",
@@ -36,7 +32,6 @@
     "LBL_PREVIOUS": "Trước",
     "LBL_NEXT": "Tiếp",
     "LBL_ABOUT_US": "Về chúng tôi",
-
 
     "LBL_PINY_CLOUD_BREAD_AND_TEA": "Tiệm Trà & Bánh Piny Cloud",
     "LBL_FULL_NAME": "Tên",
