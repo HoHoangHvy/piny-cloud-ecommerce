@@ -24,7 +24,7 @@
                                 />
                             </div>
                             <div>
-                                <a @click="openPasswordPopup('password')"
+                                <a @click="openPopup('password')"
                                    class="text-sm font-inter text-black dark:text-gray-400 hover:underline">{{
                                         t('LBL_OR_LOGIN_WITH_PASSWORD')
                                     }}</a>
@@ -38,7 +38,7 @@
                                        class="font-inter text-black dark:text-gray-400">{{
                                         t('LBL_DONT_HAVE_AN_ACCOUNT?')
                                     }}</label>
-                                <a @click="openPasswordPopup('sign-up')"
+                                <a @click="openPopup('sign-up')"
                                    class="hover:underline font-inter text-[#4D2F19]"
                                    target="_blank">{{ t('LBL_SIGNUP') }}</a>
                             </div>
@@ -152,13 +152,13 @@
                             </div>
 
                             <div>
-                                <a href="http://127.0.0.1:8000/login" class="text-sm font-inter text-black dark:text-gray-400 hover:underline">{{t('LBL_FORGOT_PASSWORD?')}}</a>
+                                <a @click="openPopup('forgot-password')" class="text-sm font-inter text-black dark:text-gray-400 hover:underline">{{t('LBL_FORGOT_PASSWORD?')}}</a>
                             </div>
 
                             <button type="submit" class="w-full text-white bg-[#4D2F19] hover:bg-[#4D2F19] focus:ring-4 focus:outline-none focus:ring-primary-300 font-inter rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#4D2F19] dark:hover:bg-[#4D2F19] dark:focus:ring-primary-800">{{t('LBL_SIGNIN')}}</button>
                             <div class="flex items-center space-x-2">
                                 <label for="dont_have_an_account" class="text-sm font-inter text-black dark:text-gray-400">{{t('LBL_DONT_HAVE_AN_ACCOUNT?')}}</label>
-                                <a href="http://127.0.0.1:8000/register" class="hover:underline text-[#4D2F19]" target="_blank">{{t('LBL_SIGNUP')}}</a>
+                                <a @click="openPopup('sign-up')" class="hover:underline text-[#4D2F19]" target="_blank">{{t('LBL_SIGNUP')}}</a>
                             </div>
                         </form>
                     </div>
@@ -246,13 +246,23 @@
 
                             <div class="flex items-center space-x-2">
                                 <label for="already_have_an_account" class="text-sm font-inter text-black dark:text-gray-400">{{t('LBL_ALREADY_HAVE_AN_ACCOUNT?')}}</label>
-                                <a @click="openPasswordPopup('otp')" class="hover:underline text-[#4D2F19]" target="_blank">{{t('LBL_SIGNIN')}}</a>
+                                <a @click="openPopup('otp')" class="hover:underline text-[#4D2F19]" target="_blank">{{t('LBL_SIGNIN')}}</a>
                             </div>
 
                         </form>
                     </div>
                 </div>
             </div>
+            <div v-if="popupType === 'forgot-password'" class="flex flex-col items-center justify-center">
+                <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                        <div class="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl dark:text-white">
+                            {{t('LBL_PINY_CLOUD_BREAD_AND_TEA')}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -271,7 +281,7 @@ const props = defineProps({
     },
 });
 const popupType = ref('otp');  // Tracks which popup to show
-const openPasswordPopup = (type) => {
+const openPopup = (type) => {
     popupType.value = type;
 };
 const emit = defineEmits();
