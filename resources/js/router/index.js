@@ -78,7 +78,7 @@ const routes = [
                 }
             },
             {
-                path: "order-page",
+                path: "order",
                 name: 'Order page',
                 component: OrderPage,
                 meta: {
