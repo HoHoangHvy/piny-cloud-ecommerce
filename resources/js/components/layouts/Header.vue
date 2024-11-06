@@ -63,13 +63,7 @@ import {defineOptions, ref, watch} from 'vue'
 import LanguageSwitcher from "@/js/components/admin/languageSwitcher.vue";
 import store from "@/js/store/index.js";
 import SignInPopup from "@/js/components/popup/signInPopup.vue";
-
-const openPopup = (popupName, product = null) => {
-    if (arguments.length === 2 && popupName === 'details' && product) {
-        selectedProduct.value = product;
-    }
-    currentPopup.value = popupName;  // Mở popup theo tên
-};
+import SignUpPopup from "@/js/components/popup/signUpPopup.vue";
 
 const closePopup = () => {
     currentPopup.value = null;
@@ -77,6 +71,10 @@ const closePopup = () => {
 defineOptions({
     name: 'Header'
 })
+const switchPopup = (popupName) => {
+    debugger
+    currentPopup.value = popupName;
+};
 </script>
 <style>
 
@@ -193,11 +191,11 @@ defineOptions({
                     </div>
                 </div>
                 <div v-if="!store.getters.isLoggedIn">
-                    <button @click="openPopup('sign-in')"
+                    <button @click="switchPopup('sign-in')"
                                  class="text-yellow-900 bg-white hover:bg-yellow-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                         {{ t('LBL_SIGNIN') }}
                     </button>
-                    <button @click="openPopup('sign-up')"
+                    <button @click="switchPopup('sign-up')"
                                  class="text-white bg-yellow-900 hover:bg-yellow-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
                         {{ t('LBL_SIGNUP') }}
                     </button>
@@ -247,5 +245,6 @@ defineOptions({
             </div>
         </DisclosurePanel>
     </Disclosure>
-    <SignInPopup :isVisible="currentPopup === 'sign-in'" @closePopup="closePopup"/>
+    <SignInPopup :isVisible="currentPopup === 'sign-in'" @closePopup="closePopup" @switchPopup="switchPopup"/>
+    <SignUpPopup :isVisible="currentPopup === 'sign-up'" @closePopup="closePopup" @switchPopup="switchPopup"/>
 </template>
