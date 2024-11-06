@@ -202,6 +202,9 @@ const emit = defineEmits();
 const close = () => {
     emit('closePopup');
 };
+const switchToSignUp = () => {
+    emit('switchPopup', 'sign-up');
+};
 // Function to start the countdown
 const startCountdown = () => {
     const interval = setInterval(() => {
@@ -211,9 +214,6 @@ const startCountdown = () => {
             clearInterval(interval); // Clear the interval when countdown reaches 0
         }
     }, 1000);
-};
-const switchToSignUp = () => {
-    emit('switchPopup', 'sign-up');
 };
 // Function to handle sign-in (OTP pop-up)
 const handleSignIn = () => {

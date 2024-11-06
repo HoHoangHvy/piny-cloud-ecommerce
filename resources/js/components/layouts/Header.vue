@@ -64,6 +64,9 @@ import LanguageSwitcher from "@/js/components/admin/languageSwitcher.vue";
 import store from "@/js/store/index.js";
 import SignInPopup from "@/js/components/popup/signInPopup.vue";
 import SignUpPopup from "@/js/components/popup/signUpPopup.vue";
+import SignInOtpPopup from "@/js/components/popup/SignInOtpPopup.vue";
+import SignInPasswordPopup from "@/js/components/popup/SignInPasswordPopup.vue";
+import ForgotPasswordPopup from "@/js/components/popup/ForgotPasswordPopup.vue";
 
 const closePopup = () => {
     currentPopup.value = null;
@@ -245,6 +248,8 @@ const switchPopup = (popupName) => {
             </div>
         </DisclosurePanel>
     </Disclosure>
-    <SignInPopup :isVisible="currentPopup === 'sign-in'" @closePopup="closePopup" @switchPopup="switchPopup"/>
+    <ForgotPasswordPopup :isVisible="currentPopup === 'forgot-password'" @closePopup="closePopup" @switchPopup="switchPopup"/>
+    <SignInPasswordPopup :isVisible="currentPopup === 'sign-in-password'" @closePopup="closePopup" @switchPopup="switchPopup"/>
+    <SignInOtpPopup :isVisible="currentPopup === 'sign-in'" @closePopup="closePopup" @switchPopup="switchPopup"/>
     <SignUpPopup :isVisible="currentPopup === 'sign-up'" @closePopup="closePopup" @switchPopup="switchPopup"/>
 </template>
