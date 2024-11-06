@@ -31,8 +31,8 @@
     "LBL_CATEGORY": "Phân loại",
     "LBL_PREVIOUS": "Trước",
     "LBL_NEXT": "Tiếp",
+    "LBL_GET_OTP": "Nhận mã OTP",
     "LBL_ABOUT_US": "Về chúng tôi",
-
     "LBL_PINY_CLOUD_BREAD_AND_TEA": "Tiệm Trà & Bánh Piny Cloud",
     "LBL_FULL_NAME": "Tên",
     "LBL_PHONE_NUMBER": "Số điện thoại",
@@ -42,7 +42,6 @@
     "LBL_SIGNUP": "Đăng ký",
     "LBL_ALREADY_HAVE_AN_ACCOUNT?": "Bạn đã có tài khoản?",
     "LBL_SIGNIN": "Đăng nhập",
-    "LBL_GET_OTP": "Nhận mã OTP",
     "LBL_DONT_HAVE_AN_ACCOUNT?": "Bạn chưa có tài khoản?",
     "LBL_FORGOT_PASSWORD?": "Quên mật khẩu?",
     "LBL_OR_LOGIN_WITH_PASSWORD": "Đăng nhập với mật khẩu",
@@ -66,5 +65,19 @@
     "LBL_RECIPIENT_NAME":"Tên người nhận",
     "LBL_CASH": "Tiền mặt",
     "LBL_CLOSE":"Đóng",
-    "LBL_USE_NOW": "Sử dụng ngay"
+    "LBL_USE_NOW": "Sử dụng ngay",
+    "LBL_BACK_TO_SIGN_IN_WITH_OTP": "Quay lại đăng nhập bằng otp",
+    "LBL_SEND_CODE": "Gửi mã",
+    "LBL_BACK_TO_SIGN_IN": "Quay lại dăng nhập",
+    "LBL_ENTER_CODE": "Nhập mã",
+    "LBL_NEW_PASSWORD": "Mật khẩu mới",
+    "LBL_CONFIRM_RESET": "Xác nhận đặt lại",
+    "LBL_PASSWORDS_DO_NOT_MATCH": "Mật khẩu không trùng khớp",
+    "LBL_ENTER_PASSWORD": "Nhập mật khẩu",
+    "LBL_ENTER_PHONE_NUMBER": "Nhập số điện thoại",
+    "LBL_TODAY": "Hôm nay",
+    "LBL_TOMORROW": "Ngày mai",
+    "LBL_DAY_AFTER_TOMORROW": "Ngày kia",
+    "LBL_UPDATE_SUCCESSFUL": "Cập nhật thành công",
+    "LBL_OK": "Ok"
 }
