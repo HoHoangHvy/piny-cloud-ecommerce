@@ -6,11 +6,7 @@ use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Tag extends Model
+class Permission extends \Spatie\Permission\Models\Permission
 {
-    use HasFactory, HasUuid;
-    public function products()
-    {
-        return $this->belongsToMany(Product::class);
-    }
+    use HasUuid;
 }

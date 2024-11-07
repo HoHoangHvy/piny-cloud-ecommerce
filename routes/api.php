@@ -32,4 +32,5 @@ Route::middleware('auth:sanctum')->group(
 );
 
 Route::post('/login', [AuthenticationController::class, 'login']);
+Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/gen-otp', [AuthenticationController::class, 'generate']);
