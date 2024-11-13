@@ -18,7 +18,8 @@ const currentLanguage = computed(() =>
 );
 
 // Set new language
-const setLanguage = (newLang) => {
+const setLanguage = (newLang) =>  {
+    debugger
     locale.value = newLang;
     localStorage.setItem('lang', newLang);
     isOpen.value = false;
@@ -58,7 +59,7 @@ defineProps({
             v-if="isOpen"
             :class="[
         position === 'above' ? 'absolute bottom-full left-0 mb-2' : 'absolute top-full left-0 mt-2',
-        'w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5'
+        'w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10'
       ]"
             role="menu"
             aria-orientation="vertical"

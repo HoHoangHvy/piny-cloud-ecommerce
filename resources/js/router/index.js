@@ -223,7 +223,6 @@ const router = createRouter({
     routes
 })
 router.beforeEach((to, from, next) => {
-    debugger
     if (to.matched.some(record => record.meta.requiresAuthAdmin)) {
         if (store.getters.isLoggedIn && store.getters.userType === 'user') {
             next()

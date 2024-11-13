@@ -11,7 +11,7 @@
                             class="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl dark:text-white">
                             {{ t('LBL_PINY_CLOUD_BREAD_AND_TEA') }}
                         </div>
-                        <form class="space-y-4 md:space-y-6" @submit.prevent="handleSignIn">
+                        <form class="space-y-4 md:space-y-6" @submit.prevent="handleSendOTP">
                             <div>
                                 <label for="phone" class="block mb-2 text-sm font-inter text-black dark:text-white">{{
                                         t('LBL_PHONE_NUMBER')
@@ -22,6 +22,7 @@
                                     id="phone"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder=""
+                                    v-model="mobile_phone"
                                     required=""
                                 />
                             </div>
@@ -33,7 +34,7 @@
                             </div>
                             <button type="submit"
                                     class="w-full text-white bg-[#4D2F19] hover:bg-[#4D2F19] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#4D2F19] dark:hover:bg-[#4D2F19] dark:focus:ring-primary-800">
-                                {{ t('LBL_SIGNIN') }}
+                                {{ t('LBL_SEND_OTP') }}
                             </button>
                             <div class="flex items-center space-x-2">
                                 <label for="dont_have_an_account"
@@ -65,33 +66,12 @@
                     <div class="flex justify-between mt-4 mb-4">
                         <input
                             type="text"
+                            v-for="(digit, index) in otpData"
+                            :key="index"
+                            v-model="otpData[index]"
                             class="w-[50px] h-12 bg-neutral-100 ml-2 mr-2 text-center border-gray-300 rounded"
                             maxlength="1"
-                        />
-                        <input
-                            type="text"
-                            class="w-[50px] h-12 bg-neutral-100 ml-2 mr-2 text-center border-gray-300 rounded"
-                            maxlength="1"
-                        />
-                        <input
-                            type="text"
-                            class="w-[50px] h-12 bg-neutral-100 ml-2 mr-2 text-center border-gray-300 rounded"
-                            maxlength="1"
-                        />
-                        <input
-                            type="text"
-                            class="w-[50px] h-12 bg-neutral-100 ml-2 mr-2 text-center border-gray-300 rounded"
-                            maxlength="1"
-                        />
-                        <input
-                            type="text"
-                            class="w-[50px] h-12 bg-neutral-100 ml-2 mr-2 text-center border-gray-300 rounded"
-                            maxlength="1"
-                        />
-                        <input
-                            type="text"
-                            class="w-[50px] h-12 bg-neutral-100 ml-2 mr-2 text-center border-gray-300 rounded"
-                            maxlength="1"
+                            @input="autoFocusNext(index)"
                         />
                     </div>
 
@@ -102,7 +82,7 @@
                         <span v-else><a href="#" @click="resendCode">Gửi lại</a></span>
                     </p>
 
-                    <button class="bg-[#4D2F19] text-white px-4 py-2 rounded-lg" @click="showOtpPopup = false">
+                    <button class="bg-[#4D2F19] text-white px-4 py-2 rounded-lg mt-1" @click="authenticateOtp">
                         {{ t('LBL_SIGNIN') }}
                     </button>
                 </div>
@@ -113,26 +93,32 @@
 </template>
 
 <script setup>
-import {ref, onMounted, defineEmits, defineProps} from 'vue';
-import {useI18n} from 'vue-i18n';
+import { ref, onMounted, defineEmits, defineProps } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useStore } from 'vuex';
 
-const {t} = useI18n();
+const store = useStore();
+const { t } = useI18n();
 const showOtpPopup = ref(false); // Control the OTP pop-up visibility
 const countdown = ref(60); // Countdown timer
+const otpData = ref(['', '', '', '', '', '']); // Store OTP input values
 const emit = defineEmits();
 const props = defineProps({
     isVisible: {
         type: Boolean,
-        required: true
+        required: true,
     },
-
 });
+const mobile_phone = ref('');
+
 const close = () => {
     emit('closePopup');
 };
+
 const switchToPopup = (popup) => {
     emit('switchPopup', popup);
 };
+
 // Function to start the countdown
 const startCountdown = () => {
     const interval = setInterval(() => {
@@ -144,18 +130,46 @@ const startCountdown = () => {
     }, 1000);
 };
 
-// Function to handle sign-in (OTP pop-up)
-const handleSignIn = () => {
-    showOtpPopup.value = true; // Show OTP pop-up
-    countdown.value = 30; // Reset countdown
-    startCountdown(); // Start countdown
+// Function to handle sign-in and trigger the Vuex action
+const handleSendOTP = async () => {
+    try {
+        await store.dispatch('genOtp', { mobile_phone: mobile_phone.value }); // Trigger the sign-in action
+        showOtpPopup.value = true; // Show OTP pop-up
+        countdown.value = 30; // Reset countdown
+        startCountdown(); // Start countdown
+    } catch (error) {
+        console.error('Sign-in failed:', error);
+    }
 };
 
-// Function to resend code
-const resendCode = () => {
-    countdown.value = 30; // Reset the countdown
-    startCountdown(); // Start the countdown again
-    // Here, you can trigger the OTP resend logic (e.g., make an API call)
+// Function to resend OTP code
+const resendCode = async () => {
+    try {
+        await store.dispatch('genOtp', { mobile_phone: mobile_phone.value }); // Trigger resend OTP action
+        countdown.value = 30; // Reset countdown
+        startCountdown(); // Start countdown again
+    } catch (error) {
+        console.error('Failed to resend code:', error);
+    }
+};
+
+// Function to collect OTP and trigger authentication
+const authenticateOtp = async () => {
+    const otp = otpData.value.join(''); // Combine OTP values into one string
+    try {
+        await store.dispatch('authOtp', {otp: otp , user_id: store.getters.user.user_id}); // Trigger the authenticate OTP action
+        showOtpPopup.value = false; // Hide OTP pop-up
+    } catch (error) {
+        console.error('Failed to authenticate OTP:', error);
+    }
+};
+
+// Function to handle OTP input changes and auto-focus the next input
+const autoFocusNext = (index) => {
+    if (otpData.value[index].length === 1 && index < otpData.value.length - 1) {
+        const nextInput = document.getElementById(`otp${index + 1}`);
+        if (nextInput) nextInput.focus();
+    }
 };
 
 // Function to close OTP pop-up on overlay click
@@ -164,7 +178,7 @@ const handleOverlayClick = () => {
 };
 
 onMounted(() => {
-    // You can initialize anything here if needed
+    // Initialization logic if needed
 });
 </script>
 

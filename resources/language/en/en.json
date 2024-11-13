@@ -79,5 +79,13 @@
     "LBL_TOMORROW": "Tomorrow",
     "LBL_DAY_AFTER_TOMORROW": "Day after tomorrow",
     "LBL_UPDATE_SUCCESSFUL": "Update successful",
+    "LBL_UNMATCH_PASSWORD_ALERT": "Unmatch password. Please try again",
+    "LBL_DATE_OF_BIRTH": "Date of birth",
+    "LBL_GENDER": "Gender",
+    "LBL_SELECT_GENDER": "Select gender",
+    "LBL_MALE": "Male",
+    "LBL_FEMALE": "Female",
+    "LBL_OTHER": "Other",
+    "LBL_SEND_OTP": "Send OTP",
     "LBL_OK": "Ok"
 }

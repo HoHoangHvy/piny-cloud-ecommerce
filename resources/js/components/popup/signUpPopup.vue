@@ -1,73 +1,137 @@
 <script setup>
 import {useI18n} from "vue-i18n";
-
-const {t} = useI18n();
-
+import {useStore} from "vuex";
 import {defineEmits, defineProps, ref} from 'vue';
 import SignInPopup from "@/js/components/popup/signInPopup.vue";
+import {FwbAlert} from "flowbite-vue";
 
-// Biến trạng thái mật khẩu hiển thị/ẩn
-const showPassword = ref(false);
-
-// Hàm chuyển đổi trạng thái hiển thị/ẩn mật khẩu
-const togglePassword = () => {
-    showPassword.value = !showPassword.value;
-};
+const {t} = useI18n();
+const store = useStore();
 const emit = defineEmits();
-const close = () => {
-    emit('closePopup');
-};
 const props = defineProps({
     isVisible: {
         type: Boolean,
         required: true
     },
 });
+
+// State for the form fields
+const name = ref('');
+const phone = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+
+// Password visibility toggle
+const showPassword1 = ref(false);
+const togglePassword1 = () => {
+    showPassword1.value = !showPassword1.value;
+};
+const showPassword2 = ref(false);
+const togglePassword2 = () => {
+    showPassword2.value = !showPassword2.value;
+};
+
+// Emit events
+const close = () => {
+    emit('closePopup');
+};
 const switchToSignIn = () => {
     emit('switchPopup', 'sign-in');
+};
+
+const showAlert = ref(false);
+// Sign up function
+const signUp = async () => {
+    debugger
+    const formData = {
+        name: name.value,
+        phone_number: phone.value,
+        email: email.value,
+        password: password.value,
+        user_type: 'customer',
+        c_password: confirmPassword.value,
+    };
+
+    if(formData.password !== formData.confirmPassword) {
+        showAlert.value = true;
+        return;
+    }
+    // Dispatching the form data to the Vuex `signUp` action
+    try {
+        await store.dispatch('signUp', formData);
+        // Clear form fields if needed
+        name.value = '';
+        phone.value = '';
+        email.value = '';
+        password.value = '';
+        confirmPassword.value = '';
+        close(); // Optionally close the popup after signup
+    } catch (error) {
+        console.error("Sign Up failed:", error);
+    }
+};
+const handleFocus = () => {
+    showAlert.value = false;
 };
 </script>
 
 <template>
-    <div v-if="isVisible"
-         class="overlay fixed inset-0 bg-gray-800 bg-opacity-75 flex lg:items-center justify-end lg:justify-center"
-         @click="close">
+    <div v-if="isVisible" class="overlay fixed inset-0 bg-gray-800 bg-opacity-75 flex lg:items-center justify-end lg:justify-center" @click="close">
         <div class="bg-white lg:rounded-lg shadow-lg max-w-md h-fit w-[65%] lg:h-fit lg:w-full relative" @click.stop>
             <div class="flex flex-col items-center justify-center">
-                <div
-                    class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        <div
-                            class="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl dark:text-white">
+                        <div class="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl dark:text-white">
                             {{ t('LBL_PINY_CLOUD_BREAD_AND_TEA') }}
                         </div>
-                        <form class="space-y-4 md:space-y-6" action="#">
+                        <fwb-alert border type="danger" v-show="showAlert">
+                           {{t('LBL_UNMATCH_PASSWORD_ALERT')}}
+                        </fwb-alert>
+                        <form class="space-y-4 md:space-y-6" @submit.prevent="signUp">
                             <div>
-                                <label for="name"
-                                       class="block mb-2 text-sm font-inter text-black dark:text-white">{{
-                                        t('LBL_FULL_NAME')
-                                    }}</label>
-                                <input type="text" name="name" id="name"
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                       placeholder="" required="">
+                                <label for="name" class="block mb-2 text-sm font-inter text-black dark:text-white">{{ t('LBL_FULL_NAME') }}</label>
+                                <input @focus="handleFocus" type="text" name="name" id="name" v-model="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                            </div>
+                            <div class="flex justify-between gap-1">
+                                <div class="w-full">
+                                    <label for="date_of_birth" class="block mb-2 text-sm font-inter text-black dark:text-white">
+                                        {{ t('LBL_DATE_OF_BIRTH') }}
+                                    </label>
+                                    <input
+                                        @focus="handleFocus"
+                                        type="date"
+                                        name="date_of_birth"
+                                        id="date_of_birth"
+                                        v-model="dateOfBirth"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        required>
+                                </div>
+                                <div class="w-full">
+                                    <label for="gender" class="block mb-2 text-sm font-inter text-black dark:text-white">
+                                        {{ t('LBL_GENDER') }}
+                                    </label>
+                                    <select
+                                        @focus="handleFocus"
+                                        name="gender"
+                                        id="gender"
+                                        v-model="gender"
+                                        class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        required>
+                                        <option value="">{{ t('LBL_SELECT_GENDER') }}</option>
+                                        <option value="male">{{ t('LBL_MALE') }}</option>
+                                        <option value="female">{{ t('LBL_FEMALE') }}</option>
+                                        <option value="other">{{ t('LBL_OTHER') }}</option>
+                                    </select>
+                                </div>
                             </div>
                             <div>
-                                <label for="phone"
-                                       class="block mb-2 text-sm font-inter text-black dark:text-white">{{
-                                        t('LBL_PHONE_NUMBER')
-                                    }}</label>
-                                <input type="text" name="phone" id="phone"
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                       placeholder="" required="">
+                                <label for="phone" class="block mb-2 text-sm font-inter text-black dark:text-white">{{ t('LBL_PHONE_NUMBER') }}</label>
+                                <input @focus="handleFocus" type="text" name="phone" id="phone" v-model="phone" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                             </div>
                             <div>
-                                <label for="email"
-                                       class="block mb-2 text-sm font-inter text-black dark:text-white">{{
-                                        t('LBL_EMAIL')
-                                    }}</label>
-                                <input type="email" name="email" id="email"
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                       placeholder="" required="">
+                                <label for="email" class="block mb-2 text-sm font-inter text-black dark:text-white">{{ t('LBL_EMAIL') }}</label>
+                                <input @focus="handleFocus" type="email" name="email" id="email" v-model="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                             </div>
                             <div class="input-container">
                                 <label for="password" class="block mb-2 text-sm font-inter text-black dark:text-white">
@@ -75,18 +139,20 @@ const switchToSignIn = () => {
                                 </label>
                                 <div class="flex items-center relative">
                                     <input
-                                        :type="showPassword ? 'text' : 'password'"
-                                        name="password"
-                                        id="password"
+                                        @focus="handleFocus"
+                                        :type="showPassword1 ? 'text' : 'password'"
+                                        v-model="password"
+                                        name="password1"
+                                        id="password1"
                                         placeholder=""
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         required
                                     />
 
                                     <!-- SVG biểu tượng mắt -->
-                                    <span @click="togglePassword" class="input-icon cursor-pointer">
+                                    <span @click="togglePassword1" class="input-icon cursor-pointer">
                                     <!-- Biểu tượng SVG đôi mắt -->
-                                    <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    <svg v-if="!showPassword1" xmlns="http://www.w3.org/2000/svg" fill="none"
                                          viewBox="0 0 24 24" stroke="currentColor"
                                          class="w-6 h-6 text-gray-700 dark:text-gray-300">
                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -112,18 +178,20 @@ const switchToSignIn = () => {
                                 </label>
                                 <div class="flex items-center relative">
                                     <input
-                                        :type="showPassword ? 'text' : 'password'"
-                                        name="password"
-                                        id="password"
+                                        @focus="handleFocus"
+                                        v-model="confirmPassword"
+                                        :type="showPassword2 ? 'text' : 'password'"
+                                        name="password2"
+                                        id="password2"
                                         placeholder=""
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         required
                                     />
 
                                     <!-- SVG biểu tượng mắt -->
-                                    <span @click="togglePassword" class="input-icon cursor-pointer">
+                                    <span @click="togglePassword2" class="input-icon cursor-pointer">
                                     <!-- Biểu tượng SVG đôi mắt -->
-                                    <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    <svg v-if="!showPassword2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                          viewBox="0 0 24 24" stroke="currentColor"
                                          class="w-6 h-6 text-gray-700 dark:text-gray-300">
                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -142,21 +210,10 @@ const switchToSignIn = () => {
                                 </span>
                                 </div>
                             </div>
-
-                            <button type="submit"
+                            <button @click="signUp"
                                     class="w-full text-white bg-[#4D2F19] hover:bg-[#4D2F19] focus:ring-4 focus:outline-none focus:ring-primary-300 font-inter rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#4D2F19] dark:hover:bg-[#4D2F19] dark:focus:ring-primary-800">
                                 {{ t('LBL_SIGNUP') }}
                             </button>
-
-                            <div class="flex items-center space-x-2">
-                                <label for="already_have_an_account"
-                                       class="text-sm font-inter text-black dark:text-gray-400">{{
-                                        t('LBL_ALREADY_HAVE_AN_ACCOUNT?')
-                                    }}</label>
-                                <a @click="switchToSignIn" class="hover:underline text-[#4D2F19]"
-                                   target="_blank">{{ t('LBL_SIGNIN') }}</a>
-                            </div>
-
                         </form>
                     </div>
                 </div>
@@ -164,6 +221,7 @@ const switchToSignIn = () => {
         </div>
     </div>
 </template>
+
 
 <style scoped>
 

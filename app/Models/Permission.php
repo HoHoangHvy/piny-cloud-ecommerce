@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Permission extends \Spatie\Permission\Models\Permission
 {
+    use HasFactory;
     use HasUuid;
 }

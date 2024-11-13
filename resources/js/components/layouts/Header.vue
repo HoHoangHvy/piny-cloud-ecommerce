@@ -3,15 +3,18 @@ import {Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIte
 import {Bars3Icon, BellIcon, XMarkIcon} from '@heroicons/vue/24/outline'
 import {useI18n} from 'vue-i18n';
 import { useRoute } from 'vue-router';
-const route = useRoute();
+import {defineOptions, ref, watch} from 'vue'
+import LanguageSwitcher from "@/js/components/admin/languageSwitcher.vue";
+import SignUpPopup from "@/js/components/popup/signUpPopup.vue";
+import SignInOtpPopup from "@/js/components/popup/SignInOtpPopup.vue";
+import SignInPasswordPopup from "@/js/components/popup/SignInPasswordPopup.vue";
+import ForgotPasswordPopup from "@/js/components/popup/ForgotPasswordPopup.vue";
+import { useStore } from 'vuex';
 
+const store = useStore();
+const route = useRoute();
 const {t} = useI18n();
-const user = {
-    name: 'Tom Cook',
-    email: 'tom@example.com',
-    imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
+const user = store.getters.user
 const currentPopup = ref(null);
 
 const navigation = ref([
@@ -49,25 +52,7 @@ const userNavigation = [
             `
 
     },
-    {
-        name: 'LBL_SIGNOUT',
-        href: '#',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-            </svg>
-            `
-    },
 ]
-
-import {defineOptions, ref, watch} from 'vue'
-import LanguageSwitcher from "@/js/components/admin/languageSwitcher.vue";
-import store from "@/js/store/index.js";
-import SignInPopup from "@/js/components/popup/signInPopup.vue";
-import SignUpPopup from "@/js/components/popup/signUpPopup.vue";
-import SignInOtpPopup from "@/js/components/popup/SignInOtpPopup.vue";
-import SignInPasswordPopup from "@/js/components/popup/SignInPasswordPopup.vue";
-import ForgotPasswordPopup from "@/js/components/popup/ForgotPasswordPopup.vue";
-
 const closePopup = () => {
     currentPopup.value = null;
 }
@@ -75,9 +60,12 @@ defineOptions({
     name: 'Header'
 })
 const switchPopup = (popupName) => {
-    debugger
     currentPopup.value = popupName;
 };
+
+const signOut = async () => {
+    await store.dispatch('signOut', {}); // Trigger the authenticate OTP action
+}
 </script>
 <style>
 
@@ -166,7 +154,7 @@ const switchPopup = (popupName) => {
                                     class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                     <span class="absolute -inset-1.5"/>
                                     <span class="sr-only">Open user menu</span>
-                                    <img class="h-8 w-8 rounded-full" :src="user.imageUrl" alt=""/>
+                                    <img class="h-8 w-8 rounded-full" src="@/assets/images/user/user-01.png" alt=""/>
                                 </MenuButton>
                             </div>
                             <transition enter-active-class="transition ease-out duration-100"
@@ -184,6 +172,14 @@ const switchPopup = (popupName) => {
                                             {{ t(item.name) }}
                                         </router-link>
                                     </MenuItem>
+                                    <MenuItem>
+                                        <div class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray" @click="signOut">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                                            </svg>
+                                            <span>{{t('LBL_SIGNOUT')}}</span>
+                                        </div>
+                                    </MenuItem>
                                     <hr class="my-2 border-t border-gray">
                                     <div class="flex items-center w-full justify-center pb-0.5">
                                         <LanguageSwitcher position="below"></LanguageSwitcher>
@@ -194,8 +190,9 @@ const switchPopup = (popupName) => {
                     </div>
                 </div>
                 <div v-if="!store.getters.isLoggedIn">
+                    <LanguageSwitcher position="below"></LanguageSwitcher>
                     <button @click="switchPopup('sign-in')"
-                                 class="text-yellow-900 bg-white hover:bg-yellow-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                                 class="text-yellow-900 bg-white hover:bg-yellow-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
                         {{ t('LBL_SIGNIN') }}
                     </button>
                     <button @click="switchPopup('sign-up')"
@@ -226,7 +223,7 @@ const switchPopup = (popupName) => {
             <div class="border-t border-gray-700 pb-3 pt-4">
                 <div class="flex items-center px-5">
                     <div class="flex-shrink-0">
-                        <img class="h-10 w-10 rounded-full" :src="user.imageUrl" alt=""/>
+                        <img class="h-10 w-10 rounded-full" src="@/assets/images/user/user-01.png" alt=""/>
                     </div>
                     <div class="ml-3">
                         <div class="text-base font-medium leading-none text-white">{{ user.name }}</div>

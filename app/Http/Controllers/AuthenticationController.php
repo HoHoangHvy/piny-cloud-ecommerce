@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\User;
 use App\Models\VerificationCode;
 use Illuminate\Http\JsonResponse;
@@ -10,6 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Helpers\SpeedSMSAPI;
 use Twilio\Rest\Client;
 
 class AuthenticationController extends BaseController
@@ -24,6 +26,9 @@ class AuthenticationController extends BaseController
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
+            'user_type' => 'required',
+            'date_of_birth' => 'required',
+            'gender' => 'required',
             'password' => 'required',
             'c_password' => 'required|same:password',
         ]);
@@ -36,8 +41,24 @@ class AuthenticationController extends BaseController
         $input['password'] = bcrypt($input['password']);
         try {
             $user = User::create($input);
+
+            if ($user->user_type == 'customer') {
+                $customer = new Customer();
+                $customer->full_name = $user->name;
+                $customer->phone_number = $user->phone_number;
+                $customer->email = $user->email;
+                $customer->gender = $input['gender'];
+                $customer->date_of_birth = $input['date_of_birth'];
+                $customer->user_id = $user->id;
+                $customer->save();
+
+                $user->assignRole('customer');
+            } else {
+                $user->assignRole('admin');
+            }
+
             $success['token'] = $user->createToken('MyApp', ['check-status', 'place-orders'], now()->addMinutes(60))->plainTextToken;
-            $success['name'] =  $user->name;
+            $success['name'] = $user->name;
         } catch (\Exception $e) {
             return $this->sendError('User Registration Failed.', ['error' => $e->getMessage()]);
         }
@@ -54,35 +75,19 @@ class AuthenticationController extends BaseController
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
-
-        try {
-            $result['data'] = $this->sendOtp($request->mobile_no);
-        } catch (\Exception $e) {
-            return $this->sendError('OTP Generation Failed.', ['error' => $e->getMessage()]);
-        }
-
         # Generate An OTP
-//        $verificationCode = $this->generateOtp($request->mobile_no);
-
-        $message = "Your OTP To Login is - ";
-        # Return With OTP
-        $result['success'] = true;
-//        $result['otp'] = $verificationCode->otp;
-        return $this->sendResponse($result, $message);
+        $verificationCode = $this->generateOtp($request->mobile_no);
+        return $this->sendResponse($verificationCode, 'OTP generated successfully.');
     }
     public function sendOtp($number) {
-        $sid = getenv("TWILIO_ACCOUNT_SID");
-        $token = getenv("TWILIO_AUTH_TOKEN");
-        $twilio = new Client($sid, $token);
+        $basic  = new \Vonage\Client\Credentials\Basic("ee69cde3", "aXTc6yYiMshIdNA5");
+        $client = new \Vonage\Client($basic);
 
-        $verification = $twilio->verify->v2
-            ->services(getenv("TWILIO_VERIFICATION_SID"))
-            ->verifications->create(
-                '+84'.$number,
-                "sms"
-            );
+        $response = $client->sms()->send(
+            new \Vonage\SMS\Message\SMS("84398168226", "PinyCloud", 'A text message sent using the Nexmo SMS API')
+        );
 
-        return $verification->status;
+        return json_encode($response->current());
     }
     public function generateOtp($mobile_no)
     {
@@ -175,4 +180,5 @@ class AuthenticationController extends BaseController
             return $this->sendError('User Logout Failed.', ['error' => $e->getMessage()]);
         }
     }
+
 }

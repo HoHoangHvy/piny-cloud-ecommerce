@@ -79,5 +79,13 @@
     "LBL_TOMORROW": "Ngày mai",
     "LBL_DAY_AFTER_TOMORROW": "Ngày kia",
     "LBL_UPDATE_SUCCESSFUL": "Cập nhật thành công",
+    "LBL_DATE_OF_BIRTH": "Ngày sinh",
+    "LBL_GENDER": "Giới tính",
+    "LBL_SELECT_GENDER": "Chọn giới tính",
+    "LBL_MALE": "Nam",
+    "LBL_FEMALE": "Nữ",
+    "LBL_OTHER": "Khác",
+    "LBL_SEND_OTP": "Gửi OTP",
+    "LBL_UNMATCH_PASSWORD_ALERT": "Mật khẩu không trùng khớp",
     "LBL_OK": "Ok"
 }
