@@ -20,12 +20,13 @@
                                     type="text"
                                     name="phone"
                                     id="phone"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                     placeholder=""
                                     v-model="mobile_phone"
                                     required=""
                                 />
                             </div>
+                            <div id="recaptcha-container" class="mb-4"></div>
                             <div>
                                 <a @click="switchToPopup('sign-in-password')"
                                    class="text-sm font-inter text-black dark:text-gray-400 hover:underline">
@@ -82,26 +83,27 @@
                         <span v-else><a href="#" @click="resendCode">Gửi lại</a></span>
                     </p>
 
-                    <button class="bg-[#4D2F19] text-white px-4 py-2 rounded-lg mt-1" @click="authenticateOtp">
+                    <button class="bg-[#4D2F19] text-white px-4 py-2 rounded-lg mt-1" @click="verifyOTP">
                         {{ t('LBL_SIGNIN') }}
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <script setup>
 import { ref, onMounted, defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '@/js/firebase.js';
 
 const store = useStore();
 const { t } = useI18n();
 const showOtpPopup = ref(false); // Control the OTP pop-up visibility
 const countdown = ref(60); // Countdown timer
 const otpData = ref(['', '', '', '', '', '']); // Store OTP input values
+const confirmationResult = ref(null); // Firebase confirmation result for OTP verification
 const emit = defineEmits();
 const props = defineProps({
     isVisible: {
@@ -111,6 +113,16 @@ const props = defineProps({
 });
 const mobile_phone = ref('');
 
+// Initialize reCAPTCHA verifier
+let recaptchaVerifier = null;
+const setupRecaptcha = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+        callback: () => {
+            console.log('recaptcha resolved..')
+        }
+    });
+};
 const close = () => {
     emit('closePopup');
 };
@@ -121,6 +133,7 @@ const switchToPopup = (popup) => {
 
 // Function to start the countdown
 const startCountdown = () => {
+    countdown.value = 60;
     const interval = setInterval(() => {
         if (countdown.value > 0) {
             countdown.value--;
@@ -130,45 +143,61 @@ const startCountdown = () => {
     }, 1000);
 };
 
-// Function to handle sign-in and trigger the Vuex action
+// Function to send OTP
 const handleSendOTP = async () => {
+    if (!mobile_phone.value) {
+        alert(t('LBL_ENTER_PHONE_NUMBER'));
+        return;
+    }
     try {
-        await store.dispatch('genOtp', { mobile_phone: mobile_phone.value }); // Trigger the sign-in action
+        debugger
+        setupRecaptcha();
+        const phoneNumber = `+84${mobile_phone.value}`; // Adjust prefix as per your country
+        confirmationResult.value = await signInWithPhoneNumber(auth, '+84398168226', window.recaptchaVerifier)
+            .then((confirmationResult) => {
+                debugger
+                // SMS sent. Prompt user to type the code from the message, then sign the
+                // user in with confirmationResult.confirm(code).
+                window.confirmationResult = confirmationResult;
+                // ...
+            })
+            .catch((error) => {
+                debugger
+            // Error; SMS not sent
+            // ...
+        });
         showOtpPopup.value = true; // Show OTP pop-up
-        countdown.value = 30; // Reset countdown
         startCountdown(); // Start countdown
     } catch (error) {
-        console.error('Sign-in failed:', error);
+        console.error('Error sending OTP:', error);
+        alert(t('LBL_OTP_SEND_FAILED'));
     }
 };
 
-// Function to resend OTP code
-const resendCode = async () => {
-    try {
-        await store.dispatch('genOtp', { mobile_phone: mobile_phone.value }); // Trigger resend OTP action
-        countdown.value = 30; // Reset countdown
-        startCountdown(); // Start countdown again
-    } catch (error) {
-        console.error('Failed to resend code:', error);
+// Function to verify OTP
+const verifyOTP = async () => {
+    const otp = otpData.value.join('');
+    if (!otp) {
+        alert(t('LBL_ENTER_OTP'));
+        return;
     }
-};
-
-// Function to collect OTP and trigger authentication
-const authenticateOtp = async () => {
-    const otp = otpData.value.join(''); // Combine OTP values into one string
     try {
-        await store.dispatch('authOtp', {otp: otp , user_id: store.getters.user.user_id}); // Trigger the authenticate OTP action
+        const result = await confirmationResult.value.confirm(otp);
+        console.log('User signed in successfully:', result.user);
+        alert(t('LBL_OTP_VERIFIED'));
         showOtpPopup.value = false; // Hide OTP pop-up
     } catch (error) {
-        console.error('Failed to authenticate OTP:', error);
+        console.error('Error verifying OTP:', error);
+        alert(t('LBL_INVALID_OTP'));
     }
 };
 
-// Function to handle OTP input changes and auto-focus the next input
-const autoFocusNext = (index) => {
-    if (otpData.value[index].length === 1 && index < otpData.value.length - 1) {
-        const nextInput = document.getElementById(`otp${index + 1}`);
-        if (nextInput) nextInput.focus();
+// Function to resend OTP
+const resendCode = async () => {
+    try {
+        handleSendOTP();
+    } catch (error) {
+        console.error('Failed to resend code:', error);
     }
 };
 
@@ -177,8 +206,15 @@ const handleOverlayClick = () => {
     showOtpPopup.value = false; // Hide OTP pop-up
 };
 
+// Auto-focus the next input field for OTP
+const autoFocusNext = (index) => {
+    if (otpData.value[index].length === 1 && index < otpData.value.length - 1) {
+        document.querySelectorAll('input')[index + 1].focus();
+    }
+};
+
 onMounted(() => {
-    // Initialization logic if needed
+    // Initialization logic
 });
 </script>
 
@@ -194,5 +230,9 @@ onMounted(() => {
 /* Apply Kaisei Decol only for the title */
 .text-xl {
     font-family: 'Kaisei Decol', sans-serif;
+}
+#recaptcha-container {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 </style>

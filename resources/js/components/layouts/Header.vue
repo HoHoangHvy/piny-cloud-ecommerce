@@ -5,7 +5,7 @@ import {useI18n} from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import {defineOptions, ref, watch} from 'vue'
 import LanguageSwitcher from "@/js/components/admin/languageSwitcher.vue";
-import SignUpPopup from "@/js/components/popup/signUpPopup.vue";
+import SignUpPopup from "@/js/components/popup/SignUpPopup.vue";
 import SignInOtpPopup from "@/js/components/popup/SignInOtpPopup.vue";
 import SignInPasswordPopup from "@/js/components/popup/SignInPasswordPopup.vue";
 import ForgotPasswordPopup from "@/js/components/popup/ForgotPasswordPopup.vue";

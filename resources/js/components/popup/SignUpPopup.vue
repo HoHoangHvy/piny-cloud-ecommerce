@@ -2,7 +2,6 @@
 import {useI18n} from "vue-i18n";
 import {useStore} from "vuex";
 import {defineEmits, defineProps, ref} from 'vue';
-import SignInPopup from "@/js/components/popup/signInPopup.vue";
 import {FwbAlert} from "flowbite-vue";
 
 const {t} = useI18n();
