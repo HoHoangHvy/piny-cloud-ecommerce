@@ -20,6 +20,8 @@ const phone = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
+const dateOfBirth = ref('');
+const gender = ref('');
 
 // Password visibility toggle
 const showPassword1 = ref(false);
@@ -41,8 +43,15 @@ const switchToSignIn = () => {
 
 const showAlert = ref(false);
 // Sign up function
+const loading = ref(false); // State for button loading
+const statusMessage = ref(''); // State for success or error messages
+const typeMessage = ref(''); // State for success or error messages
+
 const signUp = async () => {
-    debugger
+    // Disable the button and clear previous messages
+    loading.value = true;
+    statusMessage.value = '';
+
     const formData = {
         name: name.value,
         phone_number: phone.value,
@@ -50,26 +59,47 @@ const signUp = async () => {
         password: password.value,
         user_type: 'customer',
         c_password: confirmPassword.value,
+        date_of_birth: dateOfBirth.value,
+        gender: gender.value,
     };
 
-    if(formData.password !== formData.confirmPassword) {
-        showAlert.value = true;
+    if (formData.password !== formData.c_password) {
+        statusMessage.value = t('LBL_PASSWORDS_DO_NOT_MATCH');
+        loading.value = false;
         return;
     }
-    // Dispatching the form data to the Vuex `signUp` action
+
     try {
-        await store.dispatch('signUp', formData);
-        // Clear form fields if needed
-        name.value = '';
-        phone.value = '';
-        email.value = '';
-        password.value = '';
-        confirmPassword.value = '';
-        close(); // Optionally close the popup after signup
+        // Dispatching the form data to the Vuex `signUp` action
+        const response = await store.dispatch('signUp', formData);
+
+        if(response.success) {
+            // Clear form fields
+            name.value = '';
+            phone.value = '';
+            email.value = '';
+            password.value = '';
+            confirmPassword.value = '';
+            dateOfBirth.value = '';
+            gender.value = '';
+
+            statusMessage.value = t('LBL_SIGNUP_SUCCESS');
+            typeMessage.value = 'success';
+            close();
+        } else {
+            statusMessage.value = response.message || t('LBL_SIGNUP_FAILED');
+            typeMessage.value = 'danger';
+        }
+
     } catch (error) {
-        console.error("Sign Up failed:", error);
+        console.error('Sign Up failed:', error);
+        statusMessage.value = error.response?.data?.message || t('LBL_SIGNUP_FAILED');
+        typeMessage.value = 'danger';
+    } finally {
+        loading.value = false; // Enable the button
     }
 };
+
 const handleFocus = () => {
     showAlert.value = false;
 };
@@ -84,8 +114,8 @@ const handleFocus = () => {
                         <div class="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl dark:text-white">
                             {{ t('LBL_PINY_CLOUD_BREAD_AND_TEA') }}
                         </div>
-                        <fwb-alert border type="danger" v-show="showAlert">
-                           {{t('LBL_UNMATCH_PASSWORD_ALERT')}}
+                        <fwb-alert border :type="typeMessage" v-if="statusMessage">
+                            {{ statusMessage }}
                         </fwb-alert>
                         <form class="space-y-4 md:space-y-6" @submit.prevent="signUp">
                             <div>
@@ -210,9 +240,20 @@ const handleFocus = () => {
                                 </div>
                             </div>
                             <button @click="signUp"
-                                    class="w-full text-white bg-[#4D2F19] hover:bg-[#4D2F19] focus:ring-4 focus:outline-none focus:ring-primary-300 font-inter rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#4D2F19] dark:hover:bg-[#4D2F19] dark:focus:ring-primary-800">
-                                {{ t('LBL_SIGNUP') }}
+                                    :disabled="loading"
+                                    class="w-full text-white bg-[#c48d60] hover:bg-[#e1b083] focus:ring-4 focus:outline-none focus:ring-primary-300 font-inter rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#c48d60] dark:hover:bg-[#c48d60] dark:focus:ring-primary-800">
+                                <span v-if="!loading">{{ t('LBL_SIGNUP') }}</span>
+                                <span v-else>{{ t('LBL_SIGNING_UP') }}...</span>
                             </button>
+                            <div class="flex items-center space-x-2">
+                                <label for="already_have_an_account"
+                                       class=" font-inter text-black dark:text-gray-400">{{
+                                        t('LBL_ALREADY_HAVE_AN_ACCOUNT?')
+                                    }}</label>
+                                <a @click="switchToSignIn" class="hover:underline text-[#c48d60]"
+                                   target="_blank">{{ t('LBL_SIGNIN') }}</a>
+                            </div>
+
                         </form>
                     </div>
                 </div>

@@ -16,32 +16,39 @@ const getters = {
     user: (state) => state.user,
 };
 const actions = {
-    async signUp({commit}, args) {
-        axios.get('sanctum/csrf-cookie').then(response => {
-            axios.post('api/register', args)
-                .then(
-                    response => {
-                        debugger
-                        const res = response.data;
-                        const token = res.data.token
-                        const user = res.data.user
-                        localStorage.setItem('token', token)
-                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-                        commit('authSuccess', {token, user})
-                        if(user.is_admin) {
-                            router.push('/admin')
-                        } else {
-                            router.push('/')
-                        }
-                    }
-                )
-                .catch(
-                    error => {
-                        console.log(error)
-                    }
-                );
-        })
+    async signUp({ commit }, args) {
+        try {
+            // Get CSRF cookie
+            await axios.get('sanctum/csrf-cookie');
 
+            // Make the registration request
+            const response = await axios.post('api/register', args);
+
+            // Extract token and user data from the response
+            const { token, user } = response.data.data;
+
+            // Store the token in localStorage and set the authorization header
+            localStorage.setItem('token', token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+            // Commit to the store
+            commit('authSuccess', { token, user });
+
+            // Return success response
+            return {
+                success: true,
+                user,
+                token,
+            };
+        } catch (error) {
+            console.error('Sign-up error:', error);
+
+            // Return failure response with error message
+            return {
+                success: false,
+                message: error.response?.data?.message || 'An error occurred during sign-up',
+            };
+        }
     },
     async signOut({commit}, args) {
         axios.get('sanctum/csrf-cookie').then(response => {
@@ -50,13 +57,9 @@ const actions = {
                     response => {
                         if(response.data.success) {
                             localStorage.removeItem('token')
+                            localStorage.removeItem('vuex')
                             axios.defaults.headers.common['Authorization'] = `Bearer `
                             commit('logOutSuccess');
-                            if(user.is_admin) {
-                                router.push('/admin')
-                            } else {
-                                router.push('/')
-                            }
                         }
                     }
                 )
@@ -68,37 +71,44 @@ const actions = {
         })
     },
     async authOtp({commit}, args) {
-        axios.get('sanctum/csrf-cookie').then(response => {
-            axios.post('api/auth-otp', args)
-                .then(
-                    response => {
-                        const res = response.data;
-                        const token = res.data.token
-                        const user = res.data.user
-                        localStorage.setItem('token', token)
-                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-                        commit('authSuccess', {token, user})
-                        if(user.is_admin) {
-                            router.push('/admin')
-                        } else {
-                            router.push('/')
-                        }
-                    }
-                )
-                .catch(
-                    error => {
-                        console.log(error)
-                    }
-                );
-        })
+        try {
+            // Get CSRF cookie
+            await axios.get('sanctum/csrf-cookie');
+
+            // Make the registration request
+            const response = await axios.post('api/auth-otp', args);
+
+            // Extract token and user data from the response
+            const { token, user } = response.data.data;
+
+            // Store the token in localStorage and set the authorization header
+            localStorage.setItem('token', token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+            // Commit to the store
+            commit('authSuccess', { token, user });
+
+            // Return success response
+            return {
+                success: true,
+                user,
+                token,
+            };
+        } catch (error) {
+            console.error('Sign-up error:', error);
+
+            // Return failure response with error message
+            return {
+                success: false,
+                message: error.response?.data?.message || 'An error occurred during sign-up',
+            };
+        }
     },
     async genOtp({commit}, args) {
-        debugger
         axios.get('sanctum/csrf-cookie').then(response => {
             axios.post('api/gen-otp', {mobile_no: args.mobile_phone})
                 .then(
                     response => {
-                        debugger
                         commit('genOtpSuccess', {user: {user_id: response.data.data.user_id}});
                     }
                 )

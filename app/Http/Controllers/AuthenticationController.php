@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Helpers\SpeedSMSAPI;
@@ -27,6 +28,7 @@ class AuthenticationController extends BaseController
             'name' => 'required',
             'email' => 'required|email',
             'user_type' => 'required',
+            'phone_number' => 'required',
             'date_of_birth' => 'required',
             'gender' => 'required',
             'password' => 'required',
@@ -34,12 +36,22 @@ class AuthenticationController extends BaseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
+            return $this->sendError($validator->errors(), $validator->errors());
         }
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         try {
+            $check_unique_phone = User::where('phone_number', $input['phone_number'])->first();
+            $check_unique_email = User::where('email', $input['email'])->first();
+
+            if($check_unique_phone) {
+                return $this->sendError('Phone number already exists.', ['error' => 'Phone number already exists.']);
+            }
+            if($check_unique_email) {
+                return $this->sendError('Email already exists.', ['error' => 'Email already exists.']);
+            }
+
             $user = User::create($input);
 
             if ($user->user_type == 'customer') {
@@ -60,7 +72,7 @@ class AuthenticationController extends BaseController
             $success['token'] = $user->createToken('MyApp', ['check-status', 'place-orders'], now()->addMinutes(60))->plainTextToken;
             $success['name'] = $user->name;
         } catch (\Exception $e) {
-            return $this->sendError('User Registration Failed.', ['error' => $e->getMessage()]);
+            return $this->sendError($e->getMessage(), ['error' => $e->getMessage()]);
         }
 
         return $this->sendResponse($success, 'User register successfully.');
@@ -77,17 +89,58 @@ class AuthenticationController extends BaseController
         }
         # Generate An OTP
         $verificationCode = $this->generateOtp($request->mobile_no);
+//        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
         return $this->sendResponse($verificationCode, 'OTP generated successfully.');
     }
-    public function sendOtp($number) {
-        $basic  = new \Vonage\Client\Credentials\Basic("ee69cde3", "aXTc6yYiMshIdNA5");
-        $client = new \Vonage\Client($basic);
+    public function sendOtp($number, $otp)
+    {
+        if (substr($number, 0, 1) === '0') {
+            $number = substr($number, 1);
+        }
+        $data = [
+            'messages' => [
+                [
+                    'destinations' => [
+                        [
+                            'to' => '84'.$number
+                        ]
+                    ],
+                    'from' => '447491163443', // Your sender's number
+                    'text' => 'Your OTP to login into PinyCloud is '. $otp .' it will expire in 1 minutes.'
+                ]
+            ]
+        ];
 
-        $response = $client->sms()->send(
-            new \Vonage\SMS\Message\SMS("84398168226", "PinyCloud", 'A text message sent using the Nexmo SMS API')
-        );
+        // Make the HTTP request using Laravel's HTTP client
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'App 93c17591673d903f7730b44c3b4909fb-b0de3d80-4840-4458-b159-32ade0678c0f',
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])
+                ->post('https://m3xg96.api.infobip.com/sms/2/text/advanced', $data);
 
-        return json_encode($response->current());
+            // Check if the response is successful
+            if ($response->successful()) {
+                // If successful, return the response body (you can log or process it here)
+                return response()->json([
+                    'success' => true,
+                    'data' => $response->json()
+                ]);
+            } else {
+                // If the response was not successful, handle the error
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unexpected HTTP status: ' . $response->status()
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            // If an exception occurs, catch it and return an error response
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
     public function generateOtp($mobile_no)
     {
