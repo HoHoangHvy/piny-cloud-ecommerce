@@ -62,7 +62,7 @@
                             </div>
 
                             <button type="submit"
-                                    class="w-full text-white bg-[#4D2F19] hover:bg-[#4D2F19] focus:ring-4 focus:outline-none focus:ring-primary-300 font-inter rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#4D2F19] dark:hover:bg-[#4D2F19] dark:focus:ring-primary-800">
+                                    class="w-full text-white bg-[#c48d60] hover:bg-[#c48d60] focus:ring-4 focus:outline-none focus:ring-primary-300 font-inter rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#c48d60] dark:hover:bg-[#c48d60] dark:focus:ring-primary-800">
                                 {{ t('LBL_SIGNIN') }}
                             </button>
                             <div class="flex items-center space-x-2">
@@ -71,7 +71,7 @@
                                         t('LBL_DONT_HAVE_AN_ACCOUNT?')
                                     }}</label>
                                 <a  @click="switchToPopup('sign-up')"
-                                    class="hover:underline text-[#4D2F19]"
+                                    class="hover:underline text-[#c48d60]"
                                    target="_self">{{ t('LBL_SIGNUP') }}</a>
                             </div>
                         </form>

@@ -87,5 +87,8 @@
     "LBL_OTHER": "Khác",
     "LBL_SEND_OTP": "Gửi OTP",
     "LBL_UNMATCH_PASSWORD_ALERT": "Mật khẩu không trùng khớp",
-    "LBL_OK": "Ok"
+    "LBL_OK": "Ok",
+    "LBL_SIGNUP_SUCCESS": "Đăng ký thành công!",
+    "LBL_SIGNUP_FAILED": "Đăng ký thất bại. Vui lòng thử lại.",
+    "LBL_SIGNING_UP": "Đang đăng ký"
 }

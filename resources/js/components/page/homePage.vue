@@ -14,7 +14,7 @@
         <div class="mx-auto w-full lg:w-full min-h-fit">
 
             <!-- SLIDER -->
-            <div class="slider-container mx-auto about_us w-full h-[300px] lg:h-[90vh] relative">
+            <div class="slider-container mx-auto about_us w-full h-[300px] lg:h-[50vh] relative">
                 <!-- Slider images -->
                 <div class="slider w-full h-full relative -z-1">
                     <transition name="fade" mode="out-in">

@@ -105,7 +105,7 @@ const close = () => {
     align-items: center;
     flex-shrink: 0;
     border-radius: 50px;
-    background: #4D2F19;
+    background: #c48d60;
     padding: 14px;
     margin: 5px;
 

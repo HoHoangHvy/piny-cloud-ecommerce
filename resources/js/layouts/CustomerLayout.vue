@@ -19,7 +19,7 @@ export default {
 
 <template>
     <div class="customer-layout">
-        <Header/>
+        <Header class="floating-header"/>
         <main>
             <router-view/>
         </main>
@@ -28,55 +28,26 @@ export default {
 </template>
 
 <style scoped>
-.admin-layout {
+.customer-layout {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-.admin-header {
-    background-color: #2c3e50;
-    color: white;
-    padding: 1rem;
+.floating-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure it stays on top of other content */
+    background-color: #2c3e50; /* Match your header background color */
+    color: white; /* Match your header text color */
+    padding: 1rem; /* Match your header padding */
 }
 
-.admin-header h1 {
-    margin: 0;
-}
-
-.admin-header nav {
-    margin-top: 1rem;
-}
-
-.admin-header a {
-    color: white;
-    text-decoration: none;
-    margin-right: 1rem;
-}
-
-.admin-content {
-    display: flex;
+main {
+    margin-top: 60px; /* Adjust this value based on your header height to prevent content from being hidden */
     flex: 1;
-}
-
-.admin-sidebar {
-    width: 200px;
-    background-color: #f4f4f4;
-    padding: 1rem;
-}
-
-.admin-sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.admin-sidebar li {
-    margin-bottom: 0.5rem;
-}
-
-.admin-main {
-    flex: 1;
-    padding: 1rem;
 }
 
 .admin-footer {

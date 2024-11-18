@@ -19,7 +19,6 @@ const currentLanguage = computed(() =>
 
 // Set new language
 const setLanguage = (newLang) =>  {
-    debugger
     locale.value = newLang;
     localStorage.setItem('lang', newLang);
     isOpen.value = false;

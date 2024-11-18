@@ -46,7 +46,7 @@
     "LBL_OR_LOGIN_WITH_PASSWORD": "Or login with password",
     "LBL_OTP_AUTHENTICATION": "OTP Authentication",
     "LBL_A_VERIFICATION_CODE_IS_SENT_TO_YOUR_NUMBER": "A verification code is sent to your phone number",
-    "LBL_YOU_DID_NOT_RECEIVE_THE_CODE_RESEND": "You did not receive the code. Resend?",
+    "LBL_YOU_DID_NOT_RECEIVE_THE_CODE_RESEND": "Didn't receive the code yet?. Resend",
     "LBL_RESEND": "Resend",
     "LBL_DELIVERY":"Delivery",
     "LBL_ADDRESS":"Address",
@@ -87,5 +87,8 @@
     "LBL_FEMALE": "Female",
     "LBL_OTHER": "Other",
     "LBL_SEND_OTP": "Send OTP",
-    "LBL_OK": "Ok"
+    "LBL_OK": "Ok",
+    "LBL_SIGNUP_SUCCESS": "Sign-up successful!",
+    "LBL_SIGNUP_FAILED": "Sign-up failed. Please try again.",
+    "LBL_SIGNING_UP": "Signing up"
 }

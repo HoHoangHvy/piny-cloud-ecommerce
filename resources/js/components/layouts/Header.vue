@@ -74,7 +74,7 @@ const signOut = async () => {
 }
 </style>
 <template>
-    <Disclosure as="nav" class="bg-yellow-900 p-1" v-slot="{ open }">
+    <Disclosure as="nav" class="bg-primary-color p-1 floating-header" v-slot="{ open }">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 items-center justify-between ">
                 <div class="flex items-center">
@@ -132,7 +132,7 @@ const signOut = async () => {
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
                             <router-link v-for="item in navigation" :key="item.name" :to="item.href"
-                                         :class="[item.current ? 'bg-gray-900 text-white bg-yellow-800' : 'text-white hover:bg-yellow-800 hover:text-white', 'rounded-md px-3 py-2 text-lg font-medium']"
+                                         :class="[item.current ? 'text-white btn-primary-color' : 'text-white hover:btn-primary-color hover:text-white', 'rounded-md px-3 py-2 text-lg font-medium header-item']"
                                          :aria-current="item.current ? 'page' : undefined">{{ t(item.name) }}
                             </router-link>
                         </div>
@@ -141,7 +141,7 @@ const signOut = async () => {
                 <div class="hidden md:block" v-if="store.getters.isLoggedIn">
                     <div class="ml-4 flex items-center md:ml-6">
                         <button type="button"
-                                class="relative rounded-full bg-yellow-900 p-1 text-white hover:text-white hover:bg-yellow-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                                class="relative rounded-full bg-primary-color p-1 text-white hover:text-white hover:btn-primary-color focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span class="absolute -inset-1.5"/>
                             <span class="sr-only">View notifications</span>
                             <BellIcon class="h-6 w-6" aria-hidden="true"/>
@@ -192,11 +192,11 @@ const signOut = async () => {
                 <div v-if="!store.getters.isLoggedIn">
                     <LanguageSwitcher position="below"></LanguageSwitcher>
                     <button @click="switchPopup('sign-in')"
-                                 class="text-yellow-900 bg-white hover:bg-yellow-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
+                                 class="text-yellow-900 bg-white sign-in-btn hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
                         {{ t('LBL_SIGNIN') }}
                     </button>
                     <button @click="switchPopup('sign-up')"
-                                 class="text-white bg-yellow-900 hover:bg-yellow-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
+                                 class="text-white bg-primary-color sign-up-btn hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
                         {{ t('LBL_SIGNUP') }}
                     </button>
                 </div>
@@ -250,3 +250,13 @@ const signOut = async () => {
     <SignInOtpPopup :isVisible="currentPopup === 'sign-in'" @closePopup="closePopup" @switchPopup="switchPopup"/>
     <SignUpPopup :isVisible="currentPopup === 'sign-up'" @closePopup="closePopup" @switchPopup="switchPopup"/>
 </template>
+<style>
+.sign-in-btn:hover {
+    background-color: #c48d60;
+    color: #fff;
+}
+.sign-up-btn:hover {
+    background-color: #638a55;
+    color: #fff;
+}
+</style>

@@ -2,9 +2,9 @@
     <div v-if="isVisible" class="overlay fixed inset-0 bg-gray-800 bg-opacity-75 flex lg:items-center justify-end lg:justify-center" @click="close">
         <div class="bg-white p-5 lg:p-8 lg:rounded-lg shadow-lg max-w-md h-[100%] w-[65%] lg:h-[70%] lg:w-full relative" @click.stop>
             <div class="mb-5 mt-2 lg:mt-0 flex flex-row items-center justify-between">
-                <p @click="close" class="block lg:hidden text-[#4D2F19] text-xs font-bold font-['Inter'] leading-[28.80px]">Cancel</p>
+                <p @click="close" class="block lg:hidden text-[#c48d60] text-xs font-bold font-['Inter'] leading-[28.80px]">Cancel</p>
                 <p class="text-black text-xl lg:text-2xl font-bold lg:font-semibold font-['Inter'] leading-[28.80px]">FILTER</p>
-                <p @click="clearAll" class="block lg:hidden text-[#4D2F19] text-xs font-bold font-['Inter'] leading-[28.80px]">Clear all</p>
+                <p @click="clearAll" class="block lg:hidden text-[#c48d60] text-xs font-bold font-['Inter'] leading-[28.80px]">Clear all</p>
             </div>
             <div class="tag border-b border-gray-300 pb-5">
                 <div class="tag_label flex justify-between mt-3 mb-2">
@@ -38,7 +38,7 @@
             </div>
             <div class="filter_btn flex items-center justify-center absolute bottom-0 left-0 right-0 p-10 lg:p-0 bg-white lg:static lg:justify-end mt-5">
                 <button @click="clearAll" class="hidden md:block bg-gray-300 text-gray-700 px-4 py-2 rounded text-black-2 ">Clear all</button>
-                <button @click="close" class="bg-[#4D2F19] text-[#f2f5f8] px-4 py-2 rounded-full inline-flex lg:h-[38px] justify-center items-center lg:flex-shrink-0 lg:p-[14px] lg:m-[5px] h-[28px] w-full lg:w-auto">Apply</button>
+                <button @click="close" class="bg-[#c48d60] text-[#f2f5f8] px-4 py-2 rounded-full inline-flex lg:h-[38px] justify-center items-center lg:flex-shrink-0 lg:p-[14px] lg:m-[5px] h-[28px] w-full lg:w-auto">Apply</button>
             </div>
         </div>
     </div>
@@ -183,7 +183,7 @@ watch(() => props.searchText, (newValue) => {
     flex-shrink: 0;
     border-radius: 50px;
     color: #f2f5f8;
-    background: #4D2F19;
+    background: #c48d60;
     padding: 14px;
     margin: 5px;
 }
