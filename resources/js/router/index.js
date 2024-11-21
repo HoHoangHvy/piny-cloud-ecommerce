@@ -1,15 +1,11 @@
 import {createRouter, createWebHistory} from "vue-router";
-import home from '../components/homePage.vue'
-import about from '../components/aboutPage.vue'
-import notFound from '../components/notFoundPage.vue'
+import home from '../components/page/homePage.vue'
+import about from '../components/page/aboutPage.vue'
 import AdminLayout from "../layouts/AdminLayout.vue";
-import AdminDashboard from "../components/admin/adminDashboard.vue";
 import AdminLogin from "../components/admin/adminLogin.vue";
 import CustomerLayout from "../layouts/CustomerLayout.vue";
 import SigninView from "../../views/admin/Authentication/SigninView.vue";
-import ButtonsView from "../../views/admin/UiElements/ButtonsView.vue";
 import SignupView from "../../views/admin/Authentication/SignupView.vue";
-import AlertsView from "../../views/admin/UiElements/AlertsView.vue";
 import BasicChartView from "../../views/admin/Charts/BasicChartView.vue";
 import SettingsView from "../../views/admin/Pages/SettingsView.vue";
 import TablesView from "../../views/admin/TablesView.vue";
@@ -21,11 +17,8 @@ import ECommerceView from "../../views/admin/Dashboard/ECommerceView.vue";
 import UserManagement from "@/js/components/admin/UserManagement/UserManagement.vue";
 import productDetailPage from "../components/admin/productDetailPage.vue";
 import UserInfoPage from "../components/admin/UserInfoPage.vue";
-import MenuView from "@/js/components/MenuView.vue";
-import SignInOTP from "../components/signInOTP.vue";
-import SignInPassWord from "../components/signInPassWord.vue";
-import SignUp from "../components/signUp.vue";
-import OrderPage from "../components/orderPage.vue";
+import MenuView from "@/js/components/page/MenuView.vue";
+import OrderPage from "../components/page/orderPage.vue";
 
 import store from "@/js/store/index.js";
 
@@ -35,7 +28,6 @@ const routes = [
         component: CustomerLayout,
         meta: {
             permission: 'owner',
-            requiresAuth: true
         },
         children: [
             {
@@ -79,31 +71,7 @@ const routes = [
                 }
             },
             {
-                path: 'sign-in-otp',
-                name: 'Sign in OTP',
-                component: SignInOTP,
-                meta: {
-                    permission: "owner"
-                }
-            },
-            {
-                path: 'sign-in-password',
-                name: 'Sign in password',
-                component: SignInPassWord,
-                meta: {
-                    permission: "owner"
-                }
-            },
-            {
-                path: "sign-up",
-                name: 'Sign Up',
-                component: SignUp,
-                meta: {
-                    permission: "owner"
-                }
-            },
-            {
-                path: "order-page",
+                path: "order",
                 name: 'Order page',
                 component: OrderPage,
                 meta: {
@@ -112,7 +80,6 @@ const routes = [
             },
         ]
     },
-
     {
         path: '/admin',
         component: AdminLayout,
@@ -225,16 +192,15 @@ const router = createRouter({
     routes
 })
 router.beforeEach((to, from, next) => {
-    debugger
     if (to.matched.some(record => record.meta.requiresAuthAdmin)) {
-        if (store.getters.isLoggedIn) {
+        if (store.getters.isLoggedIn && store.getters.userType === 'user') {
             next()
             return
         }
         next('admin/login')
     } else {
         if(to.matched.some(record => record.meta.requiresAuth)) {
-            if (store.getters.isLoggedIn) {
+            if (store.getters.isLoggedIn && store.getters.userType === 'customer') {
                 next()
                 return
             }

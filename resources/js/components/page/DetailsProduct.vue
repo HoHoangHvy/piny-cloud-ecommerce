@@ -34,7 +34,7 @@
             </div>
             <div class="filter_btn flex items-center justify-center lg:justify-end mt-5">
                 <button @click="close" class="bg-gray-300 text-gray-700 px-4 py-2 rounded text-black-2 font-bold">Cancel</button>
-                <button @click="close" class="bg-[#4D2F19] text-[#f2f5f8] px-4 py-2 rounded-full inline-flex lg:h-[38px] justify-center items-center lg:flex-shrink-0 lg:p-[14px] lg:m-[5px] h-[28px] w-auto">Add to cart</button>
+                <button @click="close" class="bg-[#c48d60] text-[#f2f5f8] px-4 py-2 rounded-full inline-flex lg:h-[38px] justify-center items-center lg:flex-shrink-0 lg:p-[14px] lg:m-[5px] h-[28px] w-auto">Add to cart</button>
 
             </div>
         </div>

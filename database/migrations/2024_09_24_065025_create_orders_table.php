@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();;
             $table->timestamps();
             $table->string('order_number');
             $table->string('receiver_name');
@@ -24,8 +24,8 @@ return new class extends Migration
             $table->decimal('order_total', 8, 2)->default(0);
             $table->smallInteger('rate');
             $table->string('customer_feedback');
-            $table->unsignedBigInteger('host_id'); //Id of customer who placed this order
-            $table->unsignedBigInteger('manually_created_by');
+            $table->uuid('host_id'); //Id of customer who placed this order
+            $table->uuid('manually_created_by');
             $table->enum('source', ['Offline', 'Online'])->default('Offline');
             $table->softDeletes();
 

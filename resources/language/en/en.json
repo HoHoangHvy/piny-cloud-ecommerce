@@ -20,10 +20,6 @@
     "LBL_MY_PROFILE": "My Profile",
     "LBL_SETTINGS": "Settings",
     "LBL_SIGNOUT": "Sign Out",
-
-
-
-
     "LBL_LIMIT": "Limited time!",
     "LBL_GET_DISCOUNT": "Get special discount",
     "LBL_GET_CLAIM": "Claim",
@@ -35,7 +31,7 @@
     "LBL_CATEGORY": "Categories",
     "LBL_PREVIOUS": "Previous",
     "LBL_NEXT": "Next",
-
+    "LBL_GET_OTP": "Get OTP",
     "LBL_PINY_CLOUD_BREAD_AND_TEA": "Piny Cloud Bread and Tea",
     "LBL_FULL_NAME": "Full name",
     "LBL_PHONE_NUMBER": "Phone number",
@@ -50,7 +46,7 @@
     "LBL_OR_LOGIN_WITH_PASSWORD": "Or login with password",
     "LBL_OTP_AUTHENTICATION": "OTP Authentication",
     "LBL_A_VERIFICATION_CODE_IS_SENT_TO_YOUR_NUMBER": "A verification code is sent to your phone number",
-    "LBL_YOU_DID_NOT_RECEIVE_THE_CODE_RESEND": "You did not receive the code. Resend?",
+    "LBL_YOU_DID_NOT_RECEIVE_THE_CODE_RESEND": "Didn't receive the code yet?. Resend",
     "LBL_RESEND": "Resend",
     "LBL_DELIVERY":"Delivery",
     "LBL_ADDRESS":"Address",
@@ -68,5 +64,31 @@
     "LBL_RECIPIENT_NAME":"Recipient name",
     "LBL_CASH": "Cash",
     "LBL_CLOSE":"Close",
-    "LBL_USE_NOW": "Use now"
+    "LBL_USE_NOW": "Use now",
+    "LBL_BACK_TO_SIGN_IN_WITH_OTP": "Back to sign in with otp",
+    "LBL_SEND_CODE": "Send code",
+    "LBL_BACK_TO_SIGN_IN": "Back to sign in",
+    "LBL_ENTER_CODE": "Enter code",
+    "LBL_VERIFY_CODE": "Verify code",
+    "LBL_NEW_PASSWORD": "New password",
+    "LBL_CONFIRM_RESET": "Confirm reset",
+    "LBL_PASSWORDS_DO_NOT_MATCH": "Passwords do not match",
+    "LBL_ENTER_PASSWORD": "Enter password",
+    "LBL_ENTER_PHONE_NUMBER": "Enter phone number",
+    "LBL_TODAY": "Today",
+    "LBL_TOMORROW": "Tomorrow",
+    "LBL_DAY_AFTER_TOMORROW": "Day after tomorrow",
+    "LBL_UPDATE_SUCCESSFUL": "Update successful",
+    "LBL_UNMATCH_PASSWORD_ALERT": "Unmatch password. Please try again",
+    "LBL_DATE_OF_BIRTH": "Date of birth",
+    "LBL_GENDER": "Gender",
+    "LBL_SELECT_GENDER": "Select gender",
+    "LBL_MALE": "Male",
+    "LBL_FEMALE": "Female",
+    "LBL_OTHER": "Other",
+    "LBL_SEND_OTP": "Send OTP",
+    "LBL_OK": "Ok",
+    "LBL_SIGNUP_SUCCESS": "Sign-up successful!",
+    "LBL_SIGNUP_FAILED": "Sign-up failed. Please try again.",
+    "LBL_SIGNING_UP": "Signing up"
 }

@@ -19,16 +19,18 @@ use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->group(
-    function(){
-        Route::post('/me', []);
-        Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-            ->name('logout');
-    }
-);
+Route::middleware(['auth:sanctum'])->group(function(){
+    Route::get('/me', [AuthenticationController::class, 'me']);
+    Route::post('/logout', [AuthenticationController::class, 'logout'])
+        ->name('logout');
+});
+
 
 Route::post('/login', [AuthenticationController::class, 'login']);
+Route::post('/auth-otp', [AuthenticationController::class, 'loginWithOtp']);
+Route::post('/register', [AuthenticationController::class, 'register']);
+Route::post('/gen-otp', [AuthenticationController::class, 'generate']);

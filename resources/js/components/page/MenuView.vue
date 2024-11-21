@@ -4,10 +4,10 @@ import ButtonDefault from "@/js/components/admin/Buttons/ButtonDefault.vue";
 
 const {t} = useI18n();
 import {reactive, ref, computed} from 'vue';
-import FilterPopup from './FilterPopup.vue';
-import DetailsProduct from "@/js/components/DetailsProduct.vue";
+import FilterPopup from '../popup/FilterPopup.vue';
+import DetailsProduct from "@/js/components/page/DetailsProduct.vue";
 import CartIcon from "@/js/components/admin/CartIcon.vue";
-import CartPopup from "@/js/components/CartPopup.vue";
+import CartPopup from "@/js/components/popup/CartPopup.vue";
 
 
 
@@ -178,47 +178,40 @@ const changeSearchText = () => {
     </div>
 
 
-    <div class="search flex flex-row justify-center mt-4 mb-0 lg:mt-9 lg:mb-5 lg:ml-[120px]">
+    <div class="search flex flex-row items-center justify-center mt-4 mb-0 lg:mt-9 lg:mb-5 lg:ml-[120px]">
         <div class="search_btn flex flex-row lg:w[1000px]">
             <input type="text" v-model="searchTextInput" @keydown.enter="changeSearchText" placeholder="Search" class="search_input ml-4.5 w-[200px] lg:w-[440px]">
             <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Search Icon" class="search-icon w-3 h-3 lg:w-5 lg:h-5 mr-3">
         </div>
-        <button @click="openPopup('filter')" class="search_btn flex flex-row gap-1 cursor-pointer hoverBtn">
-            <svg class="ml-2 mr-2 lg:mr-0 " xmlns="http://www.w3.org/2000/svg" width="19" height="13" viewBox="0 0 19 13" fill="none">
-                <path d="M8.5 12.8271C8.21667 12.8271 7.97933 12.7311 7.788 12.5391C7.596 12.3478 7.5 12.1105 7.5 11.8271C7.5 11.5438 7.596 11.3065 7.788 11.1151C7.97933 10.9231 8.21667 10.8271 8.5 10.8271H10.5C10.7833 10.8271 11.021 10.9231 11.213 11.1151C11.4043 11.3065 11.5 11.5438 11.5 11.8271C11.5 12.1105 11.4043 12.3478 11.213 12.5391C11.021 12.7311 10.7833 12.8271 10.5 12.8271H8.5ZM1.5 2.82715C1.21667 2.82715 0.979333 2.73148 0.788 2.54015C0.596 2.34815 0.5 2.11048 0.5 1.82715C0.5 1.54382 0.596 1.30615 0.788 1.11415C0.979333 0.922815 1.21667 0.827148 1.5 0.827148H9.5H17.5C17.7833 0.827148 18.0207 0.922815 18.212 1.11415C18.404 1.30615 18.5 1.54382 18.5 1.82715C18.5 2.11048 18.404 2.34815 18.212 2.54015C18.0207 2.73148 17.7833 2.82715 17.5 2.82715H1.5ZM4.5 7.82715C4.21667 7.82715 3.979 7.73115 3.787 7.53915C3.59567 7.34782 3.5 7.11048 3.5 6.82715C3.5 6.54382 3.59567 6.30615 3.787 6.11415C3.979 5.92281 4.21667 5.82715 4.5 5.82715H14.5C14.7833 5.82715 15.0207 5.92281 15.212 6.11415C15.404 6.30615 15.5 6.54382 15.5 6.82715C15.5 7.11048 15.404 7.34782 15.212 7.53915C15.0207 7.73115 14.7833 7.82715 14.5 7.82715H4.5Z" fill="#D9D9D9"/>
+        <button @click="openPopup('filter')" class="border-light-gray text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
             </svg>
-            <label class="mr-2 hidden md:block cursor-pointer">{{t('LBL_FILTER')}}</label>
+            <span>{{t('LBL_FILTER')}}</span>
         </button>
         <!-- Sử dụng component pop-up -->
         <FilterPopup :isVisible="currentPopup === 'filter'" :searchText="searchText"  @closePopup="closePopup" />
-        <div class="sort">
-            <button @click="isOpen = !isOpen" class="search_btn flex flex-row gap-1 cursor-pointer hoverBtn relative">
-                <svg class="ml-2 mr-2 lg:mr-0" width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <rect x="0.5" y="0.480469" width="21" height="16" fill="url(#pattern0_233_37694)" fill-opacity="0.6"/>
-                    <defs>
-                        <pattern id="pattern0_233_37694" patternContentUnits="objectBoundingBox" width="1" height="1">
-                            <use xlink:href="#image0_233_37694" transform="matrix(0.00793651 0 0 0.0104167 0.119048 0)"/>
-                        </pattern>
-                        <image id="image0_233_37694" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAADq0lEQVR4nO2bTYhVZRjHH7VINEKC8CMRpYUgRERS4saFCxGiTS1tp+iiIHe5utauoHa5zEVQwxUcvHPP//+emcEDLVrEQMKAC0FRCCJIsaywL0+cmEWMc8frnXvu8zznPD94tsN9f7/3fNx7zogEQRAEQRAEQRAEQRAEwQBIljEc6KD2jRPyueoGjADUPUIjACNAq68REtcARgDtXcg4AvRFsKmnoBVuS6e1F029uThx4SsE2A7grgEZ5YTnFwA7xQIA3jUgpJzkpJTeESt0Op31AL7RlsLJzbfdbneDWCLLshcB/GlATlnnAPgLwMtiEQAftyDAR2KVXq+3ieR1bUmsb27meb5ZLEPyiAFRZR2TUnpdPEDyK21ZHPMA+FK8MD8/v5XknQbJvzs7O7tDPJFl2QltcRzfHBdvlGW5DsDlBuz+r6u1iEdI7iV5X1siR58/AOwTzwD40IDIcsT5QLwD4CmSVw3ILB9nAFwrimKjNAEAhwA8cCT/AYDD0iQAnHcU4HNpGimlZwH86ED+TwCekyZC8m0HAY5JkwEwa1j+Zbf3/MNCcjeAX7Vl8+H5HcAL0gZInjG4+9+XtlAUxRMkvzMkf3FhYeFJaRMppVdJ/qMtv/oMKaWD0kZInjMQ4DNpKwCeIfm9ovwfpqent0ibAfCWVoCU0pva6zcBgEsKAaC9bjPMzc3tAnBvgvJ/y/N8j/a6TQHg9KQCAHhPe73m6Ha7GwAsTED+lep7iPZ6TZJSeql69a/GAH/nef6K9jpNQ/LTGnf/J9rrM0+v19sE4EYN8m8VRfG09vpckGXZ0RqOgDe01+UKkhfGKL+rvR539Pv9bWN6vfHnmZmZ57XX4xKSp8YQ4KT2OtzS6XTWrzVA9Te01+EarjGA9ud3Dx0HWPp55U71xC3Lsv3iEToNQPLs8v8xAHBAvEGHAZbLdx2BzgIMku82Ah0FGPbpXhWh3++/Jh6gowBLr9tMDRvBxYWZjgKMEGFRrEPjAarTzvIHPMNGAHBbrEPDAf53wZ0aJUL1PUGsQ6MBVrjbubA8QvWYleQXA+R3xAM0GGCVW82hIriRbzHAo+7zHxXBlXxrAYaQX652Tagu2OINGgnwGPIHHgkuoYEAI8hvTgQqB1iD/P/G5WnHSoAxyPd1wbUUIOQrBgj5igFCvmKAkK8YIOQrBgj5igFCviIhX5GQH/LbCePnBfUAZat/29GGId9fAMTOHx8hXxnGzvcRAHHaqYeQrwyN7fx/AW8ESSMauvT3AAAAAElFTkSuQmCC"/>
-                    </defs>
-                </svg>
-                <label class="mr-2 hidden md:block cursor-pointer">{{t('LBL_SORT')}}</label>
-                <div v-if="isOpen" class="up absolute right-0 top-[120%] z-50 bg-white shadow-lg p-4 rounded-md w-[150px] flex flex-col space-y-2">
-                    <div class="active flex flex-row items-center justify-between">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-                        </svg>
-                        <div class="text-black-2 text-right text-sm font-semibold font-['Inter']">Giá: Giảm dần</div>
-                    </div>
-                    <div class="inactive flex flex-row items-center justify-between">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d0d0d0" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-                        </svg>
-                        <div class="text-[#d0d0d0] text-right text-sm font-semibold font-['Inter']">Giá: Tang dần</div>
-                    </div>
+        <button @click="isOpen = !isOpen" class="border-light-gray relative text-gray-900 border border-gray-50 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 h-full dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 inline-flex items-center ">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="size-6" stroke="gray">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+            </svg>
+            <span>{{t('LBL_SORT')}}</span>
+            <div v-if="isOpen" class="up absolute right-0 top-[120%] z-50 bg-white shadow-lg p-4 rounded-md w-[150px] flex flex-col space-y-2">
+                <div class="active flex flex-row items-center justify-between">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                    </svg>
+                    <div class="text-black-2 text-right text-sm font-semibold font-['Inter']">Giá: Giảm dần</div>
                 </div>
-            </button>
-        </div>
+                <div class="inactive flex flex-row items-center justify-between">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#d0d0d0" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+                    </svg>
+                    <div class="text-[#d0d0d0] text-right text-sm font-semibold font-['Inter']">Giá: Tang dần</div>
+                </div>
+            </div>
+        </button>
+
     </div>
 
     <div class="container max-w-[1200px] mx-auto px-4 lg:px-4 grid grid-cols-12 gap-4 mt-1 lg:mt-5">
@@ -247,7 +240,7 @@ const changeSearchText = () => {
 
         <div class="col-span-12 lg:col-span-9 grid grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
             <div v-for="product in filteredProducts" :key="product.id" class="p-4 cursor-pointer">
-                <img :src="product.img" alt="Black Coffee" class="w-full rounded shadow-lg rounded-lg w-[147px] h-[148px] lg:w-full lg:h-[256px]">
+                <img :src="product.img" alt="Black Coffee" class="w-full rounded shadow-lg rounded-lg aspect-square">
                 <div class="product_content flex flex-row justify-between">
                     <div class="product_label">
                         <h3 class="mt-4 font-bold text-black">{{product.name}}</h3>
@@ -255,15 +248,10 @@ const changeSearchText = () => {
                     </div>
                     <div class="product_btn mb-3 lg:mb-0">
                         <button @click="openPopup('details',product)" class="add_btn flex mt-7 lg:mt-5 justify-center items-center mr-2 w-[24px] h-[24px] lg:w-[30px] lg:h-[30px]">
-                            <svg class="w-[20px] h-[20px] lg:w-[25px] lg:h-[25px]" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <rect x="0.487305" y="0.785645" width="21.2651" height="19.5254" fill="url(#pattern0_196_33256)"/>
-                                <defs>
-                                    <pattern id="pattern0_196_33256" patternContentUnits="objectBoundingBox" width="1" height="1">
-                                        <use xlink:href="#image0_196_33256" transform="matrix(0.00956449 0 0 0.0104167 0.0409045 0)"/>
-                                    </pattern>
-                                    <image id="image0_196_33256" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAy0lEQVR4nO3TwW0DQAzEwOu/aaYEP+V4ZyoQROx7AAAAAPCl+uD6vp+XAAJMywIEmJYFCDAtCxBgWhYgwLQsQIBpWYAA07IAAaZlAQJMywIEmJYFCDAtCxBgWhYgwLQsQIBpWYAA01pfwKcHrHsC3BLgmADHBDgmwDEBjglw7P261h9wLQEEmJYFCDAtCxBgWhYgwLQsQIBpWYAA07IAAaZlAQJMywIEmJYFCDAtCxBgWhYgwLQsQIBpWYAA07IAAaZlAQAAAAC8/+kPBIPv8eqkg3IAAAAASUVORK5CYII="/>
-                                </defs>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
+
                         </button>
                     </div>
                 </div>
@@ -300,9 +288,10 @@ const changeSearchText = () => {
 body {
     font-family: 'Roboto', sans-serif;
 }
+    .border-light-gray {
+        border: 1px solid rgba(117, 117, 117, 0.28);
+    }
     .marketing{
-        //width: 1241px;
-        //height: 432px;
         flex-shrink: 0;
         border-radius: 28px;
         background: linear-gradient(180deg, rgba(153, 125, 108, 0.74) 0%, rgba(49, 31, 21, 0.74) 100%);
@@ -310,13 +299,9 @@ body {
     }
     .market_content_btn {
         display: flex;
-        //width: 233px;
-        //height: 60px;
         min-width: 64px;
-
         justify-content: center;
         align-items: center;
-
         flex-shrink: 0;
         border-radius: 40px;
         background: #FFF8E8;
@@ -326,11 +311,9 @@ body {
     .btn_text {
         flex: 1 0 0;
         color: black;
-
         text-align: center;
         font-feature-settings: 'liga' off, 'clig' off;
         font-family: "Kaisei Decol";
-        //font-size: 24px;
         font-style: normal;
         font-weight: 500;
         line-height: 24px; /* 100% */
@@ -341,37 +324,27 @@ body {
         color: #FFF;
         text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         font-family: "Kaisei Decol";
-        //font-size: 30px;
         font-style: normal;
         font-weight: 700;
         line-height: normal;
     }
     .percent_label {
-        //width: 200.78px;
         color: #FFF;
-
         text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         font-family: "Kaisei Decol";
-        //font-size: 96px;
         font-style: normal;
         font-weight: 700;
         line-height: normal;
     }
     .percent_claim {
         display: flex;
-        //width: 124px;
-        //height: 56px;
         min-width: 64px;
-
         justify-content: center;
         align-items: center;
-
         flex-shrink: 0;
         border-radius: 40px;
         background: #FFF8E8;
-
         box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-
     }
     .search_btn{
         display: inline-flex;
@@ -398,7 +371,7 @@ body {
     .add_btn {
         flex-shrink: 0;
         fill: rgba(116, 66, 39, 0.91);
-        background: #4D2F19;
+        background: #c48d60;
         border-radius: 30px;
     }
     .active_page {
@@ -406,7 +379,7 @@ body {
         min-height: 30px;
         border: 2px solid;
         border-radius: 10px;
-        background-color: #4D2F19;
+        background-color: #c48d60;
         color: #f2f5f8;
     }
     .disable_page {

@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('teams_vouchers', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();;
             $table->timestamps();
-            $table->bigInteger('team_id')->unsigned();
-            $table->bigInteger('voucher_id')->unsigned();
+            $table->uuid('team_id');
+            $table->uuid('voucher_id');
 
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
             $table->foreign('voucher_id')->references('id')->on('vouchers')->onDelete('cascade');

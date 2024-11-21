@@ -15,12 +15,14 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         User::create([
+            'id' => Str::uuid(),
             'name' => 'Admin',
             'email' => 'admin@admin.com',
             'password' => bcrypt('123123'),
             'email_verified_at' => now(),
             'is_admin' => true,
             'api_token' => Str::random(80),
+            'user_type' => 'user',
         ])->assignRole('admin');
     }
 }

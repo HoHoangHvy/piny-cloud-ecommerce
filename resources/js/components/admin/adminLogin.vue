@@ -16,12 +16,10 @@ export default {
     methods: {
         ...mapActions(["login"]),
         async submit() {
-            debugger
             const User = new FormData();
             User.append("email", this.form.username);
             User.append("password", this.form.password);
             try {
-                debugger
                 await this.login(User);
             } catch (error) {
                 this.showError = true
