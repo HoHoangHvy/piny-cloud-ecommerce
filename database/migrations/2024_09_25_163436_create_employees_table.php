@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('level', ['Manager', 'Receptionist', 'Waiter']);
             $table->string('phone_number')->unique();
             $table->string('email')->unique();
+            $table->string('image')->nullable(); // Add this field for image
 
             //Foreign Keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

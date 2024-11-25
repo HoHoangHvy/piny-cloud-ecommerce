@@ -2,65 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
-use App\Models\Role;
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $roles = Role::with('permissions')->get(); // Include permissions for each role
+        return response()->json($roles);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request)
     {
-        //
+        $request->validate(['name' => 'required|unique:roles']);
+        $role = Role::create(['name' => $request->name]);
+
+        return response()->json([
+            'message' => 'Role created successfully.',
+            'role' => $role,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreRoleRequest $request)
+    public function assignPermission(Request $request, Role $role)
     {
-        //
+        $request->validate(['permission' => 'required|exists:permissions,name']);
+        $permission = Permission::where('name', $request->permission)->first();
+        $role->givePermissionTo($permission);
+
+        return response()->json([
+            'message' => 'Permission assigned to role successfully.',
+            'role' => $role->load('permissions'),
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Role $role)
+    public function revokePermission(Request $request, Role $role)
     {
-        //
-    }
+        $request->validate(['permission' => 'required|exists:permissions,name']);
+        $permission = Permission::where('name', $request->permission)->first();
+        $role->revokePermissionTo($permission);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Role $role)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateRoleRequest $request, Role $role)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Role $role)
-    {
-        //
+        return response()->json([
+            'message' => 'Permission revoked from role successfully.',
+            'role' => $role->load('permissions'),
+        ]);
     }
 }

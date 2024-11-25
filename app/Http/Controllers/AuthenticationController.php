@@ -22,6 +22,9 @@ class AuthenticationController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
+    use Spatie\Permission\Models\Permission;
+    use Spatie\Permission\Models\Role;
+
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -54,6 +57,7 @@ class AuthenticationController extends BaseController
 
             $user = User::create($input);
 
+            // Assign role and permissions to the user
             if ($user->user_type == 'customer') {
                 $customer = new Customer();
                 $customer->full_name = $user->name;
@@ -65,19 +69,23 @@ class AuthenticationController extends BaseController
                 $customer->save();
 
                 $user->assignRole('customer');
-            } else {
-                $user->assignRole('admin');
             }
+            // Fetch all permissions assigned to the user through their role(s)
+            $permissions = $user->getAllPermissions();
 
-            $success['token'] = $user->createToken('MyApp', ['check-status', 'place-orders'], now()->addMinutes(60))->plainTextToken;
+            // You can include permissions into your token if needed
+            $permissionsArray = $permissions->pluck('name')->toArray();
+
+            // Create the token and attach all the permissions
+            $success['token'] = $user->createToken('MyApp', $permissionsArray, now()->addMinutes(60))->plainTextToken;
             $success['name'] = $user->name;
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), ['error' => $e->getMessage()]);
         }
 
-        return $this->sendResponse($success, 'User register successfully.');
+        return $this->sendResponse($success, 'User registered successfully.');
     }
-    // Generate OTP
+     // Generate OTP
     public function generate(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [

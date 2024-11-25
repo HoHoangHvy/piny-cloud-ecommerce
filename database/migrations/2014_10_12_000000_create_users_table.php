@@ -20,8 +20,13 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('is_admin')->default(false);
             $table->enum('user_type', ['customer', 'user'])->default('user');
+            $table->uuid('team_id');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
+            //Foreign keys
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
     }
 
