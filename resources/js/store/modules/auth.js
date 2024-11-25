@@ -120,8 +120,8 @@ const actions = {
         })
     },
     async login({commit}, user) {
-        axios.get('sanctum/csrf-cookie').then(response => {
-            axios.post('login', user)
+        axios.get('/sanctum/csrf-cookie').then(response => {
+            axios.post('/api/login', user)
                 .then(
                     response => {
                         const res = response.data;

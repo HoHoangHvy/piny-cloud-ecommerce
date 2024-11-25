@@ -12,7 +12,7 @@ const target = ref(null)
 const sidebarStore = useSidebarStore()
 
 onClickOutside(target, () => {
-    sidebarStore.isSidebarOpen = false
+    // sidebarStore.isSidebarOpen = false
 })
 
 const menuGroups = ref([
@@ -197,15 +197,16 @@ const menuGroups = ref([
 
 <template>
     <aside
-        class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0"
+        class="absolute left-0 top-0 z-99 flex h-screen w-72.5 flex-col bg-black duration-300 ease-linear dark:bg-boxdark overflow-visible"
         :class="{
       'translate-x-0': sidebarStore.isSidebarOpen,
-      '-translate-x-full': !sidebarStore.isSidebarOpen
+      '-translate-x-full': !sidebarStore.isSidebarOpen,
+      'overflow-y-hidden': !sidebarStore.isSidebarOpen
     }"
         ref="target"
     >
         <!-- SIDEBAR HEADER -->
-        <div class="flex items-center justify-center flex-col gap-2 px-6 py-5.5 lg:py-6.5"
+        <div class="flex items-center justify-center flex-col gap-2 px-6 py-5.5 lg:py-6.5 overflow-visible"
              style="padding-bottom: 0px !important;">
             <router-link to="/admin">
                 <svg width="181" height="45" viewBox="0 0 181 45" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -214,7 +215,7 @@ const menuGroups = ref([
                         fill="white"/>
                 </svg>
             </router-link>
-            <button class="block lg:hidden" @click="sidebarStore.isSidebarOpen = false">
+            <button class="block absolute hide-sidebar-btn" @click="sidebarStore.isSidebarOpen = false">
                 <svg
                     class="fill-current"
                     width="20"
@@ -259,3 +260,13 @@ const menuGroups = ref([
         </div>
     </aside>
 </template>
+<style>
+.hide-sidebar-btn {
+    border-radius: 50%;
+    background: #2c3e50;
+    padding: 14px;
+    top: 8.2%;
+    right: -20px;
+    transform: translateY(-50%)
+}
+</style>

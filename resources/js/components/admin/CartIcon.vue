@@ -1,31 +1,59 @@
 <template>
-    <div class="icon_cart cursor-pointer">
-        <svg class="w-[70px] h-[70px] lg:w-[80px] lg:h-[80px]" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g filter="url(#filter0_d_194_33054)">
-                <path d="M104 50C104 77.6142 81.6142 100 54 100C26.3858 100 4 77.6142 4 50C4 22.3858 26.3858 0 54 0C81.6142 0 104 22.3858 104 50Z" fill="#513219"/>
-                <path d="M104 50C104 77.6142 81.6142 100 54 100C26.3858 100 4 77.6142 4 50C4 22.3858 26.3858 0 54 0C81.6142 0 104 22.3858 104 50Z" fill="#513219"/>
-                <path d="M28 34H36.2909L41.8458 57.2052C42.0354 58.003 42.5545 58.7197 43.3124 59.2298C44.0702 59.7399 45.0185 60.0109 45.9913 59.9953H66.1382C67.1109 60.0109 68.0592 59.7399 68.8171 59.2298C69.575 58.7197 70.0941 58.003 70.2836 57.2052L73.6 42.6651H38.3636M46.6545 68.6604C46.6545 69.6175 45.7266 70.3934 44.5818 70.3934C43.4371 70.3934 42.5091 69.6175 42.5091 68.6604C42.5091 67.7033 43.4371 66.9274 44.5818 66.9274C45.7266 66.9274 46.6545 67.7033 46.6545 68.6604ZM69.4545 68.6604C69.4545 69.6175 68.5266 70.3934 67.3818 70.3934C66.2371 70.3934 65.3091 69.6175 65.3091 68.6604C65.3091 67.7033 66.2371 66.9274 67.3818 66.9274C68.5266 66.9274 69.4545 67.7033 69.4545 68.6604Z" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-            </g>
-            <defs>
-                <filter id="filter0_d_194_33054" x="0" y="0" width="108" height="108" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feOffset dy="4"/>
-                    <feGaussianBlur stdDeviation="2"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_194_33054"/>
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_194_33054" result="shape"/>
-                </filter>
-            </defs>
-        </svg>
+    <div class="relative">
+        <button
+            @click="toggleMenu"
+            class="icon_cart w-16 h-16 bg-brown-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-brown-700 transition">
+            <span class="text-3xl">+</span>
+        </button>
 
+    <!-- Small Buttons -->
+        <div
+            v-if="isMenuOpen"
+            class="fixed bottom-3 right-2 flex flex-col gap-4 transform -translate-x-1/2 -translate-y-1/2">
+            <button
+                @click="openCartPopup"
+                class="w-14 h-14 bg-white text-brown-600 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+            </button>
+            <button
+                class="w-14 h-14 bg-white text-brown-600 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </button>
+            <button
+                class="w-14 h-14 bg-white text-brown-600 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                </svg>
+            </button>
+        </div>
     </div>
-
+    <CartPopup :isVisible="isCartVisible" @closePopup="closeCartPopup" />
 </template>
+
 <script setup>
+import { ref } from "vue";
+import CartPopup from "@/js/components/popup/CartPopup.vue";
 
+// State variables
+const isMenuOpen = ref(false); // Controls small button visibility
+const isCartVisible = ref(false); // Controls cart popup visibility
 
+// Methods
+const toggleMenu = () => {
+    isMenuOpen.value = !isMenuOpen.value;
+};
+
+const openCartPopup = () => {
+    isCartVisible.value = true;
+};
+
+const closeCartPopup = () => {
+    isCartVisible.value = false;
+};
 </script>
 <style scoped>
 .icon_cart {
@@ -33,6 +61,12 @@
     bottom: 30px; /* Khoảng cách từ cạnh dưới */
     right: 30px; /* Khoảng cách từ cạnh phải */
     z-index: 2; /* Đảm bảo nằm trên các thành phần khác */
+}
+.bg-brown-600 { background-color: #6B4226; }
+.bg-brown-700 { background-color: #5A3621; }
+.text-brown-600 { color: #6B4226; }
+.transition {
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 </style>

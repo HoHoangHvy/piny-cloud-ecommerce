@@ -19,7 +19,6 @@ const currentPopup = ref(null);
 
 const navigation = ref([
     {name: 'LBL_HOME', href: '/', current: route.path === '/'},
-    {name: 'LBL_ABOUT_US', href: '/about-us', current: route.path === '/about-us'},
     {name: 'LBL_MENU', href: '/menu', current: route.path === '/menu'},
     {name: 'LBL_ORDERS', href: '/order', current: route.path === '/order'},
 ]);
@@ -252,7 +251,7 @@ const signOut = async () => {
 </template>
 <style>
 .sign-in-btn:hover {
-    background-color: #c48d60;
+    background-color: #638a55;
     color: #fff;
 }
 .sign-up-btn:hover {

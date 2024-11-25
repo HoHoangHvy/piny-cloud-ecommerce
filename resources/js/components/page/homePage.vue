@@ -65,7 +65,7 @@
                                 <img class="w-[353px] lg:w-[400px] lg:h-[344px] h-[264px] object-cover overflow-hidden rounded-[28px] shadow" src="/resources/assets/images/landingpage/aboutus-img.png" alt="">
                             </div>
                             <div className=" lg:w-[502px] w-[324px] h-[240px] overflow-hidden lg:m-auto mx-[12px] text-black text-sm lg:text-lg font-normal capitalize leading-10" >
-                                <div className="my-[12px] w-[312px] lg:w-full h-[210px] lg:h-full overflow-hidden text-center lg:text-white text-black text-sm lg:text-lg font-normal capitalize leading-[30.59px]" style="font-family:'Kaisei Decol'">"Eliza is an online coffee store that offers the widest selection of specialty coffees and teas from around the world. From medium-dark roast single origin to flavored espresso beans, they offer a variety of ethically sourced products to tantalize any customer’s palate. For those looking for unique brewing equipment, Eliza also carries a full range of quality espresso makers, grinders, brewers, French presses and more. On top of all that, their baristas are highly trained professionals who know exactly how to make the perfect cup for each customer. Whether it's for home or business use! </div>
+                                <div className="my-[12px] w-[312px] lg:w-full h-[210px] lg:h-full overflow-hidden text-center lg:text-white text-black text-sm lg:text-lg font-normal capitalize leading-[30.59px]" style="font-family:'Kaisei Decol'">{{t('LBL_ABOUT_US_TEXT')}}</div>
                             </div>
                         </div>
                     </div>
@@ -350,90 +350,91 @@
 
 
 </template>
-
 <script>
-import Swiper from 'swiper/bundle';
-import 'swiper/css/bundle';
+import { ref, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
+import Swiper from "swiper/bundle";
+import "swiper/css/bundle";
 
-import slider1 from '@/assets/images/landingpage/slider/banner.svg'
-import slider2 from "@/assets/images/landingpage/slider/banner2.svg"
-import slider3 from "@/assets/images/landingpage/slider/banner3.svg"
+import slider1 from "@/assets/images/landingpage/slider/banner.svg";
+import slider2 from "@/assets/images/landingpage/slider/banner2.svg";
+import slider3 from "@/assets/images/landingpage/slider/banner3.svg";
+
 export default {
-    data() {
-        return {
-            currentIndex: 0, // Active slide index
-            images: [
-                slider1,
-                slider2,
-                slider3,
-            ],
-        };
-    },
-    methods: {
+    setup() {
+        const { t } = useI18n(); // If translation is needed
+        const currentIndex = ref(0); // Active slide index
+        const images = ref([slider1, slider2, slider3]);
+
         // Move to the previous slide
-        prevSlide() {
-            if (this.currentIndex === 0) {
-                this.currentIndex = this.images.length - 1;
+        const prevSlide = () => {
+            if (currentIndex.value === 0) {
+                currentIndex.value = images.value.length - 1;
             } else {
-                this.currentIndex--;
+                currentIndex.value--;
             }
-        },
+        };
+
         // Move to the next slide
-        nextSlide() {
-            if (this.currentIndex === this.images.length - 1) {
-                this.currentIndex = 0;
+        const nextSlide = () => {
+            if (currentIndex.value === images.value.length - 1) {
+                currentIndex.value = 0;
             } else {
-                this.currentIndex++;
+                currentIndex.value++;
             }
-        },
+        };
+
         // Go to a specific slide
-        goToSlide(index) {
-            this.currentIndex = index;
-        },
-    },
-    mounted() {
-        // Optional: auto slide every 6 seconds
-        setInterval(this.nextSlide, 6000);
+        const goToSlide = (index) => {
+            currentIndex.value = index;
+        };
 
-        const swiper = new Swiper('.slider-wrapper', {
-            loop: true,
-            grabCursor: true,
-            spaceBetween: 30,
+        onMounted(() => {
+            // Optional: auto slide every 6 seconds
+            setInterval(nextSlide, 6000);
 
-            // If we need pagination
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-                dynamicBullets: true,
-            },
+            new Swiper(".slider-wrapper", {
+                loop: true,
+                grabCursor: true,
+                spaceBetween: 30,
 
-            // Navigation arrows
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-
-            breakpoints: {
-                0: {
-                    slidesPerView: 1,
+                // If we need pagination
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                    dynamicBullets: true,
                 },
-                620: {
-                    slidesPerView: 2,
+
+                // Navigation arrows
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
                 },
-                1024: {
-                    slidesPerView: 3,
+
+                breakpoints: {
+                    0: {
+                        slidesPerView: 1,
+                    },
+                    620: {
+                        slidesPerView: 2,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                    },
                 },
-            },
+            });
         });
 
+        return {
+            t, // Exporting for translations if needed
+            currentIndex,
+            images,
+            prevSlide,
+            nextSlide,
+            goToSlide,
+        };
     },
-
-
 };
-
-
-
-
 </script>
 
 <style scoped>

@@ -1,6 +1,6 @@
 {
     "LBL_DASHBOARD": "Bảng tin",
-    "LBL_MENU": "Tuy chon",
+    "LBL_MENU": "Menu",
     "LBL_CALENDAR": "Lịch biểu",
     "LBL_PROFILE": "Thông tin cá nhân",
     "LBL_MODULES": "Mô-đun",
@@ -89,6 +89,7 @@
     "LBL_UNMATCH_PASSWORD_ALERT": "Mật khẩu không trùng khớp",
     "LBL_OK": "Ok",
     "LBL_SIGNUP_SUCCESS": "Đăng ký thành công!",
+    "LBL_ABOUT_US_TEXT": "Tại Piny Cloud, chúng tôi tự hào pha chế từng tách cà phê với tất cả tình yêu thương, sử dụng những hạt cà phê được tuyển chọn kỹ lưỡng từ những nhà trồng tốt nhất. Dù bạn đang thèm một ly espresso đậm đà, một ly latte béo ngậy hay cà phê đá mát lạnh, các barista của chúng tôi luôn sẵn sàng tạo nên thức uống yêu thích của bạn.\n\nHãy kết hợp cà phê của bạn với những chiếc bánh mì và bánh ngọt thơm ngon, được nướng tươi mới mỗi ngày. Từ croissant bơ mềm mịn đến những ổ bánh mì đậm đà, mỗi miếng bánh đều được làm từ những nguyên liệu cao cấp để mang đến hương vị và chất lượng tuyệt vời nhất.",
     "LBL_SIGNUP_FAILED": "Đăng ký thất bại. Vui lòng thử lại.",
     "LBL_SIGNING_UP": "Đang đăng ký"
 }
