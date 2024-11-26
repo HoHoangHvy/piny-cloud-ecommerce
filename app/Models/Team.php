@@ -9,8 +9,22 @@ use Illuminate\Database\Eloquent\Model;
 class Team extends Model
 {
     use HasFactory, HasUuid;
+    protected $fillable = [
+        'name',
+        'address',
+        'city',
+        'state',
+        'ward',
+        'description'
+    ];
     public function vouchers()
     {
         return $this->belongsToMany(Voucher::class);
     }
+    // In Team.php (Team model)
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
+
 }

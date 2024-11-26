@@ -132,23 +132,23 @@ const changeSearchText = () => {
     <div class="marketing flex flex-row justify-between items-center w-[90%] h-[200px] lg:w-[1100px] lg:h-[350px] m-auto mt-4 lg:mt-10 ">
         <div class="market_content flex flex-col justify-between h-full pt-5 pl-5 pb-5 lg:pt-10 lg:pl-20 lg:pb-10">
             <button class="market_content_btn w-[130px] h-auto lg:w-[200px] lg:h-[50px] lg:ml-5 ">
-                <label class="btn_text text-sm lg:text-xl">{{t('LBL_LIMIT')}}</label>
+                <label class="btn_text text-sm lg:text-xl">{{$lang('LBL_LIMIT')}}</label>
             </button>
-            <label class="market_content_label text-sm lg:text-2xl lg:ml-5">{{t('LBL_GET_DISCOUNT')}}</label>
+            <label class="market_content_label text-sm lg:text-2xl lg:ml-5">{{$lang('LBL_GET_DISCOUNT')}}</label>
             <div class="market_content_percent flex flex-row justify-start items-center lg:ml-20 ml-5">
                 <label class="percent_label text-4xl lg:text-8xl">40%</label>
                 <button class="percent_claim w-[60px] h-[20px] lg:w-[100px] lg:h-[50px] ml-5 lg:ml-10 ">
-                    <label class="btn_text text-sm lg:text-xl">{{t('LBL_GET_CLAIM')}}</label>
+                    <label class="btn_text text-sm lg:text-xl">{{$lang('LBL_GET_CLAIM')}}</label>
                 </button>
             </div>
             <div class="hidden md:block market_content_label text-sm lg:text-2xl lg:ml-5">
-                {{t('LBL_DURATION_1')}} {{t('LBL_DURATION_2')}}
+                {{$lang('LBL_DURATION_1')}} {{$lang('LBL_DURATION_2')}}
             </div>
             <div class="block lg:hidden market_content_label text-sm lg:text-2xl lg:ml-5">
-                {{t('LBL_DURATION_1')}}
+                {{$lang('LBL_DURATION_1')}}
             </div>
             <div class="block lg:hidden market_content_label text-sm lg:text-2xl lg:ml-5">
-                {{t('LBL_DURATION_3')}}
+                {{$lang('LBL_DURATION_3')}}
             </div>
         </div>
         <div class="market_img">
@@ -168,7 +168,7 @@ const changeSearchText = () => {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
                 </svg>
             </template>
-            <span>{{t('LBL_FILTER')}}</span>
+            <span>{{$lang('LBL_FILTER')}}</span>
         </fwb-button>
         <!-- Sử dụng component pop-up -->
         <FilterPopup :isVisible="currentPopup === 'filter'" :searchText="searchText"  @closePopup="closePopup" />
@@ -178,7 +178,7 @@ const changeSearchText = () => {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
                 </svg>
             </template>
-            <span>{{t('LBL_SORT')}}</span>
+            <span>{{$lang('LBL_SORT')}}</span>
             <div v-if="isOpen" class="up absolute right-0 top-[120%] z-50 bg-white shadow-lg p-4 rounded-md w-[150px] flex flex-col space-y-2">
                 <div class="active flex flex-row items-center justify-between">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="size-4">
@@ -199,7 +199,7 @@ const changeSearchText = () => {
 
     <div class="container max-w-[1200px] mx-auto px-4 lg:px-4 grid grid-cols-12 gap-4 mt-1 lg:mt-5">
         <div class="hidden md:block col-span-3 ml-5 lg:border-r lg:border-gray-400 mr-5">
-            <h2 class="font-bold mb-4 text-black text-2xl">{{t('LBL_CATEGORY')}}</h2>
+            <h2 class="font-bold mb-4 text-black text-2xl">{{$lang('LBL_CATEGORY')}}</h2>
             <ul>
                 <li
                     @click="filterByCategory(null)"

@@ -65,7 +65,7 @@
                                 <img class="w-[353px] lg:w-[400px] lg:h-[344px] h-[264px] object-cover overflow-hidden rounded-[28px] shadow" src="/resources/assets/images/landingpage/aboutus-img.png" alt="">
                             </div>
                             <div className=" lg:w-[502px] w-[324px] h-[240px] overflow-hidden lg:m-auto mx-[12px] text-black text-sm lg:text-lg font-normal capitalize leading-10" >
-                                <div className="my-[12px] w-[312px] lg:w-full h-[210px] lg:h-full overflow-hidden text-center lg:text-white text-black text-sm lg:text-lg font-normal capitalize leading-[30.59px]" style="font-family:'Kaisei Decol'">{{t('LBL_ABOUT_US_TEXT')}}</div>
+                                <div className="my-[12px] w-[312px] lg:w-full h-[210px] lg:h-full overflow-hidden text-center lg:text-white text-black text-sm lg:text-lg font-normal capitalize leading-[30.59px]" style="font-family:'Kaisei Decol'">{{$lang('LBL_ABOUT_US_TEXT')}}</div>
                             </div>
                         </div>
                     </div>

@@ -78,7 +78,7 @@
 
                     <p class="text-sm font-inter text-black dark:text-gray-400 mb-1.5">
                         <span v-if="countdown > 0">{{ t('LBL_YOU_DID_NOT_RECEIVE_THE_CODE_RESEND') }}({{ countdown }}s)</span>
-                        <span v-else><a href="#" @click="resendCode" class="font-bold cursor-pointer">{{t('LBL_RESEND')}}</a></span>
+                        <span v-else><a href="#" @click="resendCode" class="font-bold cursor-pointer">{{$lang('LBL_RESEND')}}</a></span>
                     </p>
 
                     <button class="bg-[#c48d60] text-white px-4 py-2 rounded-lg mt-1 hover:bg-[#e1b083] " @click="authenticateOtp">

@@ -13,11 +13,15 @@ import { createPinia } from 'pinia';
 import VueApexCharts from 'vue3-apexcharts';
 import axios from 'axios';
 import configuration from '@/config.js';
-
+import Notifications from 'notiwind'
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = configuration.baseUrl;
-const token = localStorage.getItem('auth_token'); // Example with localStorage
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+await axios.get('sanctum/csrf-cookie');
+
+const token = localStorage.getItem('token'); // Example with localStorage
 if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
@@ -35,10 +39,12 @@ axios.interceptors.response.use(
 async function fetchUser() {
     try {
         const response = await axios.get('/api/me');
-        store.commit('setUser', response.data); // Example with Vuex; adjust as needed
+        store.commit('setUser', {user: response.data.data}); // Example with Vuex; adjust as needed
     } catch (error) {
         // Handle 401 Unauthorized to redirect to login
         if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('vuex');
             router.push('/');
         }
     }
@@ -47,7 +53,9 @@ async function fetchUser() {
 async function initApp() {
     await fetchUser(); // Fetch user data before app creation
     const app = createApp(App);
+    app.config.globalProperties.$lang = i18n.global.t;
     app.use(router);
+    app.use(Notifications);
     app.use(store);
     app.use(i18n);
     app.use(LaravelPermissionToVueJS);

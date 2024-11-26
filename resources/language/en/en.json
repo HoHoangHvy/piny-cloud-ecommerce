@@ -91,5 +91,6 @@
     "LBL_SIGNUP_SUCCESS": "Sign-up successful!",
     "LBL_SIGNUP_FAILED": "Sign-up failed. Please try again.",
     "LBL_ABOUT_US_TEXT": "At Piny Cloud, we take pride in crafting each cup of coffee with love, using carefully selected beans sourced from the finest growers. Whether you're craving a rich espresso, a creamy latte, or a refreshing iced coffee, our baristas are here to create your favorite brew.\n\nPair your coffee with our delicious bread and pastries, baked fresh daily. From buttery croissants to hearty loaves, each bite is made with premium ingredients to bring you the ultimate flavor and quality.",
-    "LBL_SIGNING_UP": "Signing up"
+    "LBL_SIGNING_UP": "Signing up",
+    "LBL_ALL_EMPLOYEE": "All employee"
 }

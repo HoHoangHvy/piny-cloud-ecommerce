@@ -22,6 +22,8 @@ import OrderPage from "../components/page/orderPage.vue";
 import ProductList from "@/js/components/admin/CRUD/Products/ProductList.vue";
 
 import store from "@/js/store/index.js";
+import EmployeeCRUD from "@/js/components/admin/CRUD/Employees/EmployeeCRUD.vue";
+import TeamCRUD from "@/js/components/admin/CRUD/Teams/TeamCRUD.vue";
 
 const routes = [
     {
@@ -182,6 +184,22 @@ const routes = [
                 component: ProductList,
                 meta: {
                     title: 'Products'
+                }
+            },
+            {
+                path: 'employees',
+                name: 'employees',
+                component: EmployeeCRUD,
+                meta: {
+                    title: 'Employees'
+                }
+            },
+            {
+                path: 'teams',
+                name: 'teams',
+                component: TeamCRUD,
+                meta: {
+                    title: 'Teams'
                 }
             }
         ]

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Helpers\SpeedSMSAPI;
 use Twilio\Rest\Client;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AuthenticationController extends BaseController
 {
@@ -22,8 +24,6 @@ class AuthenticationController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    use Spatie\Permission\Models\Permission;
-    use Spatie\Permission\Models\Role;
 
     public function register(Request $request): JsonResponse
     {

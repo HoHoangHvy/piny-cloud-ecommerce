@@ -24,7 +24,7 @@ function closeVoucherModal() {
                     <!--Delivery-->
                     <div class="space-y-1 p-6">
                         <div class="flex items-center justify-between">
-                            <label class="font-inter font-bold text-black dark:text-white">{{t('LBL_DELIVERY')}}</label>
+                            <label class="font-inter font-bold text-black dark:text-white">{{$lang('LBL_DELIVERY')}}</label>
                             <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M16.4605 17.6956C16.4607 17.8906 16.6094 18.0485 16.7928 18.049H19.748C20.4962 18.0385 21.2079 18.3911 21.6819 19.0067C22.0814 19.5353 22.2842 20.0593 22.2842 20.565C22.2842 20.7603 22.4331 20.9186 22.6165 20.9186C22.8001 20.9186 22.9487 20.7603 22.9487 20.565C22.9487 19.8942 22.6967 19.221 22.2004 18.564V18.5642C21.6007 17.7809 20.6977 17.3309 19.748 17.342H16.7927C16.7045 17.342 16.62 17.3794 16.5577 17.4457C16.4954 17.5119 16.4605 17.6018 16.4605 17.6956Z" fill="black"/>
                                 <path d="M4.59906 20.7754C4.12163 20.7754 3.6638 20.977 3.32607 21.3359C2.98858 21.6945 2.79883 22.1814 2.79883 22.6891C2.79883 23.1966 2.98834 23.6835 3.32583 24.0423C3.66332 24.4011 4.12117 24.603 4.59859 24.603C5.07579 24.6027 5.53367 24.4012 5.8711 24.0421C6.20859 23.6832 6.3981 23.1963 6.39787 22.6886C6.39716 22.1814 6.20765 21.6952 5.87039 21.3366C5.53314 20.9779 5.07582 20.7762 4.59906 20.7754ZM4.59906 23.8955C4.29792 23.8958 4.00905 23.7685 3.79618 23.5424C3.5833 23.316 3.46364 23.0091 3.46341 22.6891C3.46341 22.3689 3.58283 22.0619 3.79571 21.8353C4.00834 21.6089 4.29722 21.4817 4.59811 21.4817C4.89925 21.4817 5.18789 21.6087 5.40076 21.835C5.61363 22.0614 5.73329 22.3684 5.73329 22.6886C5.73305 23.0086 5.6134 23.3153 5.40076 23.5414C5.18812 23.7675 4.89976 23.895 4.59906 23.8955Z" fill="black"/>
@@ -40,7 +40,7 @@ function closeVoucherModal() {
                                 <!--Address-->
                                 <div class="flex items-center justify-between gap-4">
                                     <div class="w-[125px]">
-                                        <span class="font-inter text-black dark:text-gray-400">{{t('LBL_ADDRESS')}}:</span>
+                                        <span class="font-inter text-black dark:text-gray-400">{{$lang('LBL_ADDRESS')}}:</span>
                                     </div>
                                     <div class="w-full">
                                         <input type="text" value="" placeholder="" class="w-full p-2 text-black font-inter border-b border-black dark:border-white bg-transparent focus:outline-none" />
@@ -49,7 +49,7 @@ function closeVoucherModal() {
                                 <!--Delivery time-->
                                 <div class="flex items-center justify-between gap-4 mt-4">
                                     <div class="w-[125px]">
-                                        <span class="font-inter text-black dark:text-gray-400">{{t('LBL_DELIVERY_TIME')}}:</span>
+                                        <span class="font-inter text-black dark:text-gray-400">{{$lang('LBL_DELIVERY_TIME')}}:</span>
                                     </div>
                                     <div class="w-full">
                                         <input type="text" value="" class="w-full p-2 text-black font-inter border-b border-black dark:border-white bg-transparent focus:outline-none" />
@@ -57,21 +57,21 @@ function closeVoucherModal() {
                                 </div>
                             </div>
                             <div>
-                                <label class="text-black">{{t('LBL_RECIPIENT_NAME')}}</label>
+                                <label class="text-black">{{$lang('LBL_RECIPIENT_NAME')}}</label>
                                 <div>
                                     <input type="text" placeholder="" class="w-full p-2 border rounded">
                                     <div class="text-red-500 text-sm mt-1 hidden">Vui lòng nhập tên người nhận</div>
                                 </div>
                             </div>
                             <div>
-                                <label class="text-black">{{t('LBL_PHONE_NUMBER')}}</label>
+                                <label class="text-black">{{$lang('LBL_PHONE_NUMBER')}}</label>
                                 <div>
                                     <input type="text" placeholder="" class="w-full p-2 border rounded">
                                     <div class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mt-1 hidden">Vui lòng nhập số điện thoại người nhận</div>
                                 </div>
                             </div>
                             <div>
-                                <label class="text-black">{{t('LBL_NOTE')}}</label>
+                                <label class="text-black">{{$lang('LBL_NOTE')}}</label>
                                 <div>
                                     <input type="text" placeholder="" class="w-full p-2 border rounded">
                                 </div>
@@ -82,7 +82,7 @@ function closeVoucherModal() {
                     <!--Order details-->
                     <div class="space-y-1 p-6">
                         <div class="flex items-center justify-between">
-                            <label class="font-inter font-bold text-black dark:text-white">{{t('LBL_ORDER_DETAILS')}}</label>
+                            <label class="font-inter font-bold text-black dark:text-white">{{$lang('LBL_ORDER_DETAILS')}}</label>
                             <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M21.5325 15.1608H19.9875L17.0609 11.2099C16.9958 11.1223 16.9104 11.0552 16.8131 11.0158L15.3761 10.4339L15.5493 7.68842H15.959C16.0608 7.68842 16.1587 7.64475 16.2308 7.56689C16.3029 7.48902 16.3433 7.38355 16.3433 7.27335V5.61285C16.3429 5.35536 16.2689 5.10446 16.1314 4.89413C15.9937 4.68402 15.7992 4.52499 15.5747 4.43888V2.2918C15.5743 1.9616 15.4526 1.64518 15.2365 1.41162C15.0202 1.17822 14.7272 1.0468 14.4215 1.04639H4.42786C4.12211 1.0468 3.82894 1.17822 3.61287 1.41162C3.39658 1.64521 3.27508 1.96163 3.2747 2.2918V4.43888C3.05001 4.52499 2.85546 4.68402 2.71796 4.89413C2.58025 5.10445 2.50625 5.35535 2.50586 5.61285V7.27335C2.50586 7.38355 2.54649 7.48902 2.61858 7.56689C2.69068 7.64475 2.78834 7.68842 2.89038 7.68842H3.30008L3.55433 11.7197C3.16465 12.0097 2.92068 12.4775 2.89285 12.9878C2.86519 13.4978 3.05688 13.9932 3.41243 14.3305C3.08055 14.645 2.89041 15.0988 2.89041 15.5759C2.89041 16.0528 3.08057 16.5066 3.41243 16.8213C3.08055 17.1359 2.89041 17.5897 2.89041 18.0665C2.89041 18.5436 3.08057 18.9974 3.41243 19.312C3.11622 19.5932 2.9314 19.9868 2.89632 20.4114C2.86141 20.8357 2.9791 21.2584 3.22477 21.5917C3.47062 21.925 3.8256 22.1436 4.21642 22.2019L4.4289 25.5672C4.44263 25.7847 4.61009 25.9538 4.81228 25.954H14.0374C14.2394 25.954 14.407 25.7849 14.4208 25.5672L14.5436 23.6259L17.033 24.4476C17.6055 24.6361 18.2251 24.5541 18.7386 24.2221L19.9094 23.4632H21.5327C21.8508 23.463 22.1089 23.1842 22.1093 22.8404V15.7835C22.1089 15.4399 21.8509 15.1612 21.5327 15.161L21.5325 15.1608ZM4.42802 1.8765H14.4217C14.6338 1.87671 14.8058 2.06251 14.806 2.29158V4.36715H4.04331V2.29158C4.04369 2.06251 4.21554 1.87671 4.42783 1.8765H4.42802ZM3.27484 5.61262C3.27503 5.38356 3.44708 5.19775 3.65918 5.19755H15.1904C15.4027 5.19775 15.5746 5.38356 15.5749 5.61262V6.85805H3.27465L3.27484 5.61262ZM4.07079 7.6882H14.7788L14.6247 10.1292L13.8209 9.80375C13.7561 9.77738 13.6874 9.76379 13.618 9.76379H11.1543C10.7291 9.7644 10.3189 9.93414 10.0018 10.2403C9.68483 10.5466 9.48322 10.968 9.43552 11.4243H4.4277C4.38689 11.4243 4.34645 11.4266 4.3064 11.4299L4.07079 7.6882ZM14.0713 18.8969H7.29638C7.47452 18.565 7.54052 18.1765 7.48311 17.7979C7.4255 17.4195 7.24812 17.0742 6.9811 16.8213C7.31298 16.5065 7.50332 16.0527 7.50332 15.5758C7.50332 15.0988 7.31297 14.645 6.9811 14.3304C7.24814 14.0774 7.42552 13.7322 7.48311 13.3536C7.54052 12.975 7.47452 12.5867 7.29638 12.2548H9.52436C9.64395 12.6186 9.86482 12.9338 10.1566 13.1567C10.4485 13.3798 10.7971 13.4997 11.1546 13.5003H13.0629L14.2868 15.4832L14.0713 18.8969ZM4.42772 16.406C4.17939 16.4056 3.94669 16.2756 3.80287 16.0573C3.65887 15.8389 3.62129 15.559 3.70216 15.3056C3.78303 15.052 3.97205 14.8563 4.21007 14.7799C4.28064 14.7573 4.35389 14.7457 4.4277 14.7455H5.9652C6.23986 14.7455 6.49352 14.9039 6.63087 15.1608C6.7682 15.4177 6.7682 15.7341 6.63087 15.9909C6.49355 16.2478 6.23987 16.406 5.9652 16.406L4.42772 16.406ZM4.42772 12.2548H5.96522C6.23988 12.2548 6.49354 12.413 6.6309 12.6699C6.76825 12.9268 6.76823 13.2434 6.6309 13.5003C6.49357 13.7571 6.23989 13.9153 5.96522 13.9153H4.42772C4.15307 13.9153 3.89921 13.7571 3.76186 13.5003C3.6245 13.2434 3.62453 12.9268 3.76186 12.6699C3.89918 12.413 4.15305 12.2548 4.42772 12.2548ZM3.65888 18.0667C3.65907 17.8467 3.74013 17.6355 3.88433 17.48C4.02852 17.3243 4.22383 17.2367 4.42773 17.2365H5.96523C6.23989 17.2365 6.49356 17.3947 6.63091 17.6516C6.76826 17.9085 6.76824 18.2249 6.63091 18.4818C6.49358 18.7388 6.2399 18.897 5.96523 18.897H4.42773C4.22384 18.8966 4.02853 18.8091 3.88433 18.6536C3.74013 18.4978 3.65907 18.2869 3.65888 18.0667ZM3.65888 20.5575C3.65907 20.3373 3.74013 20.1264 3.88433 19.9707C4.02852 19.8151 4.22383 19.7274 4.42773 19.7272H5.19639C5.47104 19.7272 5.7249 19.8854 5.86226 20.1423C5.99959 20.3991 5.99959 20.7157 5.86226 20.9726C5.72493 21.2295 5.47106 21.3877 5.19639 21.3877H4.42773C4.22384 21.3875 4.02853 21.2999 3.88433 21.1442C3.74013 20.9887 3.65907 20.7775 3.65888 20.5575ZM13.6779 25.1238H5.17108L4.9876 22.2179L5.19645 22.2181C5.55808 22.2183 5.90807 22.0809 6.18522 21.83C6.46217 21.5791 6.64852 21.2306 6.7111 20.846C6.77368 20.4614 6.70862 20.0652 6.52742 19.7272H14.0191L13.6779 25.1238ZM21.34 22.6332H19.8558C19.7512 22.6332 19.6488 22.6639 19.5592 22.722L18.3427 23.5101C18.0159 23.7216 17.6215 23.7737 17.2572 23.6537L14.5969 22.7755L15.0581 15.4692C15.0664 15.3322 15.0329 15.196 14.9627 15.0817L13.6455 12.9476H13.6453C13.5384 12.7741 13.3582 12.6701 13.1654 12.6703H11.1541C10.8108 12.6703 10.4936 12.4726 10.3219 12.1514C10.1503 11.8303 10.1503 11.4348 10.3219 11.1136C10.4936 10.7925 10.8108 10.5947 11.1541 10.5947H13.5829L16.4935 11.7736L19.4449 15.7577C19.554 15.9058 19.7198 15.9917 19.895 15.9913H21.3401L21.34 22.6332Z" fill="black"/>
                             </svg>
@@ -144,7 +144,7 @@ function closeVoucherModal() {
                             </svg>
                             <div class="flex items-center space-x-2">
                                 <input id="cash" type="radio" name="payment" class="form-radio" checked>
-                                <label for="cash" class="text-black">{{t('LBL_CASH')}}</label>
+                                <label for="cash" class="text-black">{{$lang('LBL_CASH')}}</label>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <input id="momo" type="radio" name="payment" class="form-radio">
@@ -174,7 +174,7 @@ function closeVoucherModal() {
                         <!--Payment info-->
                         <div class="space-y-4 bg-gray-50 p-6 dark:bg-gray-800 border-t border-gray-700">
                             <div class="flex items-center justify-between">
-                                <label class="font-inter font-bold text-black dark:text-white">{{t('LBL_PAYMENT_INFOMATION')}}</label>
+                                <label class="font-inter font-bold text-black dark:text-white">{{$lang('LBL_PAYMENT_INFOMATION')}}</label>
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M8.08131 21.4575H12.8945L14.5406 23.8937H14.5404C14.5759 25.216 15.1256 26.4723 16.0727 27.3954C17.0198 28.3187 18.2899 28.836 19.6126 28.8376H22.8414C22.9636 28.8376 23.0811 28.7888 23.1676 28.7025C23.2541 28.616 23.3026 28.4986 23.3026 28.3764V18.1746C23.3022 17.8004 23.2111 17.4316 23.0371 17.1L19.6126 9.82325V2.54591C19.6122 2.17901 19.4664 1.82743 19.2068 1.56792C18.9475 1.30859 18.5957 1.16257 18.2288 1.16211H8.08155C7.71465 1.16257 7.36307 1.30859 7.10356 1.56792C6.84424 1.82747 6.69821 2.17905 6.69775 2.54591V20.0736C6.69821 20.4405 6.84424 20.7924 7.10356 21.0516C7.36311 21.3112 7.71469 21.457 8.08155 21.4574L8.08131 21.4575ZM22.217 17.5232C22.3237 17.7237 22.3796 17.9474 22.3798 18.1744V27.915H19.6124C18.5268 27.9139 17.4849 27.4879 16.7095 26.7285C15.9338 25.9691 15.4861 24.9363 15.4621 23.8512C15.4852 23.7311 15.4598 23.6068 15.3914 23.5056L12.3996 19.0772C12.1904 18.7733 12.1112 18.3984 12.1799 18.0358C12.2486 17.6733 12.4591 17.3531 12.7649 17.1464C13.0707 16.9399 13.4463 16.864 13.8082 16.9356C14.1703 17.0072 14.4886 17.2206 14.6926 17.5279C14.6953 17.5318 14.6983 17.5359 14.7011 17.5398L17.3939 21.2665C17.4806 21.3864 17.6195 21.4576 17.7674 21.4576H19.1512C19.2734 21.4576 19.3908 21.4091 19.4774 21.3226C19.5639 21.2361 19.6124 21.1186 19.6124 20.9964V11.99L22.207 17.5031C22.21 17.5099 22.2134 17.5168 22.2171 17.5237L22.217 17.5232ZM15.4524 17.005C15.1288 16.5285 14.6381 16.1911 14.0773 16.0595V2.08491H15.9223V17.655L15.4524 17.005ZM18.6899 2.54587V20.5347H18.003L16.8449 18.9321V2.08461H18.2287H18.2285C18.4832 2.08484 18.6894 2.29129 18.6899 2.54581L18.6899 2.54587ZM7.61982 2.54587C7.62005 2.29135 7.8265 2.0849 8.08102 2.08467H13.1549V16.03C12.3833 16.1625 11.7317 16.6775 11.4246 17.3976C11.1172 18.1176 11.1966 18.9443 11.6349 19.593L12.2708 20.5344H8.08106C7.82654 20.5341 7.6201 20.3279 7.61987 20.0732L7.61982 2.54587Z" fill="black"/>
                                     <path d="M9.92653 12.6938H11.7715C11.8938 12.6938 12.0112 12.6453 12.0977 12.5588C12.1842 12.4723 12.2327 12.3551 12.2327 12.2326V3.46875C12.2327 3.3463 12.1842 3.22911 12.0977 3.14259C12.0112 3.05607 11.8938 3.00732 11.7715 3.00732H9.92653C9.67178 3.00732 9.46533 3.214 9.46533 3.46875V12.2326C9.46533 12.3551 9.51385 12.4723 9.60037 12.5588C9.68689 12.6453 9.80431 12.6938 9.92653 12.6938ZM10.3877 3.92995H11.3101L11.3103 11.7715H10.3877L10.3877 3.92995Z" fill="black"/>
@@ -186,7 +186,7 @@ function closeVoucherModal() {
                             <!--Price, Voucher, Discount, Delivery fee-->
                             <div class="space-y-2">
                                 <dl class="flex items-center justify-between gap-4">
-                                    <dt class="font-inter text-black dark:text-gray-400">{{t('LBL_PRICE')}}</dt>
+                                    <dt class="font-inter text-black dark:text-gray-400">{{$lang('LBL_PRICE')}}</dt>
                                     <dd class="font-inter text-black dark:text-white">157.000 VND</dd>
                                 </dl>
                                 <!--Voucher-->
@@ -195,7 +195,7 @@ function closeVoucherModal() {
                                 <!-- Voucher Popup Modal -->
                                 <div v-if="voucherModalVisible" class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center">
                                     <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-                                        <h2 class="font-bold text-black text-lg mb-4">{{t('LBL_VOUCHER')}}</h2>
+                                        <h2 class="font-bold text-black text-lg mb-4">{{$lang('LBL_VOUCHER')}}</h2>
                                         <div class="grid grid-cols-1 gap-4">
                                             <!-- Voucher item -->
                                             <div class="flex items-center justify-between border p-4 rounded-lg">
@@ -217,7 +217,7 @@ function closeVoucherModal() {
                                                 <div class="ml-4">
                                                     <p class="text-black font-inter">Freeship</p>
                                                 </div>
-                                                <button class="bg-[#c48d60] text-white px-4 py-2 rounded-lg">{{t('LBL_USE_NOW')}}</button>
+                                                <button class="bg-[#c48d60] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
                                             </div>
                                             <div class="flex items-center justify-between border p-4 rounded-lg">
                                                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -238,7 +238,7 @@ function closeVoucherModal() {
                                                 <div class="ml-4">
                                                     <p class="text-black font-inter">20% Off</p>
                                                 </div>
-                                                <button class="bg-[#c48d60] text-white px-4 py-2 rounded-lg">{{t('LBL_USE_NOW')}}</button>
+                                                <button class="bg-[#c48d60] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
                                             </div>
                                             <div class="flex items-center justify-between border p-4 rounded-lg">
                                                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -259,33 +259,33 @@ function closeVoucherModal() {
                                                 <div class="ml-4">
                                                     <p class="text-black font-inter">10% Off + Free ship</p>
                                                 </div>
-                                                <button class="bg-[#c48d60] text-white px-4 py-2 rounded-lg">{{t('LBL_USE_NOW')}}</button>
+                                                <button class="bg-[#c48d60] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
                                             </div>
                                             <!-- Thêm nhiều Voucher khác tại đây -->
                                         </div>
-                                        <button class="mt-4 text-sm text-black hover:underline" @click="closeVoucherModal">{{t('LBL_CLOSE')}}</button>
+                                        <button class="mt-4 text-sm text-black hover:underline" @click="closeVoucherModal">{{$lang('LBL_CLOSE')}}</button>
                                     </div>
                                 </div>
                                 <!--Discount-->
                                 <dl class="flex items-center justify-between gap-4">
-                                    <dt class="font-inter text-black dark:text-gray-400">{{t('LBL_DISCOUNT')}}</dt>
+                                    <dt class="font-inter text-black dark:text-gray-400">{{$lang('LBL_DISCOUNT')}}</dt>
                                     <dd class="font-inter text-black dark:text-gray-400">-20.000 VND</dd>
                                 </dl>
                                 <!--Delivery fee-->
                                 <dl class="flex items-center justify-between gap-4">
-                                    <dt class="font-inter text-black dark:text-gray-400">{{t('LBL_DELIVERY_FEE')}}</dt>
+                                    <dt class="font-inter text-black dark:text-gray-400">{{$lang('LBL_DELIVERY_FEE')}}</dt>
                                     <dd class="font-inter text-black dark:text-gray-400">20.000 VND</dd>
                                 </dl>
                             </div>
                             <!--Total-->
                             <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                                <dt class="text-lg font-bold text-black dark:text-white">{{t('LBL_TOTAL')}}</dt>
+                                <dt class="text-lg font-bold text-black dark:text-white">{{$lang('LBL_TOTAL')}}</dt>
                                 <dd class="text-lg font-bold text-black dark:text-white">157.000 VND</dd>
                             </dl>
                         </div>
                         <!--Pay button-->
                         <div class="gap-4 sm:flex sm:items-start">
-                            <button type="button" class="w-full rounded-lg border border-gray-200 bg-[#c48d60] px-5 py-2.5 text-sm font-inter text-white hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">{{t('LBL_PAY')}}</button>
+                            <button type="button" class="w-full rounded-lg border border-gray-200 bg-[#c48d60] px-5 py-2.5 text-sm font-inter text-white hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">{{$lang('LBL_PAY')}}</button>
                         </div>
                     </div>
                 </div>

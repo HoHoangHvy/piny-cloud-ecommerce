@@ -15,7 +15,9 @@ class TeamController extends Controller
     {
         // Retrieve all teams from the database
         $teams = Team::all();
-
+        foreach($teams as $team){
+            $team['total'] = $team->employees->count();
+        }
         return response()->json([
             'success' => true,
             'data' => $teams
@@ -30,6 +32,11 @@ class TeamController extends Controller
         // Validate incoming request
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'city' => 'string|max:255',
+            'state' => 'string|max:255',
+            'ward' => 'string|max:255',
+            'description' => 'string|max:255',
         ]);
 
         // If validation fails, return error response

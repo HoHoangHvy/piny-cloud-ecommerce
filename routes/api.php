@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRolePermissionController;
 use App\Models\User;
@@ -60,6 +62,17 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
     Route::get('/products', [ProductController::class, 'index']);
 
+    //Employees routes
+    Route::post('/employees', [EmployeeController::class, 'store']);
+    Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
+    Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
+    Route::get('/employees', [EmployeeController::class, 'index']);
+
+    //Team routes
+    Route::post('/centers', [TeamController::class, 'store']);
+    Route::put('/centers/{center}', [TeamController::class, 'update']);
+    Route::delete('/centers/{center}', [TeamController::class, 'destroy']);
+    Route::get('/centers', [TeamController::class, 'index']);
 
 });
 
