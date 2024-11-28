@@ -21,22 +21,15 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|string|unique:users,phone_number',
             'date_of_birth' => 'required|date',
+            'date_registered' => 'required|date',
             'gender' => 'required|in:Male,Female',
             'team_id' => 'required|exists:teams,id',
             'level' => 'required|in:Manager,Receptionist,Waiter',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
         ]);
 
         // If validation fails, return the error response
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
-        }
-
-        // Handle the image upload if present
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            // Store the image in 'public/employees' folder
-            $imagePath = $request->file('image')->store('employees', 'public');
         }
 
         // Prepare data to create the user
@@ -46,7 +39,7 @@ class EmployeeController extends Controller
             'phone_number' => $request->input('phone_number'),
             'date_of_birth' => $request->input('date_of_birth'),
             'gender' => $request->input('gender'),
-            'password' => Hash::make(Str::random(10)), // Random password or handle it as needed
+            'password' => Hash::make('123456'), // Random password or handle it as needed
             'user_type' => 'user', // Specify user type as 'user'
         ];
 
@@ -68,10 +61,9 @@ class EmployeeController extends Controller
                 'email' => $request->input('email'),
                 'phone_number' => $request->input('phone_number'),
                 'date_of_birth' => $request->input('date_of_birth'),
+                'date_registered' => $request->input('date_registered'),
                 'gender' => $request->input('gender'),
                 'level' => $request->input('level'),
-                'date_registered' => now(),
-                'image' => $imagePath, // Save the image path in the employee record
             ]);
 
             // Commit transaction if both operations succeed
@@ -79,8 +71,10 @@ class EmployeeController extends Controller
 
             return response()->json([
                 'message' => 'Employee and User created successfully.',
-                'employee' => $employee,
-                'user' => $user,
+                'data' => [
+                    'employee' => $employee,
+                    'user' => $user
+                ]
             ], 201);
         } catch (\Exception $e) {
             // Rollback transaction if an error occurs
@@ -88,4 +82,39 @@ class EmployeeController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function index()
+    {
+        try {
+            // Fetch all employees with related user and team data
+            $employees = Employee::with(['team'])->get();
+
+            return response()->json([
+                'message' => 'Employees retrieved successfully.',
+                'data' => $employees,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function show($id)
+    {
+        try {
+            // Fetch employee with related user and team data
+            $employee = Employee::with(['user', 'team'])->find($id);
+
+            if (!$employee) {
+                return response()->json([
+                    'error' => 'Employee not found.',
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Employee details retrieved successfully.',
+                'data' => $employee,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }

@@ -65,7 +65,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //Employees routes
     Route::post('/employees', [EmployeeController::class, 'store']);
     Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
-    Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
+    Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
     Route::get('/employees', [EmployeeController::class, 'index']);
 
     //Team routes
@@ -73,6 +73,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::put('/centers/{center}', [TeamController::class, 'update']);
     Route::delete('/centers/{center}', [TeamController::class, 'destroy']);
     Route::get('/centers', [TeamController::class, 'index']);
+    Route::get('/centers/options', [TeamController::class, 'getTeamOptions']);
 
 });
 

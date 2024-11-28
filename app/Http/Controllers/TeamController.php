@@ -24,6 +24,26 @@ class TeamController extends Controller
         ], 200);
     }
 
+    public function getTeamOptions(): JsonResponse
+    {
+        // Retrieve all teams with only id and name fields
+        $teams = Team::all(['id', 'name']);
+
+        // Add the total number of employees to each team
+        $teams = $teams->map(function ($team) {
+            return [
+                'id' => $team->id,
+                'name' => $team->name,
+                'total' => $team->employees()->count(),
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $teams
+        ], 200);
+    }
+
     /**
      * Store a newly created team in the database.
      */

@@ -4,6 +4,7 @@ export default {
     namespaced: true,
     state: {
         teams: [], // Stores all teams
+        teams_options: [], // Stores all teams
         team: null, // Stores a single team (for details/editing)
         loading: false, // Tracks loading state
         error: null, // Tracks errors
@@ -33,12 +34,28 @@ export default {
         SET_ERROR(state, error) {
             state.error = error;
         },
+        SET_TEAMS_OPTIONS(state, teams) {
+            state.teams_options = teams;
+        }
     },
     actions: {
+        async fetchTeamOptions({ commit }) {
+            commit('SET_LOADING', true);
+            try {
+                await axios.get('sanctum/csrf-cookie');
+                const response = await axios.get('/api/centers/options');
+                commit('SET_TEAMS_OPTIONS', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching teams:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching teams.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
         async fetchTeams({ commit }) {
             commit('SET_LOADING', true);
             try {
-                debugger
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.get('/api/centers');
                 commit('SET_TEAMS', response.data.data);
@@ -64,7 +81,6 @@ export default {
             }
         },
         async createTeam({ commit }, teamData) {
-            debugger
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
@@ -106,6 +122,7 @@ export default {
         },
     },
     getters: {
+        allTeamsOption: (state) => state.teams_options,
         allTeams: (state) => state.teams,
         singleTeam: (state) => state.team,
         isLoading: (state) => state.loading,

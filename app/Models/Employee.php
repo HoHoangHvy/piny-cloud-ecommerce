@@ -9,12 +9,25 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
     use HasFactory, HasUuid;
-    public function users()
+    protected $fillable = [
+        'full_name',
+        'email',
+        'phone_number',
+        'date_of_birth',
+        'gender',
+        'team_id',
+        'level',
+        'user_id',
+        'date_registered',
+    ];
+    // Corrected relationship methods
+    public function user()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(User::class); // Singular: "user"
     }
-    public function teams()
+
+    public function team()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(Team::class); // Singular: "team"
     }
 }
