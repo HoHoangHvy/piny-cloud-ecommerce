@@ -24,6 +24,11 @@ import ProductList from "@/js/components/admin/CRUD/Products/ProductList.vue";
 import store from "@/js/store/index.js";
 import EmployeeCRUD from "@/js/components/admin/CRUD/Employees/EmployeeCRUD.vue";
 import TeamCRUD from "@/js/components/admin/CRUD/Teams/TeamCRUD.vue";
+import UserCRUD from "@/js/components/admin/CRUD/Users/UserCRUD.vue";
+import PermissionCRUD from "@/js/components/admin/CRUD/Pemissions/PermissionCRUD.vue";
+import RoleCRUD from "@/js/components/admin/CRUD/Roles/RoleCRUD.vue";
+import OrderCRUD from "@/js/components/admin/CRUD/Orders/OrderCRUD.vue";
+import CustomerCRUD from "@/js/components/admin/CRUD/Customers/CustomerCRUD.vue";
 
 const routes = [
     {
@@ -173,7 +178,7 @@ const routes = [
             {
                 path: 'users',
                 name: 'users',
-                component: UserManagement,
+                component: UserCRUD,
                 meta: {
                     title: 'User Management'
                 }
@@ -201,7 +206,39 @@ const routes = [
                 meta: {
                     title: 'Teams'
                 }
-            }
+            },
+            {
+                path: 'permissions',
+                name: 'permissions',
+                component: PermissionCRUD,
+                meta: {
+                    title: 'Permission'
+                }
+            },
+            {
+                path: 'roles',
+                name: 'roles',
+                component: RoleCRUD,
+                meta: {
+                    title: 'Roles'
+                }
+            },
+            {
+                path: 'orders',
+                name: 'orders',
+                component: OrderCRUD,
+                meta: {
+                    title: 'Orders'
+                }
+            },
+            {
+                path: 'customers',
+                name: 'customers',
+                component: CustomerCRUD,
+                meta: {
+                    title: 'Customers'
+                }
+            },
         ]
     },
     {

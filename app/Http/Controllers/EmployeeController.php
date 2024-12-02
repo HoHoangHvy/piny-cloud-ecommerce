@@ -41,6 +41,7 @@ class EmployeeController extends Controller
             'gender' => $request->input('gender'),
             'password' => Hash::make('123456'), // Random password or handle it as needed
             'user_type' => 'user', // Specify user type as 'user'
+            'team_id' => $request->input('team_id'), // Specify user type as 'user'
         ];
 
         try {

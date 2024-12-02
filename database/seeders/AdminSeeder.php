@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,6 +15,7 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
+        $global_team = Team::where('name', 'Global')->first();
         User::create([
             'id' => Str::uuid(),
             'name' => 'Admin',
@@ -23,6 +25,7 @@ class AdminSeeder extends Seeder
             'is_admin' => true,
             'api_token' => Str::random(80),
             'user_type' => 'user',
+            'team_id' => $global_team->id
         ])->assignRole('admin');
     }
 }

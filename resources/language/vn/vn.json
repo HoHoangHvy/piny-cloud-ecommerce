@@ -94,5 +94,9 @@
     "LBL_SIGNING_UP": "Đang đăng ký",
     "LBL_ALL_EMPLOYEE": "Tất cả nhân viên",
     "LBL_ALL_TEAM": "Tất cả chi nhánh",
-    "LBL_ALL_PRODUCT": "Tất cả sản phẩm"
+    "LBL_ALL_PRODUCT": "Tất cả sản phẩm",
+    "LBL_ALL_CUSTOMER": "Tất cả khách hàng",
+    "LBL_ALL_ORDER": "Tất cả đơn hàng",
+    "LBL_ALL_ROLE": "Tất cả vai trò",
+    "LBL_ALL_PERMISSION": "Tất cả quyền"
 }

@@ -14,11 +14,11 @@ const sidebarStore = useSidebarStore()
     <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
       <HeaderArea />
       <main>
-          <NotificationGroup group="foo" class="z-99999">
+          <NotificationGroup group="foo" class="z-9999">
               <div
-                  class="fixed inset-0 flex items-start justify-end p-6 px-4 py-6 pointer-events-none z-9999999"
+                  class="fixed inset-0 flex items-start justify-end p-6 px-4 py-6 pointer-events-none z-9999"
               >
-                  <div class="w-full max-w-sm z-99999">
+                  <div class="w-full max-w-sm z-9999">
                       <Notification
                           class="z-999999"
                           v-slot="{ notifications }"

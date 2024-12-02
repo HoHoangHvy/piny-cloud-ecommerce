@@ -40,7 +40,7 @@ function closeVoucherModal() {
                                 <!--Address-->
                                 <div class="flex items-center justify-between gap-4">
                                     <div class="w-[125px]">
-                                        <span class="font-inter text-black dark:text-gray-400">{{$lang('LBL_ADDRESS')}}:</span>
+                                        <span class="font-inter text-black dark:text-gray-400">{{$lang('LBL_ADDRESS')}}: </span>
                                     </div>
                                     <div class="w-full">
                                         <input type="text" value="" placeholder="" class="w-full p-2 text-black font-inter border-b border-black dark:border-white bg-transparent focus:outline-none" />
@@ -49,7 +49,7 @@ function closeVoucherModal() {
                                 <!--Delivery time-->
                                 <div class="flex items-center justify-between gap-4 mt-4">
                                     <div class="w-[125px]">
-                                        <span class="font-inter text-black dark:text-gray-400">{{$lang('LBL_DELIVERY_TIME')}}:</span>
+                                        <span class="font-inter text-black dark:text-gray-400">{{$lang('LBL_DELIVERY_TIME')}}: </span>
                                     </div>
                                     <div class="w-full">
                                         <input type="text" value="" class="w-full p-2 text-black font-inter border-b border-black dark:border-white bg-transparent focus:outline-none" />

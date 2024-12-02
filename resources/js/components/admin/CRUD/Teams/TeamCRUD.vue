@@ -6,7 +6,7 @@
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                     <div class="flex-1 flex items-center space-x-2">
                         <h5>
-                            <span class="text-gray-500">{{$lang('LBL_ALL_TEAM')}}:</span>
+                            <span class="text-gray-500">{{$lang('LBL_ALL_TEAM')}}: </span>
                             <span class="dark:text-white">123456</span>
                         </h5>
                         <h5 class="text-gray-500 dark:text-gray-400 ml-1">1-100 (436)</h5>
