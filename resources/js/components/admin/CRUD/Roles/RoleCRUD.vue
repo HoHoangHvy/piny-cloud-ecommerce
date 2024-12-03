@@ -103,13 +103,9 @@
                                 </div>
                             </th>
                             <th scope="col" class="p-4">Role</th>
-                            <th scope="col" class="p-4">Gender</th>
-                            <th scope="col" class="p-4">Level</th>
-                            <th scope="col" class="p-4">Date of Birth</th>
-                            <th scope="col" class="p-4">Phone</th>
-                            <th scope="col" class="p-4">Email</th>
-                            <th scope="col" class="p-4">Team</th>
-                            <th scope="col" class="p-4">Create At</th>
+                            <th scope="col" class="p-4">Guard Name</th>
+                            <th scope="col" class="p-4">Created At</th>
+                            <th scope="col" class="p-4">Created At</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -125,13 +121,9 @@
                                     <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                                 </div>
                             </td>
-                            <td class="p-4">{{ item.full_name }}</td>
-                            <td class="p-4">{{ item.gender }}</td>
-                            <td class="p-4">{{ item.level }}</td>
-                            <td class="p-4">{{ formatDate(item.date_of_birth) }}</td>
-                            <td class="p-4">{{ item.phone_number }}</td>
-                            <td class="p-4">{{ item.email }}</td>
-                            <td class="p-4">{{ item.team.name }}</td>
+                            <td class="p-4">{{ item.name }}</td>
+                            <td class="p-4">{{ item.guard_name }}</td>
+                            <td class="p-4">{{ formatDate(item.updated_at) }}</td>
                             <td class="p-4">{{ formatDate(item.created_at) }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
