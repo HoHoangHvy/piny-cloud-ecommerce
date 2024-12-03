@@ -251,11 +251,11 @@ const signOut = async () => {
 </template>
 <style>
 .sign-in-btn:hover {
-    background-color: #638a55;
+    background-color: #AE7F49;
     color: #fff;
 }
 .sign-up-btn:hover {
-    background-color: #638a55;
+    background-color: #AE7F49;
     color: #fff;
 }
 </style>
