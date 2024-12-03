@@ -386,7 +386,7 @@ const fetchTeamOptions = async () => {
 const fetchData = async () => {
     try {
         await store.dispatch('permissions/fetchPermissions');
-        debugger
+
         list.value = store.state.permissions.permissions; // Adjusted based on the store state
     } catch (error) {
         console.error("Failed to fetch permissions:", error);

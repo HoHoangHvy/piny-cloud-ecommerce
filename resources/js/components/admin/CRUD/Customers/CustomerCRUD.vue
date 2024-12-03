@@ -386,7 +386,7 @@ const fetchTeamOptions = async () => {
 const fetchData = async () => {
     try {
         await store.dispatch('customers/fetchCutomers');
-        debugger
+
         list.value = store.state.customers.customers; // Adjusted based on the store state
     } catch (error) {
         console.error("Failed to fetch customers:", error);

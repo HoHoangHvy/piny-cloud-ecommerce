@@ -32,7 +32,7 @@
                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
                                     </svg>
                                 </div>
-                                <input type="text" id="simple-search" placeholder="Search for Roles" required="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <input type="text" id="simple-search" placeholder="Search for roles" required="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             </div>
                         </form>
                     </div>
@@ -141,10 +141,10 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr v-if="store.getters['Roles/isLoading']">
+                        <tr v-if="store.getters['roles/isLoading']">
                             <td colspan="8" class="p-4 text-center">Loading...</td>
                         </tr>
-                        <tr v-if="!store.getters['Roles/isLoading'] && list.length === 0">
+                        <tr v-if="!store.getters['roles/isLoading'] && list.length === 0">
                             <td colspan="8" class="p-4 text-center">No data available.</td>
                         </tr>
                         </tbody>
@@ -213,44 +213,30 @@
                 <form @submit.prevent="handleCreateRole">
                     <div class="grid gap-4 mb-4 sm:grid-cols-2">
                         <div>
-                            <label for="full_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Full Name</label>
-                            <input v-model="form.full_name" type="text" id="full_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Full Name" required>
+                            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role Name</label>
+                            <input v-model="form.name" type="text" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Role Name" required>
                         </div>
                         <div>
-                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                            <input v-model="form.email" type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Email" required>
-                        </div>
-                        <div>
-                            <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                            <input v-model="form.phone_number" type="text" id="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Phone Number" required>
-                        </div>
-                        <div>
-                            <label for="date_of_birth" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
-                            <input v-model="form.date_of_birth" type="date" id="date_of_birth" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                        </div>
-                        <div>
-                            <label for="gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
-                            <select v-model="form.gender" id="gender" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                            <label for="guard_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Platform</label>
+                            <select v-model="form.guard_name" id="guard_name"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    required>
+                                <option value="web">Web</option>
+                                <option value="mobile">Mobile</option>
+                                <option value="both">Both</option>
                             </select>
                         </div>
                         <div>
-                            <label for="team_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Team</label>
-                            <select v-model="form.team_id" id="team_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                                <option v-for="team in store.getters['teams/allTeamsOption']" :value="team.id" :key="team.id">{{ team.name }}</option>
-                            </select>
+                            <label for="is_admin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Is admin</label>
+                            <input v-model="form.is_admin" type="checkbox" id="is_admin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                         </div>
                         <div>
-                            <label for="level" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Level</label>
-                            <input v-model="form.level" type="text" id="level" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Level" required>
-                        </div>
-                        <div>
-                            <label for="date_registered" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date Registered</label>
-                            <input v-model="form.date_registered" type="date" id="date_registered" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                            <label for="apply_team_visibility" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apply Team Visibility</label>
+                            <input v-model="form.apply_team_visibility" type="checkbox" id="is_admin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                         </div>
                     </div>
-                    <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
+                    <div class="sm:col-span-2"><label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label><textarea v-model="form.description" id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Write role description here"></textarea></div>
+                    <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 mt-4">
                         <button type="submit" class="w-full sm:w-auto justify-center text-white inline-flex bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Add role</button>
                         <button data-modal-toggle="create-role-modal" type="button" class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                             <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -349,21 +335,16 @@ let deleteModalInstance = null; // Modal instance
 // Reactive form data
 const form = reactive({
     name: '',
-    date_of_birth: '',
-    phone_number: '',
-    email: '',
-    gender: '',
-    level: '',
-    team_id: '',
-    date_registered: '',
+    guard_name: '',
+    is_admin: false,
+    apply_team_visibility: false,
+    description: '',
 });
 const formEdit = reactive({
-    id: null,
     name: '',
-    address: '',
-    city: '',
-    state: '',
-    ward: '',
+    guard_name: '',
+    is_admin: false,
+    apply_team_visibility: false,
     description: '',
 });
 
@@ -374,11 +355,11 @@ const fetchTeamOptions = async () => {
         console.error("Failed to fetch teams:", error);
     }
 }
-// Fetch Roles data from Vuex store
+// Fetch roles data from Vuex store
 const fetchData = async () => {
     try {
-        await store.dispatch('roles/fetchRoles');
-        debugger
+        await store.dispatch('roles/fetchroles');
+
         list.value = store.state.roles.roles; // Adjusted based on the store state
     } catch (error) {
         console.error("Failed to fetch roles:", error);
@@ -415,7 +396,7 @@ const handleCreateRole = async () => {
 // Handle update Role
 const handleUpdateRole = async () => {
     try {
-        await store.dispatch('Roles/updateRole', {
+        await store.dispatch('roles/updateRole', {
             id: formEdit.id,
             roleData: { ...formEdit },
         });
@@ -453,7 +434,7 @@ const openUpdateModal = (role) => {
 // Delete Role
 const handleDeleteRole = async (id) => {
     try {
-        await store.dispatch('Roles/deleteRole', id);
+        await store.dispatch('roles/deleteRole', id);
         notify({
             group: "foo",
             title: "Success",

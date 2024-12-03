@@ -40,7 +40,7 @@ export default {
             try {
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.get('/api/customers');
-                debugger
+
                 commit('SET_CUSTOMERS', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -66,7 +66,7 @@ export default {
         async createCustomer({ commit }, customerData) {
             commit('SET_LOADING', true);
             try {
-                debugger
+
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.post('/api/customers', customerData);
                 commit('ADD_CUSTOMER', response.data.data);

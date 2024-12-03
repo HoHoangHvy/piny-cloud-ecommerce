@@ -40,7 +40,7 @@ export default {
             try {
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.get('/api/roles');
-                debugger
+
                 commit('SET_ROLES', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -66,7 +66,7 @@ export default {
         async createRole({ commit }, roleData) {
             commit('SET_LOADING', true);
             try {
-                debugger
+
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.post('/api/roles', roleData);
                 commit('ADD_ROLE', response.data.data);

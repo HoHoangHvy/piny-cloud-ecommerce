@@ -3,11 +3,19 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasUuid;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Role extends \Spatie\Permission\Models\Role
 {
-    use HasFactory;
-    use HasUuid;
+    use HasFactory, HasUuid;
+
+    protected $fillable = [
+        'id',
+        'name',
+        'guard_name',
+        'description',
+        'is_admin',
+        'apply_team_visibility',
+    ];
 }
