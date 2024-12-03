@@ -29,6 +29,7 @@ import PermissionCRUD from "@/js/components/admin/CRUD/Pemissions/PermissionCRUD
 import RoleCRUD from "@/js/components/admin/CRUD/Roles/RoleCRUD.vue";
 import OrderCRUD from "@/js/components/admin/CRUD/Orders/OrderCRUD.vue";
 import CustomerCRUD from "@/js/components/admin/CRUD/Customers/CustomerCRUD.vue";
+import VoucherCRUD from "@/js/components/admin/CRUD/Vouchers/VoucherCRUD.vue";
 
 const routes = [
     {
@@ -237,6 +238,14 @@ const routes = [
                 component: CustomerCRUD,
                 meta: {
                     title: 'Customers'
+                }
+            },
+            {
+                path: 'vouchers',
+                name: 'vouchers',
+                component: VoucherCRUD,
+                meta: {
+                    title: 'Vouchers'
                 }
             },
         ]

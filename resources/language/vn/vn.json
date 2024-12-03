@@ -8,8 +8,10 @@
     "LBL_CUSTOMERS": "Khách hàng",
     "LBL_ORDERS": "Đơn hàng",
     "LBL_TEAMS": "Chi nhánh",
+    "LBL_VOUCHERS": "Khuyến mãi",
     "LBL_USER_MANAGEMENT": "Quản lý nguời dùng",
     "LBL_EMPLOYEES": "Nhân viên",
+    "LBL_USERS": "Người dùng",
     "LBL_PERMISSIONS": "Phân quyền",
     "LBL_ROLES": "Vai trò",
     "LBL_PRODUCTS": "Sản phẩm",
@@ -98,5 +100,16 @@
     "LBL_ALL_CUSTOMER": "Tất cả khách hàng",
     "LBL_ALL_ORDER": "Tất cả đơn hàng",
     "LBL_ALL_ROLE": "Tất cả vai trò",
-    "LBL_ALL_PERMISSION": "Tất cả quyền"
+    "LBL_ALL_PERMISSION": "Tất cả quyền",
+    "LBL_ALL_VOUCHER": "Tất cả khuyến mãi",
+    "LBL_NONE": "Cấm",
+    "LBL_ALLOWED": "Cho phép",
+    "LBL_OWNER": "Của tôi",
+    "LBL_ALL": "Tất cả",
+    "LBL_ACCESS": "Truy cập",
+    "LBL_VIEW": "Xem",
+    "LBL_DELETE": "Xóa",
+    "LBL_EDIT": "Sửa",
+    "LBL_CREATE": "Tạo mới",
+    "LBL_ROLE_DETAIL": "Chi tiết vai trò"
 }

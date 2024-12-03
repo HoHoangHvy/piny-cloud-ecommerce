@@ -53,6 +53,7 @@ export default {
         async fetchRole({ commit }, id) {
             commit('SET_LOADING', true);
             try {
+                debugger
                 const response = await axios.get(`/api/roles/${id}`);
                 commit('SET_ROLE', response.data.data);
                 commit('SET_ERROR', null);

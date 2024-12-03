@@ -8,11 +8,13 @@
     "LBL_CUSTOMERS": "Customers",
     "LBL_ORDERS": "Orders",
     "LBL_TEAMS": "Teams",
+    "LBL_VOUCHERS": "Vourchers",
     "LBL_USER_MANAGEMENT": "User Management",
     "LBL_PERMISSIONS": "Permissions",
     "LBL_ROLES": "Roles",
     "LBL_EMPLOYEES": "Employees",
     "LBL_PRODUCTS": "Products",
+    "LBL_USERS": "Users",
     "LBL_INTERNAL_MANAGEMENT": "Internal Management",
     "LBL_TYPE_TO_SEARCH": "Type to search...",
     "LBL_HOME": "Home",
@@ -98,6 +100,17 @@
     "LBL_ALL_CUSTOMER": "Customers",
     "LBL_ALL_ORDER": "Orders",
     "LBL_ALL_ROLE": "Roles",
-    "LBL_ALL_PERMISSION": "Permissions"
+    "LBL_ALL_PERMISSION": "Permissions",
+    "LBL_ALL_VOUCHER": "Vouchers",
+    "LBL_NONE": "None",
+    "LBL_ALLOWED": "Allowed",
+    "LBL_OWNER": "Owner",
+    "LBL_ALL": "All",
+    "LBL_ACCESS": "Access",
+    "LBL_VIEW": "View",
+    "LBL_DELETE": "Delete",
+    "LBL_EDIT": "Edit",
+    "LBL_CREATE": "Create",
+    "LBL_ROLE_DETAIL": "Role Detail"
 
 }
