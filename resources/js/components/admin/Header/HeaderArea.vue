@@ -65,7 +65,7 @@ const sidebarStore = useSidebarStore()
       <div class="flex items-center gap-3 2xsm:gap-7">
         <ul class="flex items-center gap-2 2xsm:gap-4">
             <!-- Sidebar Menu -->
-        <div class="inset-x-0 bottom-0 flex justify-center p-2 drop-shadow-3">
+        <div class="inset-x-0 bottom-0  flex justify-center p-2 drop-shadow-3">
             <LanguageSwitcher/>
         </div>
           <li>

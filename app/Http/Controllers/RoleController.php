@@ -11,7 +11,10 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::with('permissions')->get(); // Include permissions for each role
-        return response()->json($roles);
+        return response()->json([
+            'success' => true,
+            'data' => $roles
+        ], 200);
     }
 
     public function store(Request $request)
@@ -20,9 +23,9 @@ class RoleController extends Controller
         $role = Role::create(['name' => $request->name]);
 
         return response()->json([
-            'message' => 'Role created successfully.',
-            'role' => $role,
-        ]);
+            'success' => true,
+            'data' => $role
+        ], 200);
     }
 
     public function assignPermission(Request $request, Role $role)
@@ -32,9 +35,10 @@ class RoleController extends Controller
         $role->givePermissionTo($permission);
 
         return response()->json([
+            'success' => true,
             'message' => 'Permission assigned to role successfully.',
-            'role' => $role->load('permissions'),
-        ]);
+            'data' => $role->load('permissions')
+        ], 200);
     }
 
     public function revokePermission(Request $request, Role $role)
@@ -44,8 +48,9 @@ class RoleController extends Controller
         $role->revokePermissionTo($permission);
 
         return response()->json([
+            'success' => true,
             'message' => 'Permission revoked from role successfully.',
-            'role' => $role->load('permissions'),
-        ]);
+            'data' => $role->load('permissions')
+        ], 200);
     }
 }
