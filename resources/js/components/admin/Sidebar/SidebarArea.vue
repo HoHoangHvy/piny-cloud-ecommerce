@@ -108,7 +108,7 @@ const menuGroups = ref([
 
 <template>
     <aside
-        class="absolute left-0 top-0 z-99 flex h-screen w-72.5 flex-col bg-black duration-300 ease-linear dark:bg-boxdark overflow-visible"
+        class="absolute left-0 top-0 z-99 flex h-screen w-72.5 flex-col bg-primary duration-300 ease-linear dark:bg-boxdark overflow-visible drop-shadow-3"
         :class="{
       'translate-x-0': sidebarStore.isSidebarOpen,
       '-translate-x-full': !sidebarStore.isSidebarOpen,
@@ -126,7 +126,7 @@ const menuGroups = ref([
                         fill="white"/>
                 </svg>
             </router-link>
-            <button class="block absolute hide-sidebar-btn" @click="sidebarStore.isSidebarOpen = false">
+            <button class="block absolute hide-sidebar-btn bg-white drop-shadow-4" @click="sidebarStore.isSidebarOpen = false">
                 <svg
                     class="fill-current"
                     width="20"
@@ -141,7 +141,7 @@ const menuGroups = ref([
                     />
                 </svg>
             </button>
-            <span>{{ t('LBL_INTERNAL_MANAGEMENT') }}</span>
+            <span class="text-white">{{ t('LBL_INTERNAL_MANAGEMENT') }}</span>
         </div>
 
         <!-- SIDEBAR HEADER -->
@@ -151,7 +151,7 @@ const menuGroups = ref([
             <nav class="mt-5 py-4 px-4 lg:mt-9 lg:px-6" style="margin-top: 0rem !important;">
                 <template v-for="menuGroup in menuGroups" :key="menuGroup.name">
                     <div>
-                        <h3 class="mb-4 ml-4 text-sm font-medium text-bodydark2">{{ t(menuGroup.name) }}</h3>
+                        <h3 class="mb-4 ml-4 text-sm font-medium text-white">{{ t(menuGroup.name) }}</h3>
 
                         <ul class="mb-6 flex flex-col gap-1.5">
                             <SidebarItem
@@ -164,17 +164,12 @@ const menuGroups = ref([
                     </div>
                 </template>
             </nav>
-            <!-- Sidebar Menu -->
-            <div class="inset-x-0 bottom-0 flex justify-center p-2">
-                <LanguageSwitcher/>
-            </div>
         </div>
     </aside>
 </template>
 <style>
 .hide-sidebar-btn {
     border-radius: 50%;
-    background: #2c3e50;
     padding: 14px;
     top: 8.2%;
     right: -20px;

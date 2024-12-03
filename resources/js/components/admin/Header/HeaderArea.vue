@@ -4,6 +4,7 @@ import DarkModeSwitcher from './DarkModeSwitcher.vue'
 import DropdownMessage from './DropdownMessage.vue'
 import DropdownNotification from './DropdownNotification.vue'
 import DropdownUser from './DropdownUser.vue'
+import LanguageSwitcher from "@/js/components/admin/languageSwitcher.vue";
 
 const { toggleSidebar } = useSidebarStore()
 const sidebarStore = useSidebarStore()
@@ -63,6 +64,10 @@ const sidebarStore = useSidebarStore()
 
       <div class="flex items-center gap-3 2xsm:gap-7">
         <ul class="flex items-center gap-2 2xsm:gap-4">
+            <!-- Sidebar Menu -->
+        <div class="inset-x-0 bottom-0 flex justify-center p-2 drop-shadow-3">
+            <LanguageSwitcher/>
+        </div>
           <li>
             <!-- Dark Mode Toggler -->
             <DarkModeSwitcher />

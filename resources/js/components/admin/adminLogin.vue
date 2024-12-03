@@ -58,7 +58,7 @@ export default {
                             </div>
                             <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                         </div>
-                        <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-blue-600 dark:focus:ring-primary-800">Sign in</button>
+                        <button type="submit" class="w-full text-white bg-blue-700 hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Sign in</button>
                     </form>
                 </div>
             </div>
