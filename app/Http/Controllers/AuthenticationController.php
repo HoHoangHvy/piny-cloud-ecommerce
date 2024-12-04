@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\VerificationCode;
 use Illuminate\Http\JsonResponse;
@@ -44,6 +45,7 @@ class AuthenticationController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
+        $input['team_id'] = Team::where('name', 'Global')->first()->id;
         try {
             $check_unique_phone = User::where('phone_number', $input['phone_number'])->first();
             $check_unique_email = User::where('email', $input['email'])->first();
@@ -68,7 +70,7 @@ class AuthenticationController extends BaseController
                 $customer->user_id = $user->id;
                 $customer->save();
 
-                $user->assignRole('customer');
+                $user->assignRole('Customer');
             }
             // Fetch all permissions assigned to the user through their role(s)
             $permissions = $user->getAllPermissions();
@@ -97,7 +99,7 @@ class AuthenticationController extends BaseController
         }
         # Generate An OTP
         $verificationCode = $this->generateOtp($request->mobile_no);
-//        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
+        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
         return $this->sendResponse($verificationCode, 'OTP generated successfully.');
     }
     public function sendOtp($number, $otp)
@@ -220,18 +222,39 @@ class AuthenticationController extends BaseController
 
     public function authSuccess($user) : array {
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['user'] =  $user;
+        $success['user'] =  $user->load('roles');
         return $success;
     }
 
     public function me(Request $request): JsonResponse
     {
         try {
-            return $this->sendResponse($request->user(), 'User retrieved successfully.');
+            // Load roles but don't eager-load permissions under roles
+            $user = $request->user()->load('roles');
+
+            // Retrieve all permissions (including from roles)
+            $permissions = $this->reverseConvertPermission($user->getAllPermissions(), $user->is_admin);
+
+            // Remove permissions from the roles array if present
+            $roles = $user->roles->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'guard_name' => $role->guard_name,
+                ];
+            });
+
+            // Prepare the response
+            return $this->sendResponse([
+                'user' => $user->only(['id', 'name', 'email', 'user_type', 'phone_number', 'is_admin', 'team_id']), // Include only relevant user fields
+                'roles' => $roles, // Custom roles without permissions
+                'permissions' => $permissions // Permissions at the top level
+            ], 'User retrieved successfully.');
         } catch (\Exception $e) {
             return $this->sendError('User Not Found.', ['error' => $e->getMessage()]);
         }
     }
+
     public function logout(Request $request): JsonResponse
     {
         try {
@@ -242,4 +265,57 @@ class AuthenticationController extends BaseController
         }
     }
 
+    private $modules = ['users', 'products', 'orders', 'customers', 'categories', 'employees', 'vouchers', 'teams', 'roles'];
+
+    public function reverseConvertPermission($permissions, $is_admin)
+    {
+        $reversed_permissions = [];
+
+        // Define the available actions for each module
+        $all_actions = ['view', 'create', 'edit', 'delete'];
+
+        foreach ($permissions as $permission) {
+            // Split permission name into parts
+            $permission_parts = explode('_', $permission->name);
+
+            if (count($permission_parts) >= 2) {
+                $action = $permission_parts[0]; // 'view', 'create', 'update', etc.
+                $permission_type = !$is_admin ? $permission_parts[1] : 'all'; // 'permitted', 'owner', 'all', etc.
+                $module = $permission_parts[2] ?? $permission_parts[1]; // 'user', 'order', etc.
+
+                if ($module) {
+                    // Initialize the module if not already done
+                    if (!isset($reversed_permissions[$module])) {
+                        $reversed_permissions[$module] = [];
+                    }
+
+                    // Assign the permission type to the corresponding action for the module
+                    $reversed_permissions[$module][$action] = $permission_type;
+
+                    if($action == 'access' || $action == 'create') {
+                        if(!isset($reversed_permissions[$module][$action])) {
+                            $reversed_permissions[$module][$action] = 'none';
+                        } else {
+                            $reversed_permissions[$module][$action] = 'allowed';
+                        }
+
+                        if($is_admin) {
+                            $reversed_permissions[$module][$action] = 'allowed';
+                        }
+                    }
+                }
+            }
+        }
+        foreach ($this->modules as $module) {
+            if(!isset($reversed_permissions[$module])) {
+                $reversed_permissions[$module]['access'] = 'none';
+            }
+            foreach ($all_actions as $action) {
+                if (!isset($reversed_permissions[$module][$action])) {
+                    $reversed_permissions[$module][$action] = 'none'; // Set missing actions to 'none'
+                }
+            }
+        }
+        return $reversed_permissions;
+    }
 }

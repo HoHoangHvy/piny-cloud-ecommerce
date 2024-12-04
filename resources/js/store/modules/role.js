@@ -33,8 +33,26 @@ export default {
         SET_ERROR(state, error) {
             state.error = error;
         },
+        SET_ROLES_OPTIONS(state, roles) {
+            state.role_options = roles;
+        }
     },
     actions: {
+        async fetchRoleOptions({ commit }) {
+            commit('SET_LOADING', true);
+            try {
+                await axios.get('sanctum/csrf-cookie');
+                const response = await axios.get('/api/roles/options');
+                debugger
+                commit('SET_ROLES_OPTIONS', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching teams:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching teams.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
         async fetchRoles({ commit }) {
             commit('SET_LOADING', true);
             try {
@@ -107,6 +125,7 @@ export default {
         },
     },
     getters: {
+        allRolesOptions: (state) => state.role_options,
         allRoles: (state) => state.roles,
         singleRole: (state) => state.role,
         isLoading: (state) => state.loading,

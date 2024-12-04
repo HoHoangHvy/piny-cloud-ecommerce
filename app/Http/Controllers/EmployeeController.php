@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Team;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class EmployeeController extends Controller
             'date_registered' => 'required|date',
             'gender' => 'required|in:Male,Female',
             'team_id' => 'required|exists:teams,id',
+            'role_id' => 'required|exists:roles,id',
             'level' => 'required|in:Manager,Receptionist,Waiter',
         ]);
 
@@ -50,9 +52,9 @@ class EmployeeController extends Controller
 
             // Create the User first
             $user = User::create($userData);
-
+            $role = Role::find($request->input('role_id'));
             // Assign a role to the user
-            $user->assignRole('employee'); // Modify role as per your requirement
+            $user->assignRole($role->name); // Modify role as per your requirement
 
             // Now create the Employee and associate it with the created User
             $employee = Employee::create([

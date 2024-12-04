@@ -8,6 +8,7 @@ const state = {
     status: "",
 };
 const getters = {
+    role: state => state.user.roles[0],
     isLoggedIn: state => !!state.token,
     isAuthenticated: (state) => !!state.token,
     authStatus: (state) => state.status,
@@ -130,7 +131,7 @@ const actions = {
                         localStorage.setItem('token', token)
                         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
                         commit('authSuccess', {token, user})
-                        if(user.is_admin) {
+                        if(user.user_type == 'user') {
                             router.push('/admin')
                         } else {
                             router.push('/')

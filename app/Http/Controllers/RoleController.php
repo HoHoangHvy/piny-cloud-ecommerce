@@ -18,6 +18,24 @@ class RoleController extends Controller
             'data' => $roles
         ], 200);
     }
+    public function getRoleOptions()
+    {
+        // Retrieve all teams with only id and name fields
+        $roles = Role::all(['id', 'name']);
+
+        // Add the total number of employees to each team
+        $roles = $roles->map(function ($role) {
+            return [
+                'id' => $role->id,
+                'name' => $role->name,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $roles
+        ], 200);
+    }
 
     public function store(Request $request)
     {
