@@ -43,7 +43,12 @@ class RoleSeeder extends Seeder
 
         // Assign permissions to roles
         foreach ($roles as $roleName => $permissions) {
-            $role = Role::findOrCreate($roleName);
+            $role = Role::where('name', $roleName)->first();
+            if(!$role) {
+                $is_admin = $roleName == 'Administrator' ? 1 : 0;
+                $is_apply_team_visibility = $roleName == 'Administrator' ? 0 : 1;
+                $role = Role::create(['name' => $roleName, 'guard_name' => 'web', 'created_by' => '1', 'is_admin' => $is_admin, 'apply_team_visibility' => $is_apply_team_visibility]);
+            }
             $role->syncPermissions($permissions);
         }
     }

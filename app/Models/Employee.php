@@ -23,11 +23,15 @@ class Employee extends Model
     // Corrected relationship methods
     public function user()
     {
-        return $this->belongsTo(User::class); // Singular: "user"
+        return $this->belongsTo(User::class, 'user_id'); // Singular: "user"
     }
 
     public function team()
     {
         return $this->belongsTo(Team::class); // Singular: "team"
+    }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

@@ -28,6 +28,11 @@ return new class extends Migration
             $table->uuid('manually_created_by');
             $table->enum('source', ['Offline', 'Online'])->default('Offline');
             $table->softDeletes();
+            $table->uuid('team_id');
+            $table->uuid('created_by');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+
 
 
             //Foreign Keys

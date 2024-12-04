@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->enum('type', ['Food', 'Drink', 'Topping']);
             $table->softDeletes();
+            $table->uuid('team_id');
+
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
+
         });
     }
 

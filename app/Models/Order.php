@@ -17,4 +17,12 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    public function team()
+    {
+        return $this->belongsTo(Team::class); // Singular: "team"
+    }
 }

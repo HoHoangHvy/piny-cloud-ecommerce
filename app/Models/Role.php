@@ -30,4 +30,9 @@ class Role extends \Spatie\Permission\Models\Role
     {
         return (bool) $value; // Convert 1 to true, 0 to false
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

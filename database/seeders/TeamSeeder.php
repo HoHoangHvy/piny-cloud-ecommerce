@@ -14,14 +14,17 @@ class TeamSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::create([
-            'id' => Str::uuid(),
-            'name' => 'Global',
-            'address' => '',
-            'city' => '',
-            'state' => '',
-            'ward' => '',
-            'description' => 'Default team',
-        ]);
+        if(!Team::where('id', '1')->exists()) {
+            Team::create([
+                'id' => '1',
+                'name' => 'Global',
+                'address' => '',
+                'city' => '',
+                'state' => '',
+                'ward' => '',
+                'description' => 'Default team',
+                'created_by' => '1'
+            ]);
+        }
     }
 }

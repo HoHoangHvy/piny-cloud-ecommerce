@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('state');
             $table->string('ward');
             $table->string('description');
+            $table->uuid('created_by');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
         });
     }

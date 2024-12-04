@@ -55,5 +55,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Team::class);
     }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
 }

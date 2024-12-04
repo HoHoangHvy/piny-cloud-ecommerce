@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('phone_number')->unique();
             $table->string('email')->unique();
             $table->string('image')->nullable(); // Add this field for image
+            $table->uuid('created_by');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
 
             //Foreign Keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

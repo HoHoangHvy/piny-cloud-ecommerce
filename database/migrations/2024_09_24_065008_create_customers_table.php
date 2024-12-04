@@ -22,6 +22,10 @@ return new class extends Migration
             $table->string('phone_number')->unique();
             $table->string('email')->unique();
             $table->softDeletes();
+            $table->uuid('team_id');
+            $table->uuid('created_by');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
 
             //Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

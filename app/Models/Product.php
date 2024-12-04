@@ -49,5 +49,13 @@ class Product extends Model
     {
         return $this->image ? Storage::disk('s3')->url($this->image) : null;
     }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
+    public function team()
+    {
+        return $this->belongsTo(Team::class); // Singular: "team"
+    }
 }

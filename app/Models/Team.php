@@ -26,5 +26,9 @@ class Team extends Model
     {
         return $this->hasMany(Employee::class);
     }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
 }
