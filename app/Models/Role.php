@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasCreatedBy;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Role extends \Spatie\Permission\Models\Role
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasCreatedBy;
 
     protected $fillable = [
         'id',

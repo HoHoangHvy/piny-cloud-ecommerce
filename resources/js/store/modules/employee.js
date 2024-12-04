@@ -40,7 +40,7 @@ export default {
             try {
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.get('/api/employees');
-
+                debugger
                 commit('SET_EMPLOYEES', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {

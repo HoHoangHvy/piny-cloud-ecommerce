@@ -70,7 +70,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
 //    Route::post('/employees', [EmployeeController::class, 'store']);
 //    Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
-    Route::get('/employees', [EmployeeController::class, 'index']);
+//    Route::get('/employees', [EmployeeController::class, 'index']);
 
     //Team routes
 //    Route::post('/teams', [TeamController::class, 'store']);

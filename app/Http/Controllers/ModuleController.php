@@ -42,9 +42,11 @@ class ModuleController extends BaseController
             $data->map(function ($item) {
                 // Assuming `created_by` stores the user's ID
                 $user = \App\Models\User::find($item->created_by); // Get the user by ID
+                $team = \App\Models\Team::find($item->team_id); // Get the user by ID
 
                 // Map the created_by_name attribute
                 $item->created_by_name = $user ? $user->name : null; // Assign the user's name, or null if the user doesn't exist
+                $item->team_name = $team ? $team->name : null; // Assign the user's name, or null if the user doesn't exist
 
                 return $item;
             });

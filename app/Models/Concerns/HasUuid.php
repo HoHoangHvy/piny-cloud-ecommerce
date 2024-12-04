@@ -11,7 +11,6 @@ trait HasUuid
         static::creating(function ($model) {
             if (!$model->getKey()) {
                 $model->{$model->getKeyName()} = (string) Str::uuid();
-                $model->{'created_by'} = auth()->id();
             }
         });
     }
