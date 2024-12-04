@@ -23,7 +23,7 @@ const actions = {
             await axios.get('sanctum/csrf-cookie');
 
             // Make the registration request
-            const response = await axios.post('api/register', args);
+            const response = await axios.post('api/auth/register', args);
 
             // Extract token and user data from the response
             const { token, user } = response.data.data;
@@ -53,7 +53,7 @@ const actions = {
     },
     async signOut({commit}, args) {
         axios.get('sanctum/csrf-cookie').then(response => {
-            axios.post('api/logout', args)
+            axios.post('api/auth/logout', args)
                 .then(
                     response => {
                         if(response.data.success) {
@@ -77,7 +77,7 @@ const actions = {
             await axios.get('sanctum/csrf-cookie');
 
             // Make the registration request
-            const response = await axios.post('api/auth-otp', args);
+            const response = await axios.post('api/auth/auth-otp', args);
 
             // Extract token and user data from the response
             const { token, user } = response.data.data;
@@ -107,7 +107,7 @@ const actions = {
     },
     async genOtp({commit}, args) {
         axios.get('sanctum/csrf-cookie').then(response => {
-            axios.post('api/gen-otp', {mobile_no: args.mobile_phone})
+            axios.post('api/auth/gen-otp', {mobile_no: args.mobile_phone})
                 .then(
                     response => {
                         commit('genOtpSuccess', {user: {user_id: response.data.data.user_id}});
@@ -122,7 +122,7 @@ const actions = {
     },
     async login({commit}, user) {
         axios.get('/sanctum/csrf-cookie').then(response => {
-            axios.post('/api/login', user)
+            axios.post('/api/auth/login', user)
                 .then(
                     response => {
                         const res = response.data;

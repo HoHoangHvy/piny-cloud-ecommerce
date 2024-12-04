@@ -43,7 +43,7 @@ export default {
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
-                const response = await axios.get('/api/centers/options');
+                const response = await axios.get('/api/teams/options');
                 commit('SET_TEAMS_OPTIONS', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -57,7 +57,7 @@ export default {
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
-                const response = await axios.get('/api/centers');
+                const response = await axios.get('/api/teams');
                 commit('SET_TEAMS', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -70,7 +70,7 @@ export default {
         async fetchTeam({ commit }, id) {
             commit('SET_LOADING', true);
             try {
-                const response = await axios.get(`/api/centers/${id}`);
+                const response = await axios.get(`/api/teams/${id}`);
                 commit('SET_TEAM', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -84,7 +84,7 @@ export default {
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
-                const response = await axios.post('/api/centers', teamData);
+                const response = await axios.post('/api/teams', teamData);
                 commit('ADD_TEAM', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -97,7 +97,7 @@ export default {
         async updateTeam({ commit }, { id, teamData }) {
             commit('SET_LOADING', true);
             try {
-                const response = await axios.put(`/api/centers/${id}`, teamData);
+                const response = await axios.put(`/api/teams/${id}`, teamData);
                 commit('UPDATE_TEAM', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -110,7 +110,7 @@ export default {
         async deleteTeam({ commit }, id) {
             commit('SET_LOADING', true);
             try {
-                await axios.delete(`/api/centers/${id}`);
+                await axios.delete(`/api/teams/${id}`);
                 commit('DELETE_TEAM', id);
                 commit('SET_ERROR', null);
             } catch (error) {

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'phone_number',
         'user_type',
+        'created_by',
         'team_id'
     ];
 

@@ -15,6 +15,7 @@ class Team extends Model
         'city',
         'state',
         'ward',
+        'created_by',
         'description'
     ];
     public function vouchers()

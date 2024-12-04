@@ -18,6 +18,7 @@ class Employee extends Model
         'team_id',
         'level',
         'user_id',
+        'created_by',
         'date_registered',
     ];
     // Corrected relationship methods
