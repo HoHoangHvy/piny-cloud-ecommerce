@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Helpers\SpeedSMSAPI;
 use Twilio\Rest\Client;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\Permission;
+use App\Models\Role;
+
 
 class AuthenticationController extends BaseController
 {
@@ -45,7 +46,7 @@ class AuthenticationController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $input['team_id'] = Team::where('name', 'Global')->first()->id;
+        $input['team_id'] = '1';
         try {
             $check_unique_phone = User::where('phone_number', $input['phone_number'])->first();
             $check_unique_email = User::where('email', $input['email'])->first();
@@ -61,25 +62,19 @@ class AuthenticationController extends BaseController
 
             // Assign role and permissions to the user
             if ($user->user_type == 'customer') {
-                $customer = new Customer();
-                $customer->full_name = $user->name;
-                $customer->phone_number = $user->phone_number;
-                $customer->email = $user->email;
-                $customer->gender = $input['gender'];
-                $customer->date_of_birth = $input['date_of_birth'];
-                $customer->user_id = $user->id;
-                $customer->save();
-
+                Customer::create([
+                    'full_name' => $user->name,
+                    'phone_number' => $user->phone_number,
+                    'email' => $user->email,
+                    'gender' => $input['gender'],
+                    'date_of_birth' => $input['date_of_birth'],
+                    'team_id' => '1',
+                    'user_id' => $user->id
+                ]);
                 $user->assignRole('Customer');
             }
-            // Fetch all permissions assigned to the user through their role(s)
-            $permissions = $user->getAllPermissions();
 
-            // You can include permissions into your token if needed
-            $permissionsArray = $permissions->pluck('name')->toArray();
-
-            // Create the token and attach all the permissions
-            $success['token'] = $user->createToken('MyApp', $permissionsArray, now()->addMinutes(60))->plainTextToken;
+            $success['token'] = $user->createToken('MyApp')->plainTextToken;
             $success['name'] = $user->name;
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), ['error' => $e->getMessage()]);
@@ -233,7 +228,7 @@ class AuthenticationController extends BaseController
             $user = $request->user()->load('roles');
 
             // Retrieve all permissions (including from roles)
-            $permissions = $this->reverseConvertPermission($user->getAllPermissions(), $user->is_admin);
+            $permissions = Permission::reverseConvertPermission($user->getAllPermissions(), $user->is_admin);
 
             // Remove permissions from the roles array if present
             $roles = $user->roles->map(function ($role) {
@@ -248,7 +243,8 @@ class AuthenticationController extends BaseController
             return $this->sendResponse([
                 'user' => $user->only(['id', 'name', 'email', 'user_type', 'phone_number', 'is_admin', 'team_id']), // Include only relevant user fields
                 'roles' => $roles, // Custom roles without permissions
-                'permissions' => $permissions // Permissions at the top level
+                'permissions' => $permissions, // Permissions at the top level
+                'visible_module' => $this->getVisibleModules($user, $permissions), // Visible modules based on user's role
             ], 'User retrieved successfully.');
         } catch (\Exception $e) {
             return $this->sendError('User Not Found.', ['error' => $e->getMessage()]);
@@ -258,64 +254,30 @@ class AuthenticationController extends BaseController
     public function logout(Request $request): JsonResponse
     {
         try {
+            $user_type = $request->user()->user_type;
             $request->user()->tokens()->delete();
-            return $this->sendResponse([], 'User logged out successfully.');
+            return $this->sendResponse(['user_type' => $user_type], 'User logged out successfully.');
         } catch (\Exception $e) {
             return $this->sendError('User Logout Failed.', ['error' => $e->getMessage()]);
         }
     }
 
-    private $modules = ['users', 'products', 'orders', 'customers', 'categories', 'employees', 'vouchers', 'teams', 'roles'];
-
-    public function reverseConvertPermission($permissions, $is_admin)
+    private function getVisibleModules($user, $permissions)
     {
-        $reversed_permissions = [];
-
-        // Define the available actions for each module
-        $all_actions = ['view', 'create', 'edit', 'delete'];
-
-        foreach ($permissions as $permission) {
-            // Split permission name into parts
-            $permission_parts = explode('_', $permission->name);
-
-            if (count($permission_parts) >= 2) {
-                $action = $permission_parts[0]; // 'view', 'create', 'update', etc.
-                $permission_type = !$is_admin ? $permission_parts[1] : 'all'; // 'permitted', 'owner', 'all', etc.
-                $module = $permission_parts[2] ?? $permission_parts[1]; // 'user', 'order', etc.
-
-                if ($module) {
-                    // Initialize the module if not already done
-                    if (!isset($reversed_permissions[$module])) {
-                        $reversed_permissions[$module] = [];
-                    }
-
-                    // Assign the permission type to the corresponding action for the module
-                    $reversed_permissions[$module][$action] = $permission_type;
-
-                    if($action == 'access' || $action == 'create') {
-                        if(!isset($reversed_permissions[$module][$action])) {
-                            $reversed_permissions[$module][$action] = 'none';
-                        } else {
-                            $reversed_permissions[$module][$action] = 'allowed';
-                        }
-
-                        if($is_admin) {
-                            $reversed_permissions[$module][$action] = 'allowed';
-                        }
-                    }
+        $system_modules = app('modules');
+        if (!$user->is_admin) {
+            $visibleModules = ['calendar', 'dashboard'];
+            foreach($permissions as $module => $permission) {
+                if ($permission['access'] === 'none') {
+                    $excludeModule[] = $module;
                 }
             }
-        }
-        foreach ($this->modules as $module) {
-            if(!isset($reversed_permissions[$module])) {
-                $reversed_permissions[$module]['access'] = 'none';
+            foreach(array_diff($system_modules, $excludeModule) as $module) {
+                $visibleModules[] = $module;
             }
-            foreach ($all_actions as $action) {
-                if (!isset($reversed_permissions[$module][$action])) {
-                    $reversed_permissions[$module][$action] = 'none'; // Set missing actions to 'none'
-                }
-            }
+            return $visibleModules;
         }
-        return $reversed_permissions;
+
+        return $system_modules;
     }
 }

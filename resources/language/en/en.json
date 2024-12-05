@@ -111,6 +111,8 @@
     "LBL_DELETE": "Delete",
     "LBL_EDIT": "Edit",
     "LBL_CREATE": "Create",
+    "LBL_CATEGORIES": "Categories",
+    "LBL_ALL_CATEGORIES": "Categories",
     "LBL_ROLE_DETAIL": "Role Detail"
 
 }

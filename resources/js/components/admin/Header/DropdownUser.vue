@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 import { ref } from 'vue'
+import router from "@/js/router/index.js";
 
 const target = ref(null)
 const dropdownOpen = ref(false)
@@ -10,6 +11,9 @@ const store = useStore()
 onClickOutside(target, () => {
   dropdownOpen.value = false
 })
+const triggerLogOut = async () => {
+  await store.dispatch('signOut');
+}
 </script>
 
 <template>
@@ -125,6 +129,7 @@ onClickOutside(target, () => {
         </li>
       </ul>
       <button
+          @click="triggerLogOut"
         class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
       >
         <svg

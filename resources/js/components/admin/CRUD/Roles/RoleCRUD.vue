@@ -192,8 +192,8 @@
                                     </svg>
                                 </div>
                             </td>
-                            <td class="p-4">{{ formatDate(item.updated_at) }}</td>
-                            <td class="p-4">{{ formatDate(item.created_at) }}</td>
+                            <td class="p-4">{{ formatDateTime(item.updated_at) }}</td>
+                            <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
                                     <button type="button" @click="openUpdateModal(item.id)"
@@ -418,7 +418,7 @@
         </div>
     </div>
     <!-- drawer component -->
-    <form action="#" id="drawer-update-role"
+    <div id="drawer-update-role"
           class="fixed top-0 left-0 z-999 w-full h-screen max-w-3xl p-4 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800"
           tabindex="-1" aria-labelledby="drawer-update-role-label" aria-hidden="true">
         <h5 id="drawer-label"
@@ -434,7 +434,7 @@
             <span class="sr-only">Close menu</span>
         </button>
         <div class="grid gap-4 sm:grid-cols-1 sm:gap-6">
-            <form @submit.prevent="handleUpdateRole">
+            <form action="#">
                 <div>
                     <div class="grid gap-4 mb-4 sm:grid-cols-2">
                         <div>
@@ -479,7 +479,7 @@
                         placeholder="Write role description here"></textarea></div>
                 </div>
                 <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 mt-4 justify-end">
-                    <button @click="showEditPermission = false" v-show="showEditPermission == true" type="button"
+                    <button @click="showEditPermission = false" v-show="showEditPermission === true" type="button"
                             class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                              stroke="currentColor" class="size-4 mr-1">
@@ -488,12 +488,12 @@
                         </svg>
                         <span>Hide</span>
                     </button>
-                    <button @click="showEditPermission = true" v-show="showEditPermission == false" type="button"
+                    <button @click="showEditPermission = true" v-show="showEditPermission === false" type="button"
                             class="w-full sm:w-auto justify-center text-white inline-flex bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
                         <span>Show</span>
                     </button>
                 </div>
-                <div class="pt-6" v-show="showEditPermission == true">
+                <div class="pt-6" v-show="showEditPermission === true">
                     <div class="overflow-x-auto shadow-md sm:rounded-lg">
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -531,25 +531,24 @@
                     </div>
                 </div>
             </form>
-
+            <div class="grid grid-cols-2 gap-4 mt-6 sm:w-1/2">
+                <button @click="handleUpdateRole" type="submit"
+                        class="text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
+                    Update Role
+                </button>
+                <button @click="deletRole" type="button"
+                        class="text-red-600 inline-flex justify-center items-center hover:text-white hover:bg-red-800 border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                    <svg aria-hidden="true" class="w-5 h-5 mr-1 -ml-1" fill="currentColor" viewbox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                    Delete
+                </button>
+            </div>
         </div>
-        <div class="grid grid-cols-2 gap-4 mt-6 sm:w-1/2">
-            <button @click="updateRole" type="submit"
-                    class="text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
-                Update Role
-            </button>
-            <button @click="deletRole" type="button"
-                    class="text-red-600 inline-flex justify-center items-center hover:text-white hover:bg-red-800 border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-                <svg aria-hidden="true" class="w-5 h-5 mr-1 -ml-1" fill="currentColor" viewbox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clip-rule="evenodd"/>
-                </svg>
-                Delete
-            </button>
-        </div>
-    </form>
+    </div>
     <!-- Delete Modal -->
     <div id="delete-modal" tabindex="-1"
          class="fixed top-0 left-0 right-0 z-999 hidden p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center">
@@ -592,7 +591,7 @@ import {reactive, ref, onMounted} from 'vue';
 import {useStore} from 'vuex';
 import {initFlowbite, Drawer, Modal} from 'flowbite';
 import {notify} from 'notiwind';
-import {formatDate} from "@/js/helpers/dateFormat.js";
+import {formatDateTime} from "@/js/helpers/dateFormat.js";
 
 const store = useStore();
 const list = ref([]);
@@ -677,6 +676,7 @@ const form = reactive({
     permissions: permissions
 });
 const formEdit = reactive({
+    id: '',
     name: '',
     guard_name: '',
     is_admin: false,
@@ -742,7 +742,6 @@ const handleUpdateRole = async () => {
             text: "Role updated successfully!",
         }, 4000);
         fetchData();
-        updateDrawerInstance.hide(); // Close the update drawer
     } catch (error) {
         notify({
             group: "foo",
@@ -758,7 +757,7 @@ const openUpdateModal = async (id) => {
     await store.dispatch('roles/fetchRole', id);
     let roleDetail = store.state.roles.role.role;
     let permissionDetail = store.state.roles.role.permissions;
-    debugger
+    formEdit.id = roleDetail.id;
     formEdit.name = roleDetail.name;
     formEdit.guard_name = roleDetail.guard_name;
     formEdit.is_admin = roleDetail.is_admin;

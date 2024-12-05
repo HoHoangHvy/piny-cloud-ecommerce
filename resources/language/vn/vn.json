@@ -111,5 +111,7 @@
     "LBL_DELETE": "Xóa",
     "LBL_EDIT": "Sửa",
     "LBL_CREATE": "Tạo mới",
+    "LBL_CATEGORIES": "Danh mục",
+    "LBL_ALL_CATEGORIES": "Tất cả danh mục",
     "LBL_ROLE_DETAIL": "Chi tiết vai trò"
 }

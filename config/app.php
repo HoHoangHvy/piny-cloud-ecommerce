@@ -28,6 +28,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Laravel\Fortify\FortifyServiceProvider::class,
         App\Providers\CarbonServiceProvider::class,
+        App\Providers\ModuleServiceProvider::class,
     ])->toArray(),
 
     'aliases' => Facade::defaultAliases()->merge([

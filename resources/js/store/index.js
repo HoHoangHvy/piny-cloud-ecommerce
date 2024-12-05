@@ -9,6 +9,7 @@ import users from './modules/user';
 import customers from './modules/customer';
 import orders from './modules/order';
 import vouchers from './modules/voucher';
+import categories from './modules/category';
 
 
 const store = createStore({
@@ -21,6 +22,7 @@ const store = createStore({
         users,
         customers,
         vouchers,
+        categories,
         orders
     },
     plugins: [createPersistedState()]

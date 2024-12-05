@@ -132,7 +132,7 @@
                             <td class="p-4">{{ item.phone_number }}</td>
                             <td class="p-4">{{ item.email }}</td>
                             <td class="p-4">{{ item.team.name }}</td>
-                            <td class="p-4">{{ formatDate(item.created_at) }}</td>
+                            <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
                                     <button type="button" @click="openUpdateModal(item.id)" data-drawer-target="drawer-update-user" data-drawer-show="drawer-update-user"  class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
@@ -346,7 +346,7 @@ import { reactive, ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { initFlowbite, Drawer, Modal } from 'flowbite';
 import { notify } from 'notiwind';
-import { formatDate } from "@/js/helpers/dateFormat.js";
+import {formatDate, formatDateTime} from "@/js/helpers/dateFormat.js";
 
 const store = useStore();
 const list = ref([]);

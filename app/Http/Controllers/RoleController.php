@@ -53,7 +53,7 @@ class RoleController extends Controller
                 'is_admin' => $request->is_admin ? 1 : 0,
                 'apply_team_visibility' => $request->apply_team_visibility ? 1 : 0,
             ]);
-            $converted_permission = $this->convertPermission($request->permissions);
+            $converted_permission = Permission::convertPermission($request->permissions);
             foreacH($converted_permission as $permission) {
                 $permission = Permission::where('name', $permission)->first();
                 $role->givePermissionTo($permission);
@@ -70,26 +70,7 @@ class RoleController extends Controller
             'data' => $role
         ], 200);
     }
-    public function convertPermission($permissions)
-    {
-        $converted_permission = [];
-        foreach ($permissions as $module => $actions)
-        {
-            foreach ($actions as $action => $permission)
-            {
-                if (($action == 'access' || $action == 'create') && $permission == 'allowed')
-                {
-                    $converted_permission[] = $action . '_' . $module;
-                    continue;
-                }
-                if ($permission != 'none')
-                {
-                    $converted_permission[] = $action . '_' . $permission . '_' . $module;
-                }
-            }
-        }
-        return $converted_permission;
-    }
+
     public function assignPermission(Request $request, Role $role)
     {
         $request->validate(['permission' => 'required|exists:permissions,name']);
@@ -135,7 +116,7 @@ class RoleController extends Controller
             ]);
 
             // Convert and update permissions
-            $converted_permission = $this->convertPermission($request->permissions);
+            $converted_permission = Permission::convertPermission($request->permissions);
 
             // Detach existing permissions and assign new ones
             $role->syncPermissions([]);  // Detach all permissions first
@@ -167,7 +148,7 @@ class RoleController extends Controller
         $role->load('permissions');
 
         // Convert the stored permissions back to the original structure
-        $permissions = $this->reverseConvertPermission($role->permissions);
+        $permissions = Permission::reverseConvertPermission($role->permissions);
         unset($role->permissions); // Remove the permissions attribute from the role object
         return response()->json([
             'success' => true,
@@ -177,7 +158,6 @@ class RoleController extends Controller
             ]
         ], 200);
     }
-    private $modules = ['users', 'products', 'orders', 'customers', 'categories', 'employees', 'vouchers', 'teams', 'roles'];
 
     public function reverseConvertPermission($permissions)
     {
@@ -214,7 +194,7 @@ class RoleController extends Controller
                 }
             }
         }
-        foreach ($this->modules as $module) {
+        foreach (app('modules') as $module) {
             if(!isset($reversed_permissions[$module])) {
                 $reversed_permissions[$module]['access'] = 'none';
             }

@@ -37,21 +37,12 @@ Route::middleware(['auth:sanctum'])->group(function(){
         ->name('logout');
 
     //Role & Permission routes
-//    Route::get('/roles', [RoleController::class, 'index']);
-//    Route::post('/roles', [RoleController::class, 'store']);
     Route::get('/roles/options', [RoleController::class, 'getRoleOptions']);
     Route::get('/roles/{role}', [RoleController::class, 'getDetail']);
     Route::put('/roles/{role}', [RoleController::class, 'update']);
     Route::post('/roles/{role}/assign-permission', [RoleController::class, 'assignPermission']);
     Route::post('/roles/{role}/revoke-permission', [RoleController::class, 'revokePermission']);
 
-    // Permission routes
-//    Route::get('/permissions', [PermissionController::class, 'index']);
-//    Route::post('/permissions', [PermissionController::class, 'store']);
-
-    // User role and permission routes
-//    Route::get('/users', [UserController::class, 'index']);
-//    Route::post('/users', [UserController::class, 'store']);
 
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::put('/users/{user}', [UserController::class, 'update']);
@@ -61,20 +52,14 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/users/{user}/roles', [UserController::class, 'getRoles']);
 
     //Products routes
-//    Route::post('/products', [ProductController::class, 'store']);
-//    Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
     Route::get('/products', [ProductController::class, 'index']);
 
 //    //Employees routes
-//    Route::post('/employees', [EmployeeController::class, 'store']);
-//    Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
+    Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
-//    Route::get('/employees', [EmployeeController::class, 'index']);
 
     //Team routes
-//    Route::post('/teams', [TeamController::class, 'store']);
-//    Route::put('/teams/{center}', [TeamController::class, 'update']);
     Route::delete('/teams/{center}', [TeamController::class, 'destroy']);
     Route::get('/teams', [TeamController::class, 'index']);
     Route::get('/teams/options', [TeamController::class, 'getTeamOptions']);

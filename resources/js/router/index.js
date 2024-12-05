@@ -30,6 +30,7 @@ import RoleCRUD from "@/js/components/admin/CRUD/Roles/RoleCRUD.vue";
 import OrderCRUD from "@/js/components/admin/CRUD/Orders/OrderCRUD.vue";
 import CustomerCRUD from "@/js/components/admin/CRUD/Customers/CustomerCRUD.vue";
 import VoucherCRUD from "@/js/components/admin/CRUD/Vouchers/VoucherCRUD.vue";
+import CategoryCRUD from "@/js/components/admin/CRUD/Categories/CategoryCRUD.vue";
 
 const routes = [
     {
@@ -248,6 +249,14 @@ const routes = [
                     title: 'Vouchers'
                 }
             },
+            {
+                path: 'categories',
+                name: 'categories',
+                component: CategoryCRUD,
+                meta: {
+                    title: 'Categories'
+                }
+            },
         ]
     },
     {
@@ -256,7 +265,7 @@ const routes = [
         component: AdminLogin,
         meta: {
             permission: 'owner',
-            requiresAuth: false
+            requiresAuthLogin: true
         }
     },
 ]
@@ -272,6 +281,14 @@ router.beforeEach((to, from, next) => {
         }
         next('admin/login')
     } else {
+        debugger
+        if(to.matched.some(record => record.meta.requiresAuthLogin)) {
+            if (store.getters.isLoggedIn && store.getters.userType === 'user') {
+                next('/admin')
+                return
+            }
+            next()
+        }
         if(to.matched.some(record => record.meta.requiresAuth)) {
             if (store.getters.isLoggedIn && store.getters.userType === 'customer') {
                 next()

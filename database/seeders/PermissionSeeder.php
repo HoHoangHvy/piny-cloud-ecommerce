@@ -14,7 +14,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         // Define your modules and actions
-        $modules = ['users', 'products', 'orders', 'customers', 'categories', 'employees', 'vouchers', 'teams', 'roles'];
+        $modules = app('modules');
         $actions = ['view', 'edit', 'delete'];
 
         // Define the permission levels (owner, all, permitted)
