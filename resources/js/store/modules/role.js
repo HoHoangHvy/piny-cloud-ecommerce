@@ -43,7 +43,7 @@ export default {
             try {
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.get('/api/roles/options');
-                debugger
+
                 commit('SET_ROLES_OPTIONS', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {

@@ -281,7 +281,7 @@ router.beforeEach((to, from, next) => {
         }
         next('admin/login')
     } else {
-        debugger
+
         if(to.matched.some(record => record.meta.requiresAuthLogin)) {
             if (store.getters.isLoggedIn && store.getters.userType === 'user') {
                 next('/admin')

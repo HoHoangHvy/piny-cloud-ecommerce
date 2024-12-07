@@ -48,7 +48,7 @@
                     </div>
                     <div
                         class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                        <button type="button" id="createEmployeeButton" data-modal-target="create-Employee-modal"
+                        <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'create'})" type="button" id="createEmployeeButton" data-modal-target="create-Employee-modal"
                                 data-modal-toggle="create-Employee-modal"
                                 class="flex items-center justify-center text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-primary-800">
                             <svg class="h-3.5 w-3.5 mr-1.5 -ml-1" fill="currentColor" viewbox="0 0 20 20"
@@ -180,7 +180,7 @@
                             <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
-                                    <button type="button" @click="openUpdateModal(item.id)"
+                                    <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item.id)"
                                             data-drawer-target="drawer-update-employee"
                                             data-drawer-show="drawer-update-employee"
                                             class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
@@ -193,7 +193,7 @@
                                                   clip-rule="evenodd"/>
                                         </svg>
                                     </button>
-                                    <button type="button" @click="openDeleteModal(item.id)"
+                                    <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'delete', 'created_by': item.created_by})" type="button" @click="openDeleteModal(item.id)"
                                             class="flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewbox="0 0 20 20"
                                              fill="currentColor" aria-hidden="true">
@@ -530,6 +530,7 @@ const showDrawer = ref(false); // Reactive state for drawer visibility
 let updateDrawerInstance = null; // Drawer instance
 let deleteModalInstance = null; // Modal instance
 
+const moduleName = 'employees';
 // Reactive form data
 const form = reactive({
     name: '',

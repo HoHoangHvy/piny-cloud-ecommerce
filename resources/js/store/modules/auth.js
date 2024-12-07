@@ -15,11 +15,32 @@ const getters = {
     modules: state => state.visibleModule,
     role: state => state.role,
     isLoggedIn: state => !!state.token,
-    isAuthenticated: (state) => !!state.token,
-    authStatus: (state) => state.status,
-    isAdmin: (state) => state.user ? state.user.is_admin : false,
     userType: (state) => state.user ? state.user.user_type : null,
     user: (state) => state.user,
+    hasPermission: (state) => (args) => {
+        console.log(args)
+        console.log(state.permissions)
+        let module =  state.permissions[args.module];
+        let action = args.action;
+        let permission = module[args.action];
+        let created_by = args.created_by;
+
+        if(!module || !permission) {
+            return false;
+        }
+
+        //Create have allowed or none
+        //Delete, edit -> all, owner, none
+        switch (action) {
+            case 'create':
+                return permission === 'allowed';
+            case 'delete':
+            case 'edit':
+                return permission === 'all' || (permission === 'owner' && created_by === state.user.id);
+            default:
+                return false;
+        }
+    },
 };
 const actions = {
     async signUp({ commit }, args) {
@@ -57,7 +78,7 @@ const actions = {
         }
     },
     async signOut({commit}, args) {
-        debugger
+
         axios.get('sanctum/csrf-cookie').then(response => {
             axios.post('api/auth/logout', args)
                 .then(
@@ -141,7 +162,7 @@ const actions = {
                         localStorage.setItem('token', token)
                         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
                         commit('authSuccess', {token})
-                        debugger
+
                         axios.get('/api/auth/me').then(
                             response => {
                                 store.commit('setUser', response.data.data); // Example with Vuex; adjust as needed
@@ -164,7 +185,7 @@ const actions = {
 };
 const mutations = {
     setUser(state, args) {
-        debugger
+
         state.user = args.user;
         state.role = args.roles[0];
         state.permissions = args.permissions;
