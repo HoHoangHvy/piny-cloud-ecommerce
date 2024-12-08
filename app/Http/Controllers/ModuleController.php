@@ -72,8 +72,11 @@ class ModuleController extends BaseController
             } else if ($request->isMethod('put')) {
                 $method = 'update';
             }
-            if(!$this->hasPermission($module, $method, $request->user())) {
-                return response()->json(['error' => 'Dont have permission to take this action'], 402);
+            $curr_user = $request->user();
+            if(!$curr_user->is_admin) {
+                if(!$this->hasPermission($module, $method, $curr_user)) {
+                    return response()->json(['error' => 'Dont have permission to take this action'], 402);
+                }
             }
             $module_name = rtrim($module, 's');
             // Dynamically resolve the controller name based on the module
@@ -98,7 +101,7 @@ class ModuleController extends BaseController
         }
     }
     private function hasPermission($module, $action, $current_user) {
-        if($action == "create") {
+        if($action == "store") {
             $permission_to_check = 'create_' . strtolower($module);
             return $current_user->can($permission_to_check);
         } else if($action == "update") {

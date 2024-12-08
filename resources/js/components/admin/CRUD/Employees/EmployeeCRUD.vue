@@ -48,7 +48,7 @@
                     </div>
                     <div
                         class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                        <button  type="button" id="createEmployeeButton" data-modal-target="create-Employee-modal"
+                        <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'create'})" type="button" id="createEmployeeButton" data-modal-target="create-Employee-modal"
                                 data-modal-toggle="create-Employee-modal"
                                 class="flex items-center justify-center text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-primary-800">
                             <svg class="h-3.5 w-3.5 mr-1.5 -ml-1" fill="currentColor" viewbox="0 0 20 20"
