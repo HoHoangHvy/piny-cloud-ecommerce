@@ -102,14 +102,11 @@
                                     <label for="checkbox-all" class="sr-only">checkbox</label>
                                 </div>
                             </th>
-                            <th scope="col" class="p-4">Category</th>
-                            <th scope="col" class="p-4">Gender</th>
-                            <th scope="col" class="p-4">Level</th>
-                            <th scope="col" class="p-4">Date of Birth</th>
-                            <th scope="col" class="p-4">Phone</th>
-                            <th scope="col" class="p-4">Email</th>
+                            <th scope="col" class="p-4">Name</th>
+                            <th scope="col" class="p-4">Description</th>
+                            <th scope="col" class="p-4">Type</th>
                             <th scope="col" class="p-4">Team</th>
-                            <th scope="col" class="p-4">Create At</th>
+                            <th scope="col" class="p-4">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -125,17 +122,13 @@
                                     <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                                 </div>
                             </td>
-                            <td class="p-4">{{ item.full_name }}</td>
-                            <td class="p-4">{{ item.gender }}</td>
-                            <td class="p-4">{{ item.level }}</td>
-                            <td class="p-4">{{ formatDateTime(item.date_of_birth) }}</td>
-                            <td class="p-4">{{ item.phone_number }}</td>
-                            <td class="p-4">{{ item.email }}</td>
-                            <td class="p-4">{{ item.team.name }}</td>
-                            <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
+                            <td class="p-4">{{ $lang(item.name) }}</td>
+                            <td class="p-4">{{ item.description }}</td>
+                            <td class="p-4">{{ item.type }}</td>
+                            <td class="p-4">{{ item.team_name }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
-                                    <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item.id)" data-drawer-target="drawer-update-category" data-drawer-show="drawer-update-category"  class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
+                                    <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item.id)" data-drawer-target="drawer-update-category" data-drawer-show="drawer-update-category" class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
                                             <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
@@ -150,10 +143,10 @@
                             </td>
                         </tr>
                         <tr v-if="store.getters['Categories/isLoading']">
-                            <td colspan="8" class="p-4 text-center">Loading...</td>
+                            <td colspan="6" class="p-4 text-center">Loading...</td>
                         </tr>
                         <tr v-if="!store.getters['Categories/isLoading'] && list.length === 0">
-                            <td colspan="8" class="p-4 text-center">No data available.</td>
+                            <td colspan="6" class="p-4 text-center">No data available.</td>
                         </tr>
                         </tbody>
                     </table>
@@ -221,26 +214,19 @@
                 <form @submit.prevent="handleCreateCategory">
                     <div class="grid gap-4 mb-4 sm:grid-cols-2">
                         <div>
-                            <label for="full_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Full Name</label>
-                            <input v-model="form.full_name" type="text" id="full_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Full Name" required>
+                            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                            <input v-model="form.name" type="text" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Category Name" required>
                         </div>
                         <div>
-                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                            <input v-model="form.email" type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Email" required>
+                            <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                            <input v-model="form.description" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Category Description">
                         </div>
                         <div>
-                            <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                            <input v-model="form.phone_number" type="text" id="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Phone Number" required>
-                        </div>
-                        <div>
-                            <label for="date_of_birth" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
-                            <input v-model="form.date_of_birth" type="date" id="date_of_birth" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                        </div>
-                        <div>
-                            <label for="gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
-                            <select v-model="form.gender" id="gender" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                            <label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
+                            <select v-model="form.type" id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <option value="Food">Food</option>
+                                <option value="Drink">Drink</option>
+                                <option value="Topping">Topping</option>
                             </select>
                         </div>
                         <div>
@@ -249,17 +235,9 @@
                                 <option v-for="team in store.getters['teams/allTeamsOption']" :value="team.id" :key="team.id">{{ team.name }}</option>
                             </select>
                         </div>
-                        <div>
-                            <label for="level" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Level</label>
-                            <input v-model="form.level" type="text" id="level" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Level" required>
-                        </div>
-                        <div>
-                            <label for="date_registered" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date Registered</label>
-                            <input v-model="form.date_registered" type="date" id="date_registered" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                        </div>
                     </div>
                     <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
-                        <button type="submit" class="w-full sm:w-auto justify-center text-white inline-flex bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Add category</button>
+                        <button type="submit" class="w-full sm:w-auto justify-center text-white inline-flex bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Add Category</button>
                         <button data-modal-toggle="create-category-modal" type="button" class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                             <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -270,8 +248,7 @@
                 </form>
             </div>
         </div>
-    </div>
-    <!-- drawer component -->
+    </div>    <!-- drawer component -->
     <form action="#" id="drawer-update-category" class="fixed top-0 left-0 z-999 w-full h-screen max-w-3xl p-4 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-update-category-label" aria-hidden="true">
         <h5 id="drawer-label" class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400">Edit Category</h5>
         <button type="button" data-drawer-dismiss="drawer-update-category" aria-controls="drawer-update-category" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
@@ -359,22 +336,17 @@ const moduleName = 'categories';
 // Reactive form data
 const form = reactive({
     name: '',
-    date_of_birth: '',
-    phone_number: '',
-    email: '',
-    gender: '',
-    level: '',
+    description: '',
+    type: '',
     team_id: '',
-    date_registered: '',
 });
+
 const formEdit = reactive({
     id: null,
     name: '',
-    address: '',
-    city: '',
-    state: '',
-    ward: '',
     description: '',
+    type: '',
+    team_id: '',
 });
 
 const fetchTeamOptions = async () => {
@@ -384,11 +356,11 @@ const fetchTeamOptions = async () => {
         console.error("Failed to fetch teams:", error);
     }
 }
+
 // Fetch Categories data from Vuex store
 const fetchData = async () => {
     try {
         await store.dispatch('categories/fetchCategories');
-
         list.value = store.state.categories.categories; // Adjusted based on the store state
     } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -405,7 +377,7 @@ const handleCreateCategory = async () => {
             text: "Category created successfully!",
         }, 4000);
         resetForm();
-        fetchData(); // Refresh the list after creating an category
+        fetchData(); // Refresh the list after creating a category
     } catch (error) {
         notify({
             group: "foo",
@@ -415,17 +387,19 @@ const handleCreateCategory = async () => {
         console.error(error);
     }
 };
- const triggerNoti = () => {
-        notify({
-            group: "foo",
-            title: "Success",
-            text: "Category created successfully!",
-        }, 4000);
-    }
+
+const triggerNoti = () => {
+    notify({
+        group: "foo",
+        title: "Success",
+        text: "Category created successfully!",
+    }, 4000);
+}
+
 // Handle update Category
 const handleUpdateCategory = async () => {
     try {
-        await store.dispatch('Categories/updateCategory', {
+        await store.dispatch('categories/updateCategory', {
             id: formEdit.id,
             categoryData: { ...formEdit },
         });
@@ -450,11 +424,9 @@ const handleUpdateCategory = async () => {
 const openUpdateModal = (category) => {
     formEdit.id = category.id;
     formEdit.name = category.name;
-    formEdit.address = category.address;
-    formEdit.city = category.city;
-    formEdit.state = category.state;
-    formEdit.ward = category.ward;
     formEdit.description = category.description;
+    formEdit.type = category.type;
+    formEdit.team_id = category.team_id;
     if (updateDrawerInstance) {
         updateDrawerInstance.show();
     }
@@ -463,7 +435,7 @@ const openUpdateModal = (category) => {
 // Delete Category
 const handleDeleteCategory = async (id) => {
     try {
-        await store.dispatch('Categories/deleteCategory', id);
+        await store.dispatch('categories/deleteCategory', id);
         notify({
             group: "foo",
             title: "Success",
@@ -484,11 +456,9 @@ const handleDeleteCategory = async (id) => {
 // Reset form fields
 const resetForm = () => {
     form.name = '';
-    form.address = '';
-    form.city = '';
-    form.state = '';
-    form.ward = '';
     form.description = '';
+    form.type = '';
+    form.team_id = '';
 };
 
 // Initialize the drawer and modal instances

@@ -9,6 +9,9 @@ class ModuleController extends BaseController
     {
         try {
             $module_name = rtrim($module, 's');
+            if(array_key_exists($module, $this->specific_module)) {
+                $module_name = $this->specific_module[$module];
+            }
             // Dynamically resolve the model name based on the module
             $modelName = 'App\\Models\\' . ucfirst($module_name);
 
@@ -56,11 +59,16 @@ class ModuleController extends BaseController
             return $this->sendError($e->getMessage(), $e->getCode());
         }
     }
+    private $specific_module = [
+        'categories' => 'category',
+    ];
     private function addOwnerVisibility($query, $current_user) {
         return $query->where('created_by', $current_user->id);
     }
     private function addTeamVisibility($query, $current_user) {
-        return $query->where('team_id', $current_user->team_id);
+        return $query->where('team_id', $current_user->team_id)
+            ->orWhere('team_id', '1');
+        ;
     }
     public function save(Request $request, $module)
     {

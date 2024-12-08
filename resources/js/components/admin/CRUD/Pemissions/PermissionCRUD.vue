@@ -131,7 +131,7 @@
                             <td class="p-4">{{ formatDateTime(item.date_of_birth) }}</td>
                             <td class="p-4">{{ item.phone_number }}</td>
                             <td class="p-4">{{ item.email }}</td>
-                            <td class="p-4">{{ item.team.name }}</td>
+                            <td class="p-4">{{ item.team_name }}</td>
                             <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">

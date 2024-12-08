@@ -136,7 +136,7 @@
                             <td class="p-4">{{ item.discount_amount }}</td>
                             <td class="p-4">{{ item.discount_percent }}</td>
                             <td class="p-4">{{ item.limit }}</td>
-                            <td class="p-4">{{ item.team.name }}</td>
+                            <td class="p-4">{{ item.team_name }}</td>
                             <td class="p-4">{{ item.created_by.name }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">

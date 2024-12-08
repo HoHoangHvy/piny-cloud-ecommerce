@@ -113,6 +113,13 @@
     "LBL_CREATE": "Create",
     "LBL_CATEGORIES": "Categories",
     "LBL_ALL_CATEGORIES": "Categories",
-    "LBL_ROLE_DETAIL": "Role Detail"
-
+    "LBL_ROLE_DETAIL": "Role Detail",
+    "LBL_COFFEE": "Coffee",
+    "LBL_0_DEGREE_FRUIT_SMOOTHIES": "0-Degree Fruit Smoothies",
+    "LBL_FRUIT_TEA_HITEA": "Fruit Tea - HiTea",
+    "LBL_MILK_TEA": "Milk Tea",
+    "LBL_GREEN_TEA_CHOCOLATE": "Green Tea - Chocolate",
+    "LBL_BLENDED_BEVERAGES": "Blended Beverages",
+    "LBL_CAKES_AND_SNACKS": "Cakes & Snacks",
+    "LBL_ENJOY_AT_HOME": "Enjoy at Home"
 }
