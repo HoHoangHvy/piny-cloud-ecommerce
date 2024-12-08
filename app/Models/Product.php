@@ -23,9 +23,9 @@ class Product extends Model
         'up_l_price',
         'is_topping',
     ];
-    public function category()
+    public function categories()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class)->withTimestamps();
     }
     public function tags()
     {
@@ -58,5 +58,9 @@ class Product extends Model
     public function team()
     {
         return $this->belongsTo(Team::class); // Singular: "team"
+    }
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
     }
 }

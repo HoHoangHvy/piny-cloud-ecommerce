@@ -3,6 +3,7 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
+        categories_option: [], // Stores all categories
         categories: [], // Stores all categories
         category: null, // Stores a single category (for details/editing)
         loading: false, // Tracks loading state
@@ -14,6 +15,9 @@ export default {
         },
         SET_CATEGORY(state, category) {
             state.category = category;
+        },
+        SET_CATEGORIES_OPTION(state, category) {
+            state.categories_option = category;
         },
         ADD_CATEGORY(state, category) {
             state.categories.push(category);
@@ -35,6 +39,20 @@ export default {
         },
     },
     actions: {
+        async fetchCategoriesOptions({ commit }) {
+            commit('SET_LOADING', true);
+            try {
+                await axios.get('sanctum/csrf-cookie');
+                const response = await axios.get('/api/categories/options');
+                commit('SET_CATEGORIES_OPTION', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching teams:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching teams.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
         async fetchCategories({ commit }) {
             commit('SET_LOADING', true);
             try {
@@ -106,6 +124,7 @@ export default {
         },
     },
     getters: {
+        allCategoriesOptions: (state) => state.categories_option,
         allCategories: (state) => state.categories,
         singleCategories: (state) => state.category,
         isLoading: (state) => state.loading,

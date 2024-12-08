@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import defaultTheme from 'tailwindcss/defaultTheme'
+const plugin = require('tailwind-scrollbar');
 export default {
   content: [
     "./resources/**/*.blade.php",
@@ -315,7 +316,8 @@ export default {
     }
   },
   plugins: [
-      require('flowbite/plugin')
+      require('flowbite/plugin'),
+      plugin({ nocompatible: true }), // Enable scrollbar plugin
   ]
 }
 

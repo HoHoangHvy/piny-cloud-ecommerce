@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Models\Team;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -17,7 +19,24 @@ class CategoryController extends Controller
         $categories = Category::withTrashed()->get(); // Include soft-deleted records
         return response()->json($categories);
     }
+    public function getCategoryOptions(): JsonResponse
+    {
+        // Retrieve all teams with only id and name fields
+        $categories = Category::all(['id', 'name']);
 
+        // Add the total number of employees to each team
+        $categories = $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ], 200);
+    }
     /**
      * Store a newly created category in storage.
      */

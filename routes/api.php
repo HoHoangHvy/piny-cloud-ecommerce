@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeamController;
@@ -53,7 +54,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     //Products routes
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
-    Route::get('/products', [ProductController::class, 'index']);
 
     //Employees routes
     Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
@@ -63,11 +63,19 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/teams/{center}', [TeamController::class, 'destroy']);
     Route::get('/teams', [TeamController::class, 'index']);
     Route::get('/teams/options', [TeamController::class, 'getTeamOptions']);
+    Route::get('/categories/options', [\App\Http\Controllers\CategoryController::class, 'getCategoryOptions']);
+    Route::get('/products/toppings', [\App\Http\Controllers\ProductController::class, 'getToppingOptions']);
 
+    //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);
     Route::get('/{module}/{id}', [\App\Http\Controllers\ModuleController::class, 'show']);
     Route::post('/{module}', [\App\Http\Controllers\ModuleController::class, 'save']);
-    Route::put('/{module}', [\App\Http\Controllers\ModuleController::class, 'save']);
+    Route::put('/{module}/{id}', [\App\Http\Controllers\ModuleController::class, 'save']);
+    Route::delete('/{module}', [\App\Http\Controllers\ModuleController::class, 'delete']);
+
+    //Image api
+    Route::get('/images/{imageName}', [ImageController::class, 'getImage']);
+    Route::post('/upload-image', [ImageController::class, 'upload']);
 
 });
 

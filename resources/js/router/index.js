@@ -19,7 +19,7 @@ import productDetailPage from "../components/admin/productDetailPage.vue";
 import UserInfoPage from "../components/admin/UserInfoPage.vue";
 import MenuView from "@/js/components/page/MenuView.vue";
 import OrderPage from "../components/page/orderPage.vue";
-import ProductList from "@/js/components/admin/CRUD/Products/ProductList.vue";
+import ProductCRUD from "@/js/components/admin/CRUD/Products/ProductCRUD.vue";
 
 import store from "@/js/store/index.js";
 import EmployeeCRUD from "@/js/components/admin/CRUD/Employees/EmployeeCRUD.vue";
@@ -188,7 +188,7 @@ const routes = [
             {
                 path: 'products',
                 name: 'products',
-                component: ProductList,
+                component: ProductCRUD,
                 meta: {
                     title: 'Products'
                 }

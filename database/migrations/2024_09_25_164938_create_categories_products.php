@@ -11,8 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories_products', function (Blueprint $table) {
-            $table->uuid('id')->primary();;
+        Schema::create('category_product', function (Blueprint $table) {
             $table->timestamps();
             $table->uuid('category_id');
             $table->uuid('product_id');
@@ -20,6 +19,7 @@ return new class extends Migration
             //Foreign Keys
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->primary(['category_id', 'product_id']);
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories_products');
+        Schema::dropIfExists('category_product');
     }
 };

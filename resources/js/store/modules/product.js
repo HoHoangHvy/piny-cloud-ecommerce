@@ -3,6 +3,7 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
+        toppings: [], // Stores all toppings
         products: [], // Stores all products
         product: null, // Stores a single product (for details/editing)
         loading: false, // Tracks loading state
@@ -33,8 +34,25 @@ export default {
         SET_ERROR(state, error) {
             state.error = error;
         },
+        SET_TOPPINGS_OPTION(state, toppings) {
+            state.toppings = toppings;
+        }
     },
     actions: {
+        async fetchToppingOptions({ commit }) {
+            commit('SET_LOADING', true);
+            try {
+                await axios.get('sanctum/csrf-cookie');
+                const response = await axios.get('/api/products/toppings');
+                commit('SET_TOPPINGS_OPTION', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching toppings:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching toppings.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
         async fetchProducts({ commit }) {
             commit('SET_LOADING', true);
             try {
@@ -66,9 +84,12 @@ export default {
         async createProduct({ commit }, productData) {
             commit('SET_LOADING', true);
             try {
-
                 await axios.get('sanctum/csrf-cookie');
-                const response = await axios.post('/api/products', productData);
+                const response = await axios.post('/api/products', productData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data', // Ensure this header is set
+                    },
+                });
                 commit('ADD_PRODUCT', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -81,7 +102,9 @@ export default {
         async updateProduct({ commit }, { id, productData }) {
             commit('SET_LOADING', true);
             try {
+                debugger
                 const response = await axios.put(`/api/products/${id}`, productData);
+
                 commit('UPDATE_PRODUCT', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
@@ -106,6 +129,7 @@ export default {
         },
     },
     getters: {
+        toppingsOption: (state) => state.toppings,
         allProducts: (state) => state.products,
         singleProduct: (state) => state.product,
         isLoading: (state) => state.loading,
