@@ -55,7 +55,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
     Route::get('/products', [ProductController::class, 'index']);
 
-//    //Employees routes
+    //Employees routes
     Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
 
@@ -65,7 +65,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/teams/options', [TeamController::class, 'getTeamOptions']);
 
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);
-    Route::post('/{module}', [\App\Http\Controllers\ModuleController::class, 'create']);
+    Route::post('/{module}', [\App\Http\Controllers\ModuleController::class, 'save']);
+    Route::put('/{module}', [\App\Http\Controllers\ModuleController::class, 'save']);
 
 });
 

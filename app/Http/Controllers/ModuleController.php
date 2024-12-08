@@ -62,9 +62,19 @@ class ModuleController extends BaseController
     private function addTeamVisibility($query, $current_user) {
         return $query->where('team_id', $current_user->team_id);
     }
-    public function create(Request $request, $module)
+    public function save(Request $request, $module)
     {
         try {
+            //Check the request is POST or PUT
+            $method = '';
+            if ($request->isMethod('post')) {
+                $method = 'store';
+            } else if ($request->isMethod('put')) {
+                $method = 'update';
+            }
+            if(!$this->hasPermission($module, $method, $request->user())) {
+                return response()->json(['error' => 'Dont have permission to take this action'], 402);
+            }
             $module_name = rtrim($module, 's');
             // Dynamically resolve the controller name based on the module
             $controllerName = 'App\\Http\\Controllers\\' . ucfirst($module_name) . 'Controller';
@@ -77,9 +87,6 @@ class ModuleController extends BaseController
             // Instantiate the controller
             $controller = app($controllerName);
 
-            // Define a method for creating data, e.g., "store"
-            $method = 'store';
-
             if (!method_exists($controller, $method)) {
                 return response()->json(['error' => 'Method not found in controller'], 404);
             }
@@ -89,5 +96,16 @@ class ModuleController extends BaseController
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+    private function hasPermission($module, $action, $current_user) {
+        if($action == "create") {
+            $permission_to_check = 'create_' . strtolower($module);
+            return $current_user->can($permission_to_check);
+        } else if($action == "update") {
+            $permission_all = 'edit_all_' . strtolower($module);
+            $permission_owner = 'edit_owner_' . strtolower($module);
+            return $current_user->can($permission_all) || $current_user->can($permission_owner);
+        }
+        return false;
     }
 }

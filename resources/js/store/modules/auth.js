@@ -18,8 +18,6 @@ const getters = {
     userType: (state) => state.user ? state.user.user_type : null,
     user: (state) => state.user,
     hasPermission: (state) => (args) => {
-        console.log(args)
-        console.log(state.permissions)
         let module =  state.permissions[args.module];
         let action = args.action;
         let permission = module[args.action];

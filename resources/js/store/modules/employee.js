@@ -1,4 +1,5 @@
 import axios from "axios";
+import {notify} from 'notiwind';
 
 export default {
     namespaced: true,
@@ -65,12 +66,24 @@ export default {
         async createEmployee({ commit }, employeeData) {
             commit('SET_LOADING', true);
             try {
-
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.post('/api/employees', employeeData);
+                notify({
+                    group: "foo",
+                    title: "Success",
+                    text: "Employee created successfully!",
+                }, 4000);
                 commit('ADD_EMPLOYEE', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
+                debugger
+                if(error.response.status === 402) {
+                    notify({
+                        group: "error",
+                        title: "Error",
+                        text: "You dont have permission to create new employee!",
+                    }, 4000);
+                }
                 console.error('Error creating employee:', error);
                 commit('SET_ERROR', error.response?.data || 'Error creating employee.');
             } finally {
