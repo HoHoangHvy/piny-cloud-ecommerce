@@ -53,6 +53,7 @@ export default {
         async fetchVoucher({ commit }, id) {
             commit('SET_LOADING', true);
             try {
+                debugger
                 const response = await axios.get(`/api/vouchers/${id}`);
                 commit('SET_VOUCHER', response.data.data);
                 commit('SET_ERROR', null);

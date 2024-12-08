@@ -7,7 +7,7 @@ use App\Http\Requests\UpdateVoucherRequest;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 
-class VoucherController extends Controller
+class VoucherController extends BaseController
 {
     /**
      * Display a listing of vouchers.
@@ -24,7 +24,7 @@ class VoucherController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'vourcher_code' => 'required|string|unique:vouchers,vourcher_code|max:255',
+            'vourcher_code' => 'required|string|unique:vouchers|max:255',
             'status' => 'required|in:active,inactive',
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
@@ -32,12 +32,12 @@ class VoucherController extends Controller
             'discount_amount' => 'required_if:discount_type,fixed|numeric|min:0',
             'discount_percent' => 'required_if:discount_type,percent|numeric|min:0|max:100',
             'limit' => 'required|integer|min:1',
-            'config' => 'required|json',
-            'team_id' => 'required|uuid|exists:teams,id',
-            'created_by' => 'required|uuid|exists:users,id',
+            'teams_id' => 'required|array|min:1', // Ensure it's a list
+            'teams_id.*' => 'exists:teams,id',
         ]);
-
+        $validated['config'] = '{}';
         $voucher = Voucher::create($validated);
+        $voucher->teams()->attach($validated['teams_id']);
 
         return response()->json(['message' => 'Voucher created successfully.', 'data' => $voucher], 201);
     }
@@ -48,8 +48,12 @@ class VoucherController extends Controller
     public function show(string $id)
     {
         $voucher = Voucher::findOrFail($id);
+        $voucher['teams_id'] = $voucher->teams()->pluck('id');
 
-        return response()->json($voucher);
+        return response()->json([
+            'success' => true,
+            'data' => $voucher
+        ], 200);
     }
 
     /**

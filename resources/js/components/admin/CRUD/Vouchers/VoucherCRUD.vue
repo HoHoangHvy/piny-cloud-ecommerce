@@ -6,7 +6,7 @@
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                     <div class="flex-1 flex items-center space-x-2">
                         <h5>
-                            <span class="text-gray-500">{{$lang('LBL_ALL_VOUCHERS')}}: </span>
+                            <span class="text-gray-500">{{$lang('LBL_ALL_VOUCHER')}}: </span>
                             <span class="dark:text-white">123456</span>
                         </h5>
                         <h5 class="text-gray-500 dark:text-gray-400 ml-1">1-100 (436)</h5>
@@ -128,7 +128,7 @@
                                     <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                                 </div>
                             </td>
-                            <td class="p-4">{{ item.voucher_code }}</td>
+                            <td class="p-4">{{ item.vourcher_code }}</td>
                             <td class="p-4">{{ item.status }}</td>
                             <td class="p-4">{{ formatDateTime(item.start_date) }}</td>
                             <td class="p-4">{{ formatDateTime(item.end_date) }}</td>
@@ -137,7 +137,7 @@
                             <td class="p-4">{{ item.discount_percent }}</td>
                             <td class="p-4">{{ item.limit }}</td>
                             <td class="p-4">{{ item.team_name }}</td>
-                            <td class="p-4">{{ item.created_by.name }}</td>
+                            <td class="p-4">{{ item.created_by_name }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
                                     <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item.id)" data-drawer-target="drawer-update-voucher" data-drawer-show="drawer-update-voucher" class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
@@ -225,8 +225,8 @@
                 <form @submit.prevent="handleCreateVoucher">
                     <div class="grid gap-4 mb-4 sm:grid-cols-2">
                         <div>
-                            <label for="voucher_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Voucher Code</label>
-                            <input v-model="form.voucher_code" type="text" id="voucher_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Voucher Code" required>
+                            <label for="vourcher_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Voucher Code</label>
+                            <input v-model="form.vourcher_code" type="text" id="vourcher_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Voucher Code" required>
                         </div>
                         <div>
                             <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
@@ -262,12 +262,15 @@
                             <label for="limit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Limit</label>
                             <input v-model="form.limit" type="number" id="limit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Limit" required>
                         </div>
-                        <div>
-                            <label for="team_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Team</label>
-                            <select v-model="form.team_id" id="team_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                                <option v-for="team in store.getters['teams/allTeamsOption']" :value="team.id" :key="team.id">{{ team.name }}</option>
-                            </select>
-                        </div>
+                    </div>
+                    <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                        <label for="team_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apply on Teams</label>
+                        <Multiselect
+                            v-model="form.teams_id"
+                            :options="options"
+                            :close-on-select="false"
+                            mode="multiple"
+                        />
                     </div>
                     <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
                         <button type="submit" class="w-full sm:w-auto justify-center text-white inline-flex bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Add Voucher</button>
@@ -292,10 +295,10 @@
         </button>
         <div class="grid gap-4 sm:grid-cols-1 sm:gap-6 ">
             <div class="grid gap-4 mb-4 sm:grid-cols-2">
-                <div class="grid gap-4 sm:col-span-2 md:gap-6 sm:grid-cols-1">
+                <div class="grid gap-4 sm:col-span-2 md:gap-6 sm:grid-cols-2">
                     <div>
-                        <label for="voucher_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Voucher Code</label>
-                        <input v-model="formEdit.voucher_code" type="text" name="voucher_code" id="voucher_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Voucher Code" required="">
+                        <label for="vourcher_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Voucher Code</label>
+                        <input v-model="formEdit.vourcher_code" type="text" name="vourcher_code" id="vourcher_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Voucher Code" required="">
                     </div>
                     <div>
                         <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
@@ -331,13 +334,16 @@
                         <label for="limit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Limit</label>
                         <input v-model="formEdit.limit" type="number" name="limit" id="limit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Limit" required="">
                     </div>
-                    <div>
-                        <label for="team_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Team</label>
-                        <select v-model="formEdit.team_id" id="team_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                            <option v-for="team in store.getters['teams/allTeamsOption']" :value="team.id" :key="team.id">{{ team.name }}</option>
-                        </select>
-                    </div>
                 </div>
+            </div>
+            <div class="grid gap-4 mb-4 sm:grid-cols-1">
+                <label for="team_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apply on Teams</label>
+                <Multiselect
+                    v-model="formEdit.teams_id"
+                    :options="options"
+                    :close-on-select="false"
+                    mode="multiple"
+                />
             </div>
         </div>
         <div class="grid grid-cols-2 gap-4 mt-6 sm:w-1/2">
@@ -377,33 +383,52 @@ import { useStore } from 'vuex';
 import { initFlowbite, Drawer, Modal } from 'flowbite';
 import { notify } from 'notiwind';
 import { formatDateTime } from "@/js/helpers/dateFormat.js";
-
+import Multiselect from '@vueform/multiselect'
 
 // Initialize Vuex store
 const store = useStore();
 const list = ref([]);
 const showDrawer = ref(false); // Reactive state for drawer visibility
 let updateDrawerInstance = null; // Drawer instance
-let deleteModelInstance = null; // Drawer instance
+let deleteModalInstance = null; // Modal instance
+
+const fetchTeamOptions = async () => {
+    try {
+        await store.dispatch('teams/fetchTeamOptions');
+        store.getters['teams/allTeamsOption'].forEach((team) => {
+            options.value[team.id] = team.name;
+        });
+    } catch (error) {
+        console.error("Failed to fetch teams:", error);
+    }
+}
+
 
 const moduleName = 'vouchers';
-
+const options = ref({});
 // Reactive form data
 const form = reactive({
-    name: '',
-    address: '',
-    city: '',
-    state: '',
-    ward: '',
-    description: '',
+    teams_id: [],
+    vourcher_code: '',
+    status: 'active',
+    start_date: '',
+    end_date: '',
+    discount_type: 'percent',
+    discount_amount: 0,
+    discount_percent: 0,
+    limit: 0,
 });
+
 const formEdit = reactive({
-    name: '',
-    address: '',
-    city: '',
-    state: '',
-    ward: '',
-    description: '',
+    vourcher_code: '',
+    status: 'active',
+    start_date: '',
+    end_date: '',
+    discount_type: 'percent',
+    discount_amount: 0,
+    discount_percent: 0,
+    limit: 0,
+    teams_id: [],
 });
 
 // Fetch vouchers data from Vuex store
@@ -425,7 +450,7 @@ const handleCreateVoucher = async () => {
             title: "Success",
             text: "Voucher created successfully!",
         }, 4000);
-        resetForm();
+        // resetForm();
         fetchData(); // Refresh the list after creating a voucher
     } catch (error) {
         notify({
@@ -437,26 +462,77 @@ const handleCreateVoucher = async () => {
     }
 };
 
+// Handle update voucher
+const updateVoucher = async () => {
+    try {
+        await store.dispatch('vouchers/updateVoucher', { id: formEdit.id, ...formEdit });
+        notify({
+            group: "foo",
+            title: "Success",
+            text: "Voucher updated successfully!",
+        }, 4000);
+        updateDrawerInstance.hide();
+        fetchData(); // Refresh the list after updating a voucher
+    } catch (error) {
+        notify({
+            group: "foo",
+            title: "Error",
+            text: "An error occurred while updating the voucher",
+        }, 2000);
+        console.error(error);
+    }
+};
+
+// Handle delete voucher
+const deleteVoucher = async () => {
+    try {
+        await store.dispatch('vouchers/deleteVoucher', formEdit.id);
+        notify({
+            group: "foo",
+            title: "Success",
+            text: "Voucher deleted successfully!",
+        }, 4000);
+        deleteModalInstance.hide();
+        fetchData(); // Refresh the list after deleting a voucher
+    } catch (error) {
+        notify({
+            group: "foo",
+            title: "Error",
+            text: "An error occurred while deleting the voucher",
+        }, 2000);
+        console.error(error);
+        console.error(error);
+    }
+};
+
 // Drawer open/close logic
-const openUpdateModal = (voucherId) => {
-    if (updateDrawerInstance) {
+const openUpdateModal = async (voucherId) => {
+    await store.dispatch('vouchers/fetchVoucher', voucherId);
+    if (store.getters["vouchers/singleVoucher"]) {
+        Object.assign(formEdit, store.getters["vouchers/singleVoucher"]);
         updateDrawerInstance.show();
     }
 };
+
 const openDeleteModal = (voucherId) => {
-    if (deleteModelInstance) {
-        deleteModelInstance.show();
+    const voucher = list.value.find(v => v.id === voucherId);
+    if (voucher) {
+        Object.assign(formEdit, voucher);
+        deleteModalInstance.show();
     }
 };
 
 // Reset form fields
 const resetForm = () => {
-    form.name = '';
-    form.address = '';
-    form.city = '';
-    form.state = '';
-    form.ward = '';
-    form.description = '';
+    form.vourcher_code = '';
+    form.status = 'active';
+    form.start_date = '';
+    form.end_date = '';
+    form.discount_type = 'percent';
+    form.discount_amount = 0;
+    form.discount_percent = 0;
+    form.limit = 0;
+    form.team_id = null;
 };
 
 // Initialize the drawer and other dependencies on mount
@@ -465,7 +541,7 @@ onMounted(() => {
     initFlowbite();
 
     const $updateDrawer = document.getElementById('drawer-update-voucher');
-    const $deleteModel = document.getElementById('delete-modal')
+    const $deleteModal = document.getElementById('delete-modal');
     const drawerOptions = {
         placement: 'left',
         backdrop: true,
@@ -481,8 +557,7 @@ onMounted(() => {
     const modalOptions = {
         placement: 'bottom-right',
         backdrop: 'dynamic',
-        backdropClasses:
-            'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+        backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
         closable: true,
         onHide: () => {
             console.log('modal is hidden');
@@ -494,10 +569,10 @@ onMounted(() => {
             console.log('modal has been toggled');
         },
     };
-
+    fetchTeamOptions();
     // Initialize Drawer instance
     updateDrawerInstance = new Drawer($updateDrawer, drawerOptions);
-    deleteModelInstance = new Modal($deleteModel, modalOptions);
-
+    deleteModalInstance = new Modal($deleteModal, modalOptions);
 });
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>

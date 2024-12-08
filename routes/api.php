@@ -65,6 +65,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/teams/options', [TeamController::class, 'getTeamOptions']);
 
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);
+    Route::get('/{module}/{id}', [\App\Http\Controllers\ModuleController::class, 'show']);
     Route::post('/{module}', [\App\Http\Controllers\ModuleController::class, 'save']);
     Route::put('/{module}', [\App\Http\Controllers\ModuleController::class, 'save']);
 

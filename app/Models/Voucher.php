@@ -10,6 +10,17 @@ use Illuminate\Database\Eloquent\Model;
 class Voucher extends Model
 {
     use HasFactory, HasUuid, HasCreatedBy;
+    protected $fillable = [
+        'vourcher_code',
+        'status',
+        'start_date',
+        'end_date',
+        'discount_type',
+        'discount_amount',
+        'discount_percent',
+        'config',
+        'limit'
+    ];
     public function teams()
     {
         return $this->belongsToMany(Team::class);

@@ -68,7 +68,6 @@ class ModuleController extends BaseController
     private function addTeamVisibility($query, $current_user) {
         return $query->where('team_id', $current_user->team_id)
             ->orWhere('team_id', '1');
-        ;
     }
     public function save(Request $request, $module)
     {
@@ -119,4 +118,37 @@ class ModuleController extends BaseController
         }
         return false;
     }
+    public function show(Request $request, $module, $id)
+    {
+        try {
+            $method = 'show';
+            $curr_user = $request->user();
+            if(!$curr_user->is_admin) {
+                if(!$this->hasPermission($module, $method, $curr_user)) {
+                    return response()->json(['error' => 'Dont have permission to take this action'], 402);
+                }
+            }
+            $module_name = rtrim($module, 's');
+            // Dynamically resolve the controller name based on the module
+            $controllerName = 'App\\Http\\Controllers\\' . ucfirst($module_name) . 'Controller';
+
+            // Check if the controller exists
+            if (!class_exists($controllerName)) {
+                return response()->json(['error' => 'Controller not found'], 404);
+            }
+
+            // Instantiate the controller
+            $controller = app($controllerName);
+
+            if (!method_exists($controller, $method)) {
+                return response()->json(['error' => 'Method not found in controller'], 404);
+            }
+
+            // Call the method and pass the request
+            return app()->call([$controller, $method], ['request' => $request, 'id' => $id]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }
