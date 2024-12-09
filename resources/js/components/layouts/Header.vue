@@ -96,8 +96,8 @@ const signOut = async () => {
                                 </defs>
                             </svg>
                         </div>
-                        <div class="w-fit">
-                            <img width="200" class="w-1/2" src="@/assets/images/logo.png">
+                        <div class="flex-shrink-0">
+                            <img width="200" src="@/assets/images/logo.png">
                         </div>
                     </div>
                     <div class="hidden md:block">
