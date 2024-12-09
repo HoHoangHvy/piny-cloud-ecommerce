@@ -23,6 +23,13 @@ return new class extends Migration
             $table->decimal('up_m_price', 8, 2)->default(0);
             $table->decimal('up_l_price', 8, 2)->default(0);
             $table->boolean('is_topping')->default(false);
+
+
+            $table->uuid('team_id');
+            $table->uuid('created_by');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+
             $table->softDeletes();
 
         });

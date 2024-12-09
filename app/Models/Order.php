@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasCreatedBy;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasCreatedBy;
     public function customers()
     {
         return $this->belongsTo(Customer::class);
@@ -16,5 +17,13 @@ class Order extends Model
     public function users()
     {
         return $this->belongsTo(User::class);
+    }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    public function team()
+    {
+        return $this->belongsTo(Team::class); // Singular: "team"
     }
 }

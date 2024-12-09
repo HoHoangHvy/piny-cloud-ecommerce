@@ -23,6 +23,11 @@ return new class extends Migration
             $table->decimal('discount_percent', 8, 2)->default(0);
             $table->integer('limit');
             $table->json('config');
+            $table->uuid('team_id');
+            $table->uuid('created_by');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 

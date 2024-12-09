@@ -33,7 +33,7 @@
                                 </a>
                             </div>
                             <button type="submit"
-                                    class="w-full text-white bg-[#c48d60] hover:bg-[#c48d60] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#c48d60] dark:hover:bg-[#c48d60] dark:focus:ring-primary-800">
+                                    class="w-full text-white bg-[#B38B60] hover:bg-[#e1b083] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#B38B60] dark:hover:bg-[#B38B60] dark:focus:ring-primary-800">
                                 {{ t('LBL_SEND_OTP') }}
                             </button>
                             <div class="flex items-center space-x-2">
@@ -42,7 +42,7 @@
                                         t('LBL_DONT_HAVE_AN_ACCOUNT?')
                                     }}</label>
                                 <a @click="switchToPopup('sign-up')"
-                                   class="hover:underline font-inter text-[#c48d60]" target="_parent">{{
+                                   class="hover:underline font-inter text-[#B38B60]" target="_parent">{{
                                         t('LBL_SIGNUP')
                                     }}</a>
                             </div>
@@ -78,10 +78,10 @@
 
                     <p class="text-sm font-inter text-black dark:text-gray-400 mb-1.5">
                         <span v-if="countdown > 0">{{ t('LBL_YOU_DID_NOT_RECEIVE_THE_CODE_RESEND') }}({{ countdown }}s)</span>
-                        <span v-else><a href="#" @click="resendCode" class="font-bold cursor-pointer">{{t('LBL_RESEND')}}</a></span>
+                        <span v-else><a href="#" @click="resendCode" class="font-bold cursor-pointer">{{$lang('LBL_RESEND')}}</a></span>
                     </p>
 
-                    <button class="bg-[#c48d60] text-white px-4 py-2 rounded-lg mt-1" @click="authenticateOtp">
+                    <button class="bg-[#B38B60] text-white px-4 py-2 rounded-lg mt-1 hover:bg-[#e1b083] " @click="authenticateOtp">
                         {{ t('LBL_SIGNIN') }}
                     </button>
                 </div>

@@ -55,7 +55,7 @@ class MigrateInOrder extends Command
             '2024_09_24_065027_create_customers_orders_table.php',
             '2024_09_24_065028_create_order_details_table.php',
             '2024_09_24_065033_create_vouchers_table.php',
-            '2024_09_24_065114_create_teams_table.php',
+            '2013_08_24_065114_create_teams_table.php',
             '2024_09_24_065305_create_notifications_table.php',
             '2024_09_25_163436_create_employees_table.php',
             '2024_09_25_164255_create_users_notifications_table.php',

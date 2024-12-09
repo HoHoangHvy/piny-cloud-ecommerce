@@ -2,13 +2,25 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasCreatedBy;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Voucher extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasCreatedBy;
+    protected $fillable = [
+        'vourcher_code',
+        'status',
+        'start_date',
+        'end_date',
+        'discount_type',
+        'discount_amount',
+        'discount_percent',
+        'config',
+        'limit'
+    ];
     public function teams()
     {
         return $this->belongsToMany(Team::class);
@@ -16,5 +28,14 @@ class Voucher extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class);
+    }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class); // Singular: "team"
     }
 }

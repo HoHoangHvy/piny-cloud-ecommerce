@@ -4,7 +4,7 @@
 
 
 .primary-color {
-    background-color: #c48d60;
+    background-color: #B38B60;
 }
 .header-logo-name {
     color: #FFFFFF;
@@ -19,13 +19,13 @@
     z-index: 50; /* Đảm bảo lớp này hiển thị phía trên */
 }
 .bg-primary-color {
-    background: #9bba74;
+    background: #B38B60;
 }
 .btn-primary-color   {
-    background: #638a55 !important;
+    background: #AE7F49 !important;
 }
 .header-item:hover {
-    background-color: #638a55 !important;
+    background-color: #AE7F49 !important;
 }
 .customer-layout {
     display: flex;

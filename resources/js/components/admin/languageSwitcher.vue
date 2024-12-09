@@ -52,24 +52,24 @@ defineProps({
 </script>
 
 <template>
-    <div class="relative inline-block text-left language-switcher">
+    <div class="relative inline-block text-left language-switcher dark:bg-meta-4 dark:text-white text-black rounded-xl">
         <!-- Language list with dynamic position based on prop -->
         <div
             v-if="isOpen"
             :class="[
         position === 'above' ? 'absolute bottom-full left-0 mb-2' : 'absolute top-full left-0 mt-2',
-        'w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10'
+        'w-full rounded-md shadow-lg dark:bg-meta-4 bg-white dark:text-white ring-1 ring-black ring-opacity-5 z-10'
       ]"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="options-menu"
         >
-            <div class="py-1">
+            <div class="py-1 dark:bg-meta-4 dark:text-white">
                 <a
                     v-for="lang in languages"
                     :key="lang.code"
                     href="#"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-black hover:text-gray-900 dark:text-white"
                     role="menuitem"
                     @click.prevent="setLanguage(lang.code)"
                 >
@@ -82,7 +82,7 @@ defineProps({
         <button
             @click="isOpen = !isOpen"
             type="button"
-            class="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray"
+            class="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 dark:bg-meta-4 dark:text-white bg-white text-sm font-medium text-gray-700 hover:bg-gray"
             id="options-menu"
             aria-haspopup="true"
             :aria-expanded="isOpen"

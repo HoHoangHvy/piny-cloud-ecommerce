@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Concerns\HasCreatedBy;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, LaravelPermissionToVueJS, HasUuid;
+    use HasApiTokens, HasFactory, Notifiable, HasCreatedBy, HasRoles, LaravelPermissionToVueJS, HasUuid;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +26,9 @@ class User extends Authenticatable
         'email',
         'password',
         'phone_number',
-        'user_type'
+        'user_type',
+        'created_by',
+        'team_id'
     ];
 
     /**
@@ -47,4 +50,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // User.php
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
 }

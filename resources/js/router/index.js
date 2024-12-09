@@ -19,8 +19,18 @@ import productDetailPage from "../components/admin/productDetailPage.vue";
 import UserInfoPage from "../components/admin/UserInfoPage.vue";
 import MenuView from "@/js/components/page/MenuView.vue";
 import OrderPage from "../components/page/orderPage.vue";
+import ProductCRUD from "@/js/components/admin/CRUD/Products/ProductCRUD.vue";
 
 import store from "@/js/store/index.js";
+import EmployeeCRUD from "@/js/components/admin/CRUD/Employees/EmployeeCRUD.vue";
+import TeamCRUD from "@/js/components/admin/CRUD/Teams/TeamCRUD.vue";
+import UserCRUD from "@/js/components/admin/CRUD/Users/UserCRUD.vue";
+import PermissionCRUD from "@/js/components/admin/CRUD/Pemissions/PermissionCRUD.vue";
+import RoleCRUD from "@/js/components/admin/CRUD/Roles/RoleCRUD.vue";
+import OrderCRUD from "@/js/components/admin/CRUD/Orders/OrderCRUD.vue";
+import CustomerCRUD from "@/js/components/admin/CRUD/Customers/CustomerCRUD.vue";
+import VoucherCRUD from "@/js/components/admin/CRUD/Vouchers/VoucherCRUD.vue";
+import CategoryCRUD from "@/js/components/admin/CRUD/Categories/CategoryCRUD.vue";
 
 const routes = [
     {
@@ -170,11 +180,83 @@ const routes = [
             {
                 path: 'users',
                 name: 'users',
-                component: UserManagement,
+                component: UserCRUD,
                 meta: {
                     title: 'User Management'
                 }
-            }
+            },
+            {
+                path: 'products',
+                name: 'products',
+                component: ProductCRUD,
+                meta: {
+                    title: 'Products'
+                }
+            },
+            {
+                path: 'employees',
+                name: 'employees',
+                component: EmployeeCRUD,
+                meta: {
+                    title: 'Employees'
+                }
+            },
+            {
+                path: 'teams',
+                name: 'teams',
+                component: TeamCRUD,
+                meta: {
+                    title: 'Teams'
+                }
+            },
+            {
+                path: 'permissions',
+                name: 'permissions',
+                component: PermissionCRUD,
+                meta: {
+                    title: 'Permission'
+                }
+            },
+            {
+                path: 'roles',
+                name: 'roles',
+                component: RoleCRUD,
+                meta: {
+                    title: 'Roles'
+                }
+            },
+            {
+                path: 'orders',
+                name: 'orders',
+                component: OrderCRUD,
+                meta: {
+                    title: 'Orders'
+                }
+            },
+            {
+                path: 'customers',
+                name: 'customers',
+                component: CustomerCRUD,
+                meta: {
+                    title: 'Customers'
+                }
+            },
+            {
+                path: 'vouchers',
+                name: 'vouchers',
+                component: VoucherCRUD,
+                meta: {
+                    title: 'Vouchers'
+                }
+            },
+            {
+                path: 'categories',
+                name: 'categories',
+                component: CategoryCRUD,
+                meta: {
+                    title: 'Categories'
+                }
+            },
         ]
     },
     {
@@ -183,7 +265,7 @@ const routes = [
         component: AdminLogin,
         meta: {
             permission: 'owner',
-            requiresAuth: false
+            requiresAuthLogin: true
         }
     },
 ]
@@ -199,6 +281,14 @@ router.beforeEach((to, from, next) => {
         }
         next('admin/login')
     } else {
+
+        if(to.matched.some(record => record.meta.requiresAuthLogin)) {
+            if (store.getters.isLoggedIn && store.getters.userType === 'user') {
+                next('/admin')
+                return
+            }
+            next()
+        }
         if(to.matched.some(record => record.meta.requiresAuth)) {
             if (store.getters.isLoggedIn && store.getters.userType === 'customer') {
                 next()

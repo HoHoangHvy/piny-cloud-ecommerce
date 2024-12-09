@@ -19,7 +19,6 @@ const currentPopup = ref(null);
 
 const navigation = ref([
     {name: 'LBL_HOME', href: '/', current: route.path === '/'},
-    {name: 'LBL_ABOUT_US', href: '/about-us', current: route.path === '/about-us'},
     {name: 'LBL_MENU', href: '/menu', current: route.path === '/menu'},
     {name: 'LBL_ORDERS', href: '/order', current: route.path === '/order'},
 ]);
@@ -177,7 +176,7 @@ const signOut = async () => {
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
                                             </svg>
-                                            <span>{{t('LBL_SIGNOUT')}}</span>
+                                            <span>{{$lang('LBL_SIGNOUT')}}</span>
                                         </div>
                                     </MenuItem>
                                     <hr class="my-2 border-t border-gray">
@@ -252,11 +251,11 @@ const signOut = async () => {
 </template>
 <style>
 .sign-in-btn:hover {
-    background-color: #c48d60;
+    background-color: #AE7F49;
     color: #fff;
 }
 .sign-up-btn:hover {
-    background-color: #638a55;
+    background-color: #AE7F49;
     color: #fff;
 }
 </style>

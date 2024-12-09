@@ -14,13 +14,21 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         // Define your modules and actions
-        $modules = ['user', 'product', 'order', 'customer', 'category', 'employee', 'voucher'];
-        $actions = ['view-detail', 'view-list', 'create', 'update', 'delete'];
+        $modules = app('modules');
+        $actions = ['view', 'edit', 'delete'];
 
-        // Loop through each module and action to create permissions
+        // Define the permission levels (owner, all, permitted)
+        $permissionLevels = ['owner', 'all'];
+
+        // Loop through each module, action, and permission level to create permissions
         foreach ($modules as $module) {
+            Permission::findOrCreate("access_{$module}");
+            Permission::findOrCreate("create_{$module}");
             foreach ($actions as $action) {
-                Permission::create(['name' => "{$action}-{$module}"]);
+                foreach ($permissionLevels as $level) {
+                    // Create permission for each action and level
+                    Permission::findOrCreate("{$action}_{$level}_{$module}");
+                }
             }
         }
     }

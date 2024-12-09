@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\VerificationCode;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +15,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Helpers\SpeedSMSAPI;
 use Twilio\Rest\Client;
+use App\Models\Permission;
+use App\Models\Role;
+
 
 class AuthenticationController extends BaseController
 {
@@ -22,6 +26,7 @@ class AuthenticationController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
+
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -41,6 +46,7 @@ class AuthenticationController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
+        $input['team_id'] = '1';
         try {
             $check_unique_phone = User::where('phone_number', $input['phone_number'])->first();
             $check_unique_email = User::where('email', $input['email'])->first();
@@ -54,30 +60,29 @@ class AuthenticationController extends BaseController
 
             $user = User::create($input);
 
+            // Assign role and permissions to the user
             if ($user->user_type == 'customer') {
-                $customer = new Customer();
-                $customer->full_name = $user->name;
-                $customer->phone_number = $user->phone_number;
-                $customer->email = $user->email;
-                $customer->gender = $input['gender'];
-                $customer->date_of_birth = $input['date_of_birth'];
-                $customer->user_id = $user->id;
-                $customer->save();
-
-                $user->assignRole('customer');
-            } else {
-                $user->assignRole('admin');
+                Customer::create([
+                    'full_name' => $user->name,
+                    'phone_number' => $user->phone_number,
+                    'email' => $user->email,
+                    'gender' => $input['gender'],
+                    'date_of_birth' => $input['date_of_birth'],
+                    'team_id' => '1',
+                    'user_id' => $user->id
+                ]);
+                $user->assignRole('Customer');
             }
 
-            $success['token'] = $user->createToken('MyApp', ['check-status', 'place-orders'], now()->addMinutes(60))->plainTextToken;
+            $success['token'] = $user->createToken('MyApp')->plainTextToken;
             $success['name'] = $user->name;
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), ['error' => $e->getMessage()]);
         }
 
-        return $this->sendResponse($success, 'User register successfully.');
+        return $this->sendResponse($success, 'User registered successfully.');
     }
-    // Generate OTP
+     // Generate OTP
     public function generate(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -89,7 +94,7 @@ class AuthenticationController extends BaseController
         }
         # Generate An OTP
         $verificationCode = $this->generateOtp($request->mobile_no);
-//        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
+        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
         return $this->sendResponse($verificationCode, 'OTP generated successfully.');
     }
     public function sendOtp($number, $otp)
@@ -212,26 +217,67 @@ class AuthenticationController extends BaseController
 
     public function authSuccess($user) : array {
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['user'] =  $user;
+        $success['user'] =  $user->load('roles');
         return $success;
     }
 
     public function me(Request $request): JsonResponse
     {
         try {
-            return $this->sendResponse($request->user(), 'User retrieved successfully.');
+            // Load roles but don't eager-load permissions under roles
+            $user = $request->user()->load('roles');
+
+            // Retrieve all permissions (including from roles)
+            $permissions = Permission::reverseConvertPermission($user->getAllPermissions(), $user->is_admin);
+
+            // Remove permissions from the roles array if present
+            $roles = $user->roles->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'guard_name' => $role->guard_name,
+                ];
+            });
+
+            // Prepare the response
+            return $this->sendResponse([
+                'user' => $user->only(['id', 'name', 'email', 'user_type', 'phone_number', 'is_admin', 'team_id']), // Include only relevant user fields
+                'roles' => $roles, // Custom roles without permissions
+                'permissions' => $permissions, // Permissions at the top level
+                'visible_module' => $this->getVisibleModules($user, $permissions), // Visible modules based on user's role
+            ], 'User retrieved successfully.');
         } catch (\Exception $e) {
             return $this->sendError('User Not Found.', ['error' => $e->getMessage()]);
         }
     }
+
     public function logout(Request $request): JsonResponse
     {
         try {
+            $user_type = $request->user()->user_type;
             $request->user()->tokens()->delete();
-            return $this->sendResponse([], 'User logged out successfully.');
+            return $this->sendResponse(['user_type' => $user_type], 'User logged out successfully.');
         } catch (\Exception $e) {
             return $this->sendError('User Logout Failed.', ['error' => $e->getMessage()]);
         }
     }
 
+    private function getVisibleModules($user, $permissions)
+    {
+        $system_modules = app('modules');
+        if (!$user->is_admin) {
+            $visibleModules = ['calendar', 'dashboard'];
+            foreach($permissions as $module => $permission) {
+                if ($permission['access'] === 'none') {
+                    $excludeModule[] = $module;
+                }
+            }
+            foreach(array_diff($system_modules, $excludeModule) as $module) {
+                $visibleModules[] = $module;
+            }
+            return $visibleModules;
+        }
+
+        return $system_modules;
+    }
 }

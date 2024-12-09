@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasCreatedBy;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,14 +10,17 @@ use Illuminate\Support\Carbon;
 
 class Customer extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasCreatedBy;
     protected $fillable = [
         'date_registered',
         'date_of_birth',
         'full_name',
         'gender',
         'phone_number',
-        'email'
+        'email',
+        'user_id',
+        'team_id',
+        'created_by'
     ];
 
     protected static function booted()
@@ -28,5 +32,9 @@ class Customer extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

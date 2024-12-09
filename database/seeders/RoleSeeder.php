@@ -15,41 +15,118 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        // Define modules, actions, and permission levels
+        $modules = app('modules');
+        $actions = ['view', 'edit', 'delete'];
+        $permissionLevels = ['owner', 'all'];
+
+        // Create all permissions
+        foreach ($modules as $module) {
+            // Access and create permissions
+            Permission::findOrCreate("access_{$module}");
+            Permission::findOrCreate("create_{$module}");
+
+            foreach ($actions as $action) {
+                foreach ($permissionLevels as $level) {
+                    Permission::findOrCreate("{$action}_{$level}_{$module}");
+                }
+            }
+        }
+
         // Create roles
-        $adminRole = Role::findOrCreate('admin');
-        $employeeRole = Role::findOrCreate('employee');
-        $managerRole = Role::findOrCreate('manager');
-        $customerRole = Role::findOrCreate('customer');
-
-        // Assign all permissions to the admin role
-        $adminRole->syncPermissions(Permission::all());
-
-        // Define permissions for each role
-        $managerPermissions = [
-            'view-list-product', 'view-detail-product', 'create-product', 'update-product', 'delete-product',
-            'view-list-order', 'view-detail-order', 'create-order', 'update-order',
-            'view-list-customer', 'view-detail-customer', 'update-customer',
-            'view-list-employee', 'view-detail-employee',
-            'view-list-category', 'view-detail-category', 'create-category', 'update-category', 'delete-category',
-            'view-list-voucher', 'view-detail-voucher', 'create-voucher', 'update-voucher', 'delete-voucher',
+        $roles = [
+            'Administrator' => Permission::all()->pluck('name')->toArray(), // Admin gets all permissions
+            'Manager' => $this->getPermissionsForRole($modules, $actions, $permissionLevels, 'manager'),
+            'Employee' => $this->getPermissionsForRole($modules, $actions, $permissionLevels, 'employee'),
+            'Customer' => $this->getPermissionsForRole($modules, $actions, $permissionLevels, 'customer'),
         ];
 
-        $employeePermissions = [
-            'view-list-product', 'view-detail-product',
-            'view-list-order', 'view-detail-order', 'create-order',
-            'view-list-customer', 'view-detail-customer', 'update-customer',
-            'view-list-category', 'view-detail-category',
-            'view-list-voucher', 'view-detail-voucher',
-        ];
+        // Assign permissions to roles
+        foreach ($roles as $roleName => $permissions) {
+            $role = Role::where('name', $roleName)->first();
+            if(!$role) {
+                $is_admin = $roleName == 'Administrator' ? 1 : 0;
+                $is_apply_team_visibility = $roleName == 'Administrator' ? 0 : 1;
+                $role = Role::create(['name' => $roleName, 'guard_name' => 'web', 'created_by' => '1', 'is_admin' => $is_admin, 'apply_team_visibility' => $is_apply_team_visibility]);
+            }
+            $role->syncPermissions($permissions);
+        }
+    }
 
-        $customerPermissions = [
-            'view-list-product', 'view-detail-product',
-            'view-list-order', 'view-detail-order',
-        ];
+    /**
+     * Get permissions for a role based on specific conditions.
+     */
+    private function getPermissionsForRole(array $modules, array $actions, array $levels, string $role): array
+    {
+        $permissions = [];
 
-        // Assign permissions to each role
-        $managerRole->syncPermissions($managerPermissions);
-        $employeeRole->syncPermissions($employeePermissions);
-        $customerRole->syncPermissions($customerPermissions);
+        switch ($role) {
+            case 'manager':
+                $permissions = $this->getManagerPermissions($modules, $actions, $levels);
+                break;
+            case 'employee':
+                $permissions = $this->getEmployeePermissions($modules, $actions, $levels);
+                break;
+            case 'customer':
+                $permissions = $this->getCustomerPermissions($modules, $actions);
+                break;
+        }
+
+        return Permission::whereIn('name', $permissions)->get()->pluck('name')->toArray();
+    }
+
+    /**
+     * Define permissions for the manager role.
+     */
+    private function getManagerPermissions(array $modules, array $actions, array $levels): array
+    {
+        $permissions = [];
+
+        foreach (['products', 'orders', 'customers', 'categories', 'vouchers', 'employees'] as $module) {
+            $permissions[] = "access_{$module}";
+            foreach (['create', 'view', 'edit', 'delete'] as $action) {
+                foreach ($levels as $level) {
+                    $permissions[] = "{$action}_{$level}_{$module}";
+                }
+            }
+        }
+
+        return $permissions;
+    }
+
+    /**
+     * Define permissions for the employee role.
+     */
+    private function getEmployeePermissions(array $modules, array $actions, array $levels): array
+    {
+        $permissions = [];
+
+        foreach (['products', 'orders', 'customers', 'categories', 'vouchers'] as $module) {
+            $permissions[] = "access_{$module}";
+            foreach (['view', 'edit'] as $action) { // Employees have limited actions
+                foreach ($levels as $level) {
+                    $permissions[] = "{$action}_{$level}_{$module}";
+                }
+            }
+        }
+
+        return $permissions;
+    }
+
+    /**
+     * Define permissions for the customer role.
+     */
+    private function getCustomerPermissions(array $modules, array $actions): array
+    {
+        $permissions = [];
+
+        foreach (['products', 'orders'] as $module) {
+            $permissions[] = "access_{$module}";
+            foreach (['view'] as $action) { // Customers can only view
+                $permissions[] = "{$action}_all_{$module}";
+            }
+        }
+
+        return $permissions;
     }
 }

@@ -4,208 +4,166 @@ import {onClickOutside} from '@vueuse/core'
 import {ref} from 'vue'
 import SidebarItem from './SidebarItem.vue'
 import {useI18n} from 'vue-i18n';
-import LanguageSwitcher from '../languageSwitcher.vue';
+import {useStore} from 'vuex';
 
 const {t} = useI18n();
 const target = ref(null)
+const store = useStore()
 
 const sidebarStore = useSidebarStore()
 
 onClickOutside(target, () => {
-    sidebarStore.isSidebarOpen = false
+    // sidebarStore.isSidebarOpen = false
 })
 
 const menuGroups = ref([
     {
         name: 'LBL_MODULES',
+        visible: true,
         menuItems: [
             {
+                name: 'dashboard',
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-</svg>
-`,
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                </svg>
+                `,
                 label: 'LBL_DASHBOARD',
                 route: '/admin/',
+                visible: true
             },
             {
+                name: 'calendar',
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-</svg>
-`,
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+                `,
                 label: 'LBL_CALENDAR',
-                route: '/admin/calendar'
+                route: '/admin/calendar',
+                visible: true
             },
             {
+                name: 'customers',
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                 </svg>
                 `,
                 label: 'LBL_CUSTOMERS',
-                route: '/admin/customers'
+                route: '/admin/customers',
+                visible: true
             },
             {
+                name: 'orders',
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                 </svg>`,
                 label: 'LBL_ORDERS',
-                route: '/admin/orders'
+                route: '/admin/orders',
+                visible: true
             },
             {
+                name: 'employees',
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
                 </svg>
                 `,
                 label: 'LBL_EMPLOYEES',
-                route: '/admin/employees'
+                route: '/admin/employees',
+                visible: true
             },
             {
+                name: 'products',
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
                 </svg>
                 `,
                 label: 'LBL_PRODUCTS',
-                route: '/admin/products'
+                route: '/admin/products',
+                visible: true
             },
-            // {
-            //     icon: `<svg
-            //       class="fill-current"
-            //       width="18"
-            //       height="18"
-            //       viewBox="0 0 18 18"
-            //       fill="none"
-            //       xmlns="http://www.w3.org/2000/svg"
-            //     >
-            //       <path
-            //         d="M1.43425 7.5093H2.278C2.44675 7.5093 2.55925 7.3968 2.58737 7.31243L2.98112 6.32805H5.90612L6.27175 7.31243C6.328 7.48118 6.46862 7.5093 6.58112 7.5093H7.453C7.76237 7.48118 7.87487 7.25618 7.76237 7.03118L5.428 1.4343C5.37175 1.26555 5.3155 1.23743 5.14675 1.23743H3.88112C3.76862 1.23743 3.59987 1.29368 3.57175 1.4343L1.153 7.08743C1.0405 7.2843 1.20925 7.5093 1.43425 7.5093ZM4.47175 2.98118L5.3155 5.17493H3.59987L4.47175 2.98118Z"
-            //         fill=""
-            //       />
-            //       <path
-            //         d="M10.1249 2.5031H16.8749C17.2124 2.5031 17.5218 2.22185 17.5218 1.85623C17.5218 1.4906 17.2405 1.20935 16.8749 1.20935H10.1249C9.7874 1.20935 9.47803 1.4906 9.47803 1.85623C9.47803 2.22185 9.75928 2.5031 10.1249 2.5031Z"
-            //         fill=""
-            //       />
-            //       <path
-            //         d="M16.8749 6.21558H10.1249C9.7874 6.21558 9.47803 6.49683 9.47803 6.86245C9.47803 7.22808 9.75928 7.50933 10.1249 7.50933H16.8749C17.2124 7.50933 17.5218 7.22808 17.5218 6.86245C17.5218 6.49683 17.2124 6.21558 16.8749 6.21558Z"
-            //         fill=""
-            //       />
-            //       <path
-            //         d="M16.875 11.1656H1.77187C1.43438 11.1656 1.125 11.4469 1.125 11.8125C1.125 12.1781 1.40625 12.4594 1.77187 12.4594H16.875C17.2125 12.4594 17.5219 12.1781 17.5219 11.8125C17.5219 11.4469 17.2125 11.1656 16.875 11.1656Z"
-            //         fill=""
-            //       />
-            //       <path
-            //         d="M16.875 16.1156H1.77187C1.43438 16.1156 1.125 16.3969 1.125 16.7625C1.125 17.1281 1.40625 17.4094 1.77187 17.4094H16.875C17.2125 17.4094 17.5219 17.1281 17.5219 16.7625C17.5219 16.3969 17.2125 16.1156 16.875 16.1156Z"
-            //         fill="white"
-            //       />
-            //     </svg>`,
-            //     label: 'Forms',
-            //     route: '#',
-            //     children: [
-            //         {label: 'Form Elements', route: '/admin/forms/form-elements'},
-            //         {label: 'Form Layout', route: '/admin/forms/form-layout'}
-            //     ]
-            // },
-            // {
-            //     icon: `<svg
-            //       class="fill-current"
-            //       width="18"
-            //       height="19"
-            //       viewBox="0 0 18 19"
-            //       fill="none"
-            //       xmlns="http://www.w3.org/2000/svg"
-            //     >
-            //       <g clip-path="url(#clip0_130_9756)">
-            //         <path
-            //           d="M15.7501 0.55835H2.2501C1.29385 0.55835 0.506348 1.34585 0.506348 2.3021V15.8021C0.506348 16.7584 1.29385 17.574 2.27822 17.574H15.7782C16.7345 17.574 17.5501 16.7865 17.5501 15.8021V2.3021C17.522 1.34585 16.7063 0.55835 15.7501 0.55835ZM6.69385 10.599V6.4646H11.3063V10.5709H6.69385V10.599ZM11.3063 11.8646V16.3083H6.69385V11.8646H11.3063ZM1.77197 6.4646H5.45635V10.5709H1.77197V6.4646ZM12.572 6.4646H16.2563V10.5709H12.572V6.4646ZM2.2501 1.82397H15.7501C16.0313 1.82397 16.2563 2.04897 16.2563 2.33022V5.2271H1.77197V2.3021C1.77197 2.02085 1.96885 1.82397 2.2501 1.82397ZM1.77197 15.8021V11.8646H5.45635V16.3083H2.2501C1.96885 16.3083 1.77197 16.0834 1.77197 15.8021ZM15.7501 16.3083H12.572V11.8646H16.2563V15.8021C16.2563 16.0834 16.0313 16.3083 15.7501 16.3083Z"
-            //           fill=""
-            //         />
-            //       </g>
-            //       <defs>
-            //         <clipPath id="clip0_130_9756">
-            //           <rect width="18" height="18" fill="white" transform="translate(0 0.052124)" />
-            //         </clipPath>
-            //       </defs>
-            //     </svg>`,
-            //     label: 'Tables',
-            //     route: '/admin/tables'
-            // },
-            // {
-            //         icon: `<svg
-            //           class="fill-current"
-            //           width="18"
-            //           height="18"
-            //           viewBox="0 0 18 18"
-            //           fill="none"
-            //           xmlns="http://www.w3.org/2000/svg"
-            //         >
-            //           <path
-            //             d="M14.2875 0.506226H3.7125C2.75625 0.506226 1.96875 1.29373 1.96875 2.24998V15.75C1.96875 16.7062 2.75625 17.5219 3.74063 17.5219H14.3156C15.2719 17.5219 16.0875 16.7344 16.0875 15.75V2.24998C16.0313 1.29373 15.2438 0.506226 14.2875 0.506226ZM14.7656 15.75C14.7656 16.0312 14.5406 16.2562 14.2594 16.2562H3.7125C3.43125 16.2562 3.20625 16.0312 3.20625 15.75V2.24998C3.20625 1.96873 3.43125 1.74373 3.7125 1.74373H14.2875C14.5688 1.74373 14.7938 1.96873 14.7938 2.24998V15.75H14.7656Z"
-            //             fill=""
-            //           />
-            //           <path
-            //             d="M12.7965 2.6156H9.73086C9.22461 2.6156 8.80273 3.03748 8.80273 3.54373V7.25623C8.80273 7.76248 9.22461 8.18435 9.73086 8.18435H12.7965C13.3027 8.18435 13.7246 7.76248 13.7246 7.25623V3.5156C13.6965 3.03748 13.3027 2.6156 12.7965 2.6156ZM12.4309 6.8906H10.0684V3.88123H12.4309V6.8906Z"
-            //             fill=""
-            //           />
-            //           <path
-            //             d="M4.97773 4.35938H7.03086C7.36836 4.35938 7.67773 4.07812 7.67773 3.7125C7.67773 3.34687 7.39648 3.09375 7.03086 3.09375H4.94961C4.61211 3.09375 4.30273 3.375 4.30273 3.74063C4.30273 4.10625 4.61211 4.35938 4.97773 4.35938Z"
-            //             fill=""
-            //           />
-            //           <path
-            //             d="M4.97773 7.9312H7.03086C7.36836 7.9312 7.67773 7.64995 7.67773 7.28433C7.67773 6.9187 7.39648 6.63745 7.03086 6.63745H4.94961C4.61211 6.63745 4.30273 6.9187 4.30273 7.28433C4.30273 7.64995 4.61211 7.9312 4.97773 7.9312Z"
-            //             fill=""
-            //           />
-            //           <path
-            //             d="M13.0789 10.2374H4.97891C4.64141 10.2374 4.33203 10.5187 4.33203 10.8843C4.33203 11.2499 4.61328 11.5312 4.97891 11.5312H13.0789C13.4164 11.5312 13.7258 11.2499 13.7258 10.8843C13.7258 10.5187 13.4164 10.2374 13.0789 10.2374Z"
-            //             fill=""
-            //           />
-            //           <path
-            //             d="M13.0789 13.8093H4.97891C4.64141 13.8093 4.33203 14.0906 4.33203 14.4562C4.33203 14.8218 4.61328 15.1031 4.97891 15.1031H13.0789C13.4164 15.1031 13.7258 14.8218 13.7258 14.4562C13.7258 14.0906 13.4164 13.8093 13.0789 13.8093Z"
-            //             fill=""
-            //           />
-            //         </svg>`,
-            //         label: 'Pages',
-            //         route: '#',
-            //         children: [{label: 'Settings', route: '/admin/pages/settings'}]
-            //     }
+            {
+                name: 'categories',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m7.875 14.25 1.214 1.942a2.25 2.25 0 0 0 1.908 1.058h2.006c.776 0 1.497-.4 1.908-1.058l1.214-1.942M2.41 9h4.636a2.25 2.25 0 0 1 1.872 1.002l.164.246a2.25 2.25 0 0 0 1.872 1.002h2.092a2.25 2.25 0 0 0 1.872-1.002l.164-.246A2.25 2.25 0 0 1 16.954 9h4.636M2.41 9a2.25 2.25 0 0 0-.16.832V12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 12V9.832c0-.287-.055-.57-.16-.832M2.41 9a2.25 2.25 0 0 1 .382-.632l3.285-3.832a2.25 2.25 0 0 1 1.708-.786h8.43c.657 0 1.281.287 1.709.786l3.284 3.832c.163.19.291.404.382.632M4.5 20.25h15A2.25 2.25 0 0 0 21.75 18v-2.625c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125V18a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>`,
+                label: 'LBL_CATEGORIES',
+                route: '/admin/categories',
+                visible: true
+            },
+            {
+                name: 'vouchers',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                `,
+                label: 'LBL_VOUCHERS',
+                route: '/admin/vouchers',
+                visible: true
+            },
         ]
     },
     {
         name: 'LBL_ADMIN_CONFIG',
+        visible: true,
         menuItems: [
             {
+                name: 'teams',
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
-</svg>
-`,
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
+                </svg>
+                `,
                 label: 'LBL_TEAMS',
                 route: '/admin/teams',
+                visible: true
             },
             {
+                name: 'roles',
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-</svg>
-`,
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
+                </svg>`,
+                label: 'LBL_ROLES',
+                route: '/admin/roles',
+                visible: true
+            },
+            {
+                name: 'users',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                </svg>
+                `,
                 label: 'LBL_USER_MANAGEMENT',
                 route: '/admin/users',
-                children: [
-                    {label: 'LBL_PERMISSIONS', route: '/admin/permissions'},
-                    {label: 'LBL_ROLES', route: '/admin/roles'}
-                ]
+                visible: true
             }
         ]
     }
 ])
+const visibleModule = store.getters.modules
+
+if(visibleModule) {
+    menuGroups.value.forEach((group) => {
+        group.menuItems.forEach((item) => {
+            item.visible = !!visibleModule.includes(item.name);
+        })
+
+        if(group.menuItems.filter((item) => {return item.visible}).length === 0) {
+            group.visible = false;
+        }
+    })
+}
 </script>
 
 <template>
     <aside
-        class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0"
+        class="absolute left-0 top-0 z-99 flex h-screen w-72.5 flex-col bg-primary duration-300 ease-linear dark:bg-boxdark overflow-visible drop-shadow-3"
         :class="{
       'translate-x-0': sidebarStore.isSidebarOpen,
-      '-translate-x-full': !sidebarStore.isSidebarOpen
+      '-translate-x-full': !sidebarStore.isSidebarOpen,
+      'overflow-y-hidden': !sidebarStore.isSidebarOpen
     }"
         ref="target"
     >
         <!-- SIDEBAR HEADER -->
-        <div class="flex items-center justify-center flex-col gap-2 px-6 py-5.5 lg:py-6.5"
+        <div class="flex items-center justify-center flex-col gap-2 px-6 py-5.5 lg:py-6.5 overflow-visible"
              style="padding-bottom: 0px !important;">
             <router-link to="/admin">
                 <svg width="181" height="45" viewBox="0 0 181 45" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -214,7 +172,7 @@ const menuGroups = ref([
                         fill="white"/>
                 </svg>
             </router-link>
-            <button class="block lg:hidden" @click="sidebarStore.isSidebarOpen = false">
+            <button class="block absolute hide-sidebar-btn bg-white drop-shadow-4" @click="sidebarStore.isSidebarOpen = false">
                 <svg
                     class="fill-current"
                     width="20"
@@ -229,7 +187,7 @@ const menuGroups = ref([
                     />
                 </svg>
             </button>
-            <span>{{ t('LBL_INTERNAL_MANAGEMENT') }}</span>
+            <span class="text-white">{{ t('LBL_INTERNAL_MANAGEMENT') }}</span>
         </div>
 
         <!-- SIDEBAR HEADER -->
@@ -238,12 +196,13 @@ const menuGroups = ref([
             <!-- Sidebar Menu -->
             <nav class="mt-5 py-4 px-4 lg:mt-9 lg:px-6" style="margin-top: 0rem !important;">
                 <template v-for="menuGroup in menuGroups" :key="menuGroup.name">
-                    <div>
-                        <h3 class="mb-4 ml-4 text-sm font-medium text-bodydark2">{{ t(menuGroup.name) }}</h3>
+                    <div  v-show="menuGroup.visible" >
+                        <h3 class="mb-4 ml-4 text-sm font-medium text-white">{{ t(menuGroup.name) }}</h3>
 
                         <ul class="mb-6 flex flex-col gap-1.5">
                             <SidebarItem
                                 v-for="(menuItem, index) in menuGroup.menuItems"
+                                v-show="menuItem.visible"
                                 :item="menuItem"
                                 :key="index"
                                 :index="index"
@@ -252,10 +211,15 @@ const menuGroups = ref([
                     </div>
                 </template>
             </nav>
-            <!-- Sidebar Menu -->
-            <div class="inset-x-0 bottom-0 flex justify-center p-2">
-                <LanguageSwitcher/>
-            </div>
         </div>
     </aside>
 </template>
+<style>
+.hide-sidebar-btn {
+    border-radius: 50%;
+    padding: 14px;
+    top: 8.2%;
+    right: -20px;
+    transform: translateY(-50%)
+}
+</style>
