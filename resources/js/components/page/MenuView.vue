@@ -357,7 +357,7 @@ body {
     .add_btn {
         flex-shrink: 0;
         fill: rgba(116, 66, 39, 0.91);
-        background: #B38B60;
+        background: #6B4226;
         border-radius: 30px;
     }
     .active_page {
@@ -365,7 +365,7 @@ body {
         min-height: 30px;
         border: 2px solid;
         border-radius: 10px;
-        background-color: #B38B60;
+        background-color: #6B4226;
         color: #f2f5f8;
     }
     .disable_page {

@@ -4,7 +4,7 @@
 
 
 .primary-color {
-    background-color: #B38B60;
+    background-color: #6B4226;
 }
 .header-logo-name {
     color: #FFFFFF;
@@ -19,20 +19,21 @@
     z-index: 50; /* Đảm bảo lớp này hiển thị phía trên */
 }
 .bg-primary-color {
-    background: #B38B60;
+    background: #914F1E;
 }
 .btn-primary-color   {
-    background: #AE7F49 !important;
+    background: #6B4226 !important;
 }
 .header-item:hover {
-    background-color: #AE7F49 !important;
+    background-color: #5A3621 !important;
 }
 .customer-layout {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
-
+.bg-brown-600 { background-color: #6B4226; }
+.bg-brown-700 { background-color: #5A3621; }
 .floating-header {
     position: fixed;
     top: 0;

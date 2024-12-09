@@ -73,13 +73,13 @@ const signOut = async () => {
 }
 </style>
 <template>
-    <Disclosure as="nav" class="bg-primary-color p-1 floating-header" v-slot="{ open }">
+    <Disclosure as="nav" class="bg-brown-600 p-1 floating-header" v-slot="{ open }">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 items-center justify-between ">
                 <div class="flex items-center">
                     <div class="flex justify-center items-center gap-5">
-                        <div>
-                            <svg width="77" height="68" viewBox="0 0 107 98" fill="none"
+                        <div class="rounded-full pt-0.5 pb- bg-[#825B32]">
+                            <svg width="66" height="62" viewBox="0 0 107 98" fill="none"
                                  xmlns="http://www.w3.org/2000/svg"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <rect width="105.313" height="96.6797"
@@ -131,7 +131,7 @@ const signOut = async () => {
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
                             <router-link v-for="item in navigation" :key="item.name" :to="item.href"
-                                         :class="[item.current ? 'text-white btn-primary-color' : 'text-white hover:btn-primary-color hover:text-white', 'rounded-md px-3 py-2 text-lg font-medium header-item']"
+                                         :class="[item.current ? 'text-white bg-[#5A3621]' : 'text-white hover:btn-primary-color hover:text-white', 'rounded-md px-3 py-2 text-lg font-medium header-item']"
                                          :aria-current="item.current ? 'page' : undefined">{{ t(item.name) }}
                             </router-link>
                         </div>
@@ -191,11 +191,11 @@ const signOut = async () => {
                 <div v-if="!store.getters.isLoggedIn">
                     <LanguageSwitcher position="below"></LanguageSwitcher>
                     <button @click="switchPopup('sign-in')"
-                                 class="text-yellow-900 bg-white sign-in-btn hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
+                                 class="text-yellow-900 bg-white sign-in-btn hover:bg-[#5A3621] hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
                         {{ t('LBL_SIGNIN') }}
                     </button>
                     <button @click="switchPopup('sign-up')"
-                                 class="text-white bg-primary-color sign-up-btn hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
+                                 class="text-white bg-brown-600 sign-up-btn hover:bg-[#5A3621] hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-1.5">
                         {{ t('LBL_SIGNUP') }}
                     </button>
                 </div>
@@ -250,12 +250,4 @@ const signOut = async () => {
     <SignUpPopup :isVisible="currentPopup === 'sign-up'" @closePopup="closePopup" @switchPopup="switchPopup"/>
 </template>
 <style>
-.sign-in-btn:hover {
-    background-color: #AE7F49;
-    color: #fff;
-}
-.sign-up-btn:hover {
-    background-color: #AE7F49;
-    color: #fff;
-}
 </style>
