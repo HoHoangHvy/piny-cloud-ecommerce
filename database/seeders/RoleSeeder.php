@@ -16,7 +16,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // Define modules, actions, and permission levels
-        app('modules');
+        $modules = app('modules');
         $actions = ['view', 'edit', 'delete'];
         $permissionLevels = ['owner', 'all'];
 
