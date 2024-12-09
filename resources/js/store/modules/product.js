@@ -68,6 +68,21 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
+        async fetchProductsCustomer({ commit }) {
+            commit('SET_LOADING', true);
+            try {
+                await axios.get('sanctum/csrf-cookie');
+                const response = await axios.get('/api/customer/products');
+
+                commit('SET_PRODUCTS', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching products.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
         async fetchProduct({ commit }, id) {
             commit('SET_LOADING', true);
             try {

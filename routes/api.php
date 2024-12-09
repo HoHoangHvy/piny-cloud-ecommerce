@@ -54,6 +54,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     //Products routes
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+    Route::get('/customer/products', [ProductController::class, 'getProducts']);
 
     //Employees routes
     Route::put('/employees/{employee}', [EmployeeController::class, 'update']);

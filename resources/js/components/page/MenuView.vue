@@ -3,21 +3,30 @@ import {useI18n} from 'vue-i18n';
 import ButtonDefault from "@/js/components/admin/Buttons/ButtonDefault.vue";
 
 const {t} = useI18n();
-import {reactive, ref, computed} from 'vue';
+import {reactive, ref, computed, onMounted} from 'vue';
 import FilterPopup from '../popup/FilterPopup.vue';
 import DetailsProduct from "@/js/components/page/DetailsProduct.vue";
-import CartIcon from "@/js/components/admin/CartIcon.vue";
-import CartPopup from "@/js/components/popup/CartPopup.vue";
 import {FwbButton} from "flowbite-vue";
+import {useStore} from 'vuex';
 
 
-
+const store = useStore();
 const currentPopup = ref(null);
 const selectedCategory = ref(null);
+const list = ref([]);
 const searchText = ref('Day la gia tri gan ban dau');
 const searchTextInput = ref('')
 const isOpen = ref(false)
 
+const fetchData = async () => {
+    try {
+        debugger
+        await store.dispatch('products/fetchProductsCustomer');
+        list.value = store.state.products.products;
+    } catch (error) {
+        console.error("Failed to fetch products:", error);
+    }
+};
 
 const listProduct = [
     {
@@ -55,7 +64,6 @@ const listProduct = [
             { name: 'Chocolate Sauce', price: '7.000' },
             { name: 'Chocolate Sauce', price: '7.000' },
             { name: 'Chocolate Sauce', price: '7.000' }
-
         ]
     },
     {
@@ -96,9 +104,6 @@ const listCategory = [
     }
 ]
 
-// const openPopup = (popupName) => {
-//     currentPopup.value = popupName;
-// }
 const selectedProduct = ref(null); // Biến lưu sản phẩm được chọn
 
 const openPopup = (popupName, product = null) => {
@@ -125,6 +130,10 @@ const changeSearchText = () => {
     //tam thoi render lai san pham
     selectedCategory.value = null;
 }
+
+onMounted(() => {
+    fetchData();
+})
 </script>
 
 <template>
@@ -158,13 +167,13 @@ const changeSearchText = () => {
 
 
     <div class="search flex flex-row items-center justify-center mt-4 mb-0 lg:mt-9 lg:mb-5 lg:ml-[120px]">
-        <div class="search_btn flex flex-row lg:w[1000px] h-full">
+        <div class="search_btn flex flex-row lg:w[1000px]">
             <input type="text" v-model="searchTextInput" @keydown.enter="changeSearchText" placeholder="Search" class="search_input h-full ml-4.5 w-[200px] lg:w-[440px] focus:outline-none">
             <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Search Icon" class="search-icon w-3 h-3 lg:w-5 lg:h-5 mr-3">
         </div>
-        <fwb-button pill @click="openPopup('filter')" class="bg-gray-100 border-light-gray text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 inline-flex items-center">
+        <fwb-button pill @click="openPopup('filter')" class="ml-1 bg-gray-100 border-light-gray text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 inline-flex items-center">
             <template #prefix>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
                 </svg>
             </template>
@@ -174,7 +183,7 @@ const changeSearchText = () => {
         <FilterPopup :isVisible="currentPopup === 'filter'" :searchText="searchText"  @closePopup="closePopup" />
         <fwb-button pill @click="isOpen = !isOpen" class="bg-gray-100 border-light-gray relative text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 h-full dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 inline-flex items-center">
             <template #prefix>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="size-6" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.25" class="size-6" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
                 </svg>
             </template>
@@ -194,7 +203,6 @@ const changeSearchText = () => {
                 </div>
             </div>
         </fwb-button>
-
     </div>
 
     <div class="container max-w-[1200px] mx-auto px-4 lg:px-4 grid grid-cols-12 gap-4 mt-1 lg:mt-5">
@@ -223,18 +231,17 @@ const changeSearchText = () => {
 
         <div class="col-span-12 lg:col-span-9 grid grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
             <div v-for="product in filteredProducts" :key="product.id" class="p-4 cursor-pointer">
-                <img :src="product.img" alt="Black Coffee" class="w-full rounded shadow-lg rounded-lg aspect-square">
-                <div class="product_content flex flex-row justify-between">
+                <img :src="product.img" alt="Black Coffee" class="w-full shadow-lg rounded-lg aspect-square">
+                <div class="product_content flex flex-row justify-between mt-4">
                     <div class="product_label">
-                        <h3 class="mt-4 font-bold text-black">{{product.name}}</h3>
+                        <h3 class="font-bold text-title-xsm text-black">{{product.name}}</h3>
                         <p class="text-gray-600 text-xs lg:text-sm">{{product.price}} VND</p>
                     </div>
-                    <div class="product_btn mb-3 lg:mb-0">
-                        <button @click="openPopup('details',product)" class="add_btn flex mt-7 lg:mt-5 justify-center items-center mr-2 w-[24px] h-[24px] lg:w-[30px] lg:h-[30px]">
+                    <div class="flex justify-center items-center mb-3 lg:mb-0">
+                        <button @click="openPopup('details',product)" class="add_btn flex justify-center items-center p-1">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
-
                         </button>
                     </div>
                 </div>
@@ -268,12 +275,9 @@ const changeSearchText = () => {
 </template>
 
 <style scoped>
-.search_input:focus {
-    outline: none !important;
-}
-body {
-    font-family: 'Roboto', sans-serif;
-}
+    .search_input:focus {
+        outline: none !important;
+    }
     .border-light-gray {
         border: 1px solid rgba(117, 117, 117, 0.28);
     }
@@ -281,7 +285,7 @@ body {
         flex-shrink: 0;
         border-radius: 28px;
         background: linear-gradient(180deg, rgba(153, 125, 108, 0.74) 0%, rgba(49, 31, 21, 0.74) 100%);
-        box-shadow: 0px 4px 4px 0px (0, 0, 0, 0.25);
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     }
     .market_content_btn {
         display: flex;
@@ -334,7 +338,7 @@ body {
     }
     .search_btn{
         display: inline-flex;
-        height: 38px;
+        height: 44px;
         justify-content: center;
         align-items: center;
         flex-shrink: 0;

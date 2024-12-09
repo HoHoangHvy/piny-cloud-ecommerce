@@ -16,10 +16,10 @@ class ProductController extends BaseController
     /**
      * Display a listing of the products.
      */
-    public function index()
+    public function getProducts()
     {
-        $products = Product::withTrashed()->get(); // Include soft-deleted records
-        return response()->json($products);
+        $products = Product::where('status', 'active')->get();
+        return response()->json(['message' => 'Product get successfully.', 'data' => $products], 201);
     }
 
     /**
@@ -125,7 +125,7 @@ class ProductController extends BaseController
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'images.*' => 'nullable|file|image|max:5120', // Validate each image file
+            'images_new' => 'nullable|array', // Validate the Base64-encoded images list
             'status' => 'nullable|in:active,inactive',
             'price' => 'nullable|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
@@ -150,19 +150,40 @@ class ProductController extends BaseController
         if (isset($validated['toppings_id']) && !$validated['is_topping']) {
             $product->toppings()->sync($validated['toppings_id']);
         }
-
-        // Handle image uploads
-        if ($request->hasFile('images')) {
+        // Handle Base64 images
+        if (isset($validated['images_new'])) {
             // Delete old images if necessary
             foreach ($product->images as $image) {
                 Storage::disk('public')->delete($image->image_path);
                 $image->delete();
             }
+            $index = 0;
+            // Save new images from Base64
+            foreach ($validated['images_new'] as $base64Image) {
+                $image_parts = explode(";base64,", $base64Image);
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1];
+                $image_base64 = base64_decode($image_parts[1]);
+                $filename = uniqid('product_') . '.' . $image_type; // Generate a unique name
+                $directory = storage_path('app/public/products'); // Target directory
+                $path = "$directory/$filename";
 
-            // Store new images
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                $product->images()->create(['image_path' => $path]);
+                // Ensure the directory exists
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                // Save the decoded content to the file
+                file_put_contents($path, $image_base64);
+
+                // Save the relative path in the database
+                $product->images()->create(['image_path' => "products/$filename"]);
+
+                // Set the first image as the main image (image attribute)
+                if ($index === 0) {
+                    $product->update(['image' => "products/$filename"]);
+                }
+                $index++;
             }
         }
 
