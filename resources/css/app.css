@@ -42,3 +42,10 @@
     z-index: 2; /* Ensure it stays on top of other content */
     padding: 1rem; /* Match your header padding */
 }
+button {
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.02);
+}

@@ -76,7 +76,14 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async fetchProductsCustomer({commit, state}, {searchText = '', category = null}) {
+        async fetchProductsCustomer({commit, state}, {
+            searchText = '',
+            category = null,
+            minPrice = null,
+            maxPrice = null,
+            fromDate = null,
+            toDate = null
+        }) {
             commit('SET_LOADING', true);
 
             try {
@@ -90,10 +97,28 @@ export default {
                 if (category) {
                     params.category_id = category;
                 }
-                debugger
                 // Add last_product_id if it's available (for infinite scrolling)
                 if (state.lastProductId) {
                     params.last_product_id = state.lastProductId;
+                }
+
+                // Add price filters
+                if (minPrice) {
+                    params.min_price = minPrice;
+                }
+
+                if (maxPrice) {
+                    params.max_price = maxPrice;
+                }
+
+                // Add date filters
+
+                if (fromDate) {
+                    params.from_date = fromDate;
+                }
+
+                if (toDate) {
+                    params.to_date = toDate;
                 }
 
                 // Fetch the products from the API

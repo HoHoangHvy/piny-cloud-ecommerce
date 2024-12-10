@@ -35,8 +35,8 @@ class ProductController extends BaseController
             ->where('products.is_topping', 0);
 
         // Apply name filter if present
-        if ($request->has('name')) {
-            $query->where('products.name', 'like', '%' . $request->input('name') . '%');
+        if ($request->has('search')) {
+            $query->where('products.name', 'like', '%' . $request->input('search') . '%');
         }
 
         // Apply price range filters if present
@@ -46,6 +46,15 @@ class ProductController extends BaseController
 
         if ($request->has('max_price')) {
             $query->where('products.price', '<=', $request->input('max_price'));
+        }
+
+        //Apply created_at filter if present
+        if ($request->has('from_date')) {
+            $query->whereDate('products.created_at', '>=', $request->input('created_at'));
+        }
+
+        if ($request->has('to_date')) {
+            $query->whereDate('products.created_at', '<=', $request->input('created_at'));
         }
 
         // Apply category filter if present

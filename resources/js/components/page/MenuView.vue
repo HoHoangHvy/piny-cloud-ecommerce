@@ -15,6 +15,7 @@ const searchText = ref('');
 const searchTextInput = ref('');
 const isOpen = ref(false);
 const selectedProduct = ref(null);
+const filtersOption = ref([]);
 const loading = ref(false);
 const loadingCategory = ref(false);
 const hasMore = ref(true); // To track if more products are available
@@ -24,9 +25,14 @@ const fetchData = async (isReload = false) => {
     if (loading.value || !hasMore.value) return;  // Prevent duplicate requests
     loading.value = isReload;
     try {
+        debugger
         await store.dispatch('products/fetchProductsCustomer', {
             searchText: searchText.value,
-            category: selectedCategory.value
+            category: selectedCategory.value,
+            minPrice: filtersOption.value.minPrice,
+            maxPrice: filtersOption.value.maxPrice,
+            fromDate: filtersOption.value.fromDate,
+            toDate: filtersOption.value.toDate,
         });
         const newProducts = productsVuex.products;
         hasMore.value = productsVuex.canLoad;
@@ -96,8 +102,9 @@ const scrollToDiv = () => {
 // Update search text and trigger fetch
 const changeSearchText = () => {
     searchText.value = searchTextInput.value;
-    listProduct.value = []; // Clear previous products
-    fetchData(); // Re-fetch products with the updated search text
+    store.commit('products/SET_LAST_PRODUCT_ID', null);
+    hasMore.value = true;
+    fetchData(true); // Re-fetch products with the updated search text
 };
 
 // Load more products when scrolled to the bottom
@@ -106,6 +113,13 @@ const handleScroll = () => {
     if (bottom) {
         fetchData(); // Fetch next page when scrolled to bottom
     }
+};
+const handleFilterUpdate = (filters) => {
+    debugger
+    store.commit('products/SET_LAST_PRODUCT_ID', null);
+    filtersOption.value = filters;
+    hasMore.value = true;
+    fetchData(true); // Pass the filters to fetchData
 };
 
 onMounted(() => {
@@ -155,7 +169,7 @@ const formatVietnameseCurrency = (amount) => {
             <span>{{ $lang('LBL_FILTER') }}</span>
         </fwb-button>
         <!-- Sử dụng component pop-up -->
-        <FilterPopup :isVisible="currentPopup === 'filter'" :searchText="searchText" @closePopup="closePopup"/>
+        <FilterPopup :isVisible="currentPopup === 'filter'" @applyFilters="handleFilterUpdate" @closePopup="closePopup"/>
         <fwb-button pill @click="isOpen = !isOpen"
                     class="bg-gray-100 border-light-gray relative text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 h-full dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 inline-flex items-center">
             <template #prefix>
