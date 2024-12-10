@@ -108,12 +108,22 @@ const changeSearchText = () => {
 };
 
 // Load more products when scrolled to the bottom
+let isFetching = false; // Flag to prevent duplicate fetch requests
 const handleScroll = () => {
-    const bottom = ((document.documentElement.scrollHeight * 70) / 100) < Math.ceil(window.scrollY + window.innerHeight);
-    if (bottom) {
-        fetchData(); // Fetch next page when scrolled to bottom
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.scrollY;
+    const clientHeight = window.innerHeight;
+
+    const scrolledToThreshold = (scrollTop + clientHeight) >= (scrollHeight * 0.8);
+
+    if (scrolledToThreshold && !isFetching) {
+        isFetching = true; // Set the flag to true before starting fetch
+        fetchData().finally(() => {
+            isFetching = false; // Reset the flag after fetch completes
+        });
     }
 };
+
 const handleFilterUpdate = (filters) => {
     debugger
     store.commit('products/SET_LAST_PRODUCT_ID', null);
