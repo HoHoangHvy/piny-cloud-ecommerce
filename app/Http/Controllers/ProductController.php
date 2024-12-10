@@ -109,6 +109,38 @@ class ProductController extends BaseController
         ], 200);
     }
 
+    public function getProductDetail(String $id) {
+        $product = Product::findOrFail($id);
+        $toppingList = $product->toppings()
+            ->select('id', 'name', 'price') // Select only the columns you need
+            ->get()
+            ->map(function ($topping) {
+                return [
+                    'id' => $topping->id,
+                    'name' => $topping->name,
+                    'price' => $topping->price,
+                ];
+            });
+
+        $return_data = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'topping_list' => $toppingList,
+            'image_url' => $product->image ? asset('storage/' . $product->image) : null,
+            'size_list' => [
+                ['name' => 'S', 'price' => 0],
+                ['name' => 'M', 'price' => $product->up_m_price],
+                ['name' => 'L', 'price' => $product->up_l_price],
+            ]
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $return_data
+        ], 200);
+    }
+
     public function toArray($data)
     {
         $returned_data = [];
@@ -231,7 +263,7 @@ class ProductController extends BaseController
             'categories_id' => 'nullable|array',
             'categories_id.*' => 'nullable|string|exists:categories,id',
             'toppings_id' => 'nullable|array',
-            'toppings_id.*' => 'nullable|string|exists:toppings,id',
+            'toppings_id.*' => 'nullable|string|exists:products,id',
         ]);
 
         $product = Product::findOrFail($id);

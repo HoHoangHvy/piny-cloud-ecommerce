@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from "vue-router";
-import home from '../components/page/homePage.vue'
-import about from '../components/page/aboutPage.vue'
+import home from '../components/page/HomePage.vue'
+import about from '../components/page/AboutPage.vue'
 import AdminLayout from "../layouts/AdminLayout.vue";
 import AdminLogin from "../components/admin/adminLogin.vue";
 import CustomerLayout from "../layouts/CustomerLayout.vue";
@@ -18,7 +18,7 @@ import UserManagement from "@/js/components/admin/UserManagement/UserManagement.
 import productDetailPage from "../components/admin/productDetailPage.vue";
 import UserInfoPage from "../components/admin/UserInfoPage.vue";
 import MenuView from "@/js/components/page/MenuView.vue";
-import OrderPage from "../components/page/orderPage.vue";
+import OrderPage from "../components/page/OrderPage.vue";
 import ProductCRUD from "@/js/components/admin/CRUD/Products/ProductCRUD.vue";
 
 import store from "@/js/store/index.js";

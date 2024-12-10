@@ -148,7 +148,22 @@ export default {
         async fetchProduct({commit}, id) {
             commit('SET_LOADING', true);
             try {
+
                 const response = await axios.get(`/api/products/${id}`);
+                commit('SET_PRODUCT', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching product:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching product.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        async fetchCustomerProduct({commit}, id) {
+            commit('SET_LOADING', true);
+            try {
+                debugger
+                const response = await axios.get(`/api/customer/product/${id}`);
                 commit('SET_PRODUCT', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {

@@ -1,6 +1,6 @@
 <script setup>
 import FilterPopup from '../popup/FilterPopup.vue';
-import DetailsProduct from "@/js/components/page/DetailsProduct.vue";
+import DetailProduct from "@/js/components/page/DetailProduct.vue";
 import {FwbButton} from "flowbite-vue";
 import {useStore} from 'vuex';
 import {ref, onMounted, watch} from "vue";
@@ -25,7 +25,7 @@ const fetchData = async (isReload = false) => {
     if (loading.value || !hasMore.value) return;  // Prevent duplicate requests
     loading.value = isReload;
     try {
-        debugger
+
         await store.dispatch('products/fetchProductsCustomer', {
             searchText: searchText.value,
             category: selectedCategory.value,
@@ -73,11 +73,19 @@ const fetchCategory = async () => {
 };
 
 // Open product details popup
-const openPopup = (popupName, product = null) => {
-    if (arguments.length === 2 && popupName === 'details' && product) {
-        selectedProduct.value = product;
+const openPopup = (popupName, productId = null) => {
+    if (popupName === 'details' && productId) {
+        // Fetch product details based on the product ID
+        store.dispatch('products/fetchCustomerProduct', productId).then(() => {
+            // Set the selected product to the fetched product
+            selectedProduct.value = store.getters["products/singleProduct"];
+            // Open the popup
+            currentPopup.value = popupName;
+        });
+    } else {
+        // Open the popup without fetching product details
+        currentPopup.value = popupName;
     }
-    currentPopup.value = popupName;
 };
 
 // Close popup
@@ -125,7 +133,7 @@ const handleScroll = () => {
 };
 
 const handleFilterUpdate = (filters) => {
-    debugger
+
     store.commit('products/SET_LAST_PRODUCT_ID', null);
     filtersOption.value = filters;
     hasMore.value = true;
@@ -156,7 +164,7 @@ const formatVietnameseCurrency = (amount) => {
 </script>
 
 <template>
-    <DetailsProduct :isVisible="currentPopup === 'details'" :selectedProduct="selectedProduct" @closePopup="closePopup"/>
+    <DetailProduct :isVisible="currentPopup === 'details'" :selectedProduct="selectedProduct" @closePopup="closePopup" id="detail-producy"/>
     <Marketing></Marketing>
 
     <!-- Search and Filter Section -->
