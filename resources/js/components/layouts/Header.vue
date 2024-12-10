@@ -79,7 +79,7 @@ const signOut = async () => {
                 <div class="flex items-center">
                     <div class="flex justify-center items-center gap-5">
                         <div class="rounded-full pt-0.5 mb-2 mt-2 bg-[#825B32]">
-                            <svg width="55" height="52" viewBox="0 0 107 98" fill="none"
+                            <svg width="56" height="52" viewBox="0 0 107 98" fill="none"
                                  xmlns="http://www.w3.org/2000/svg"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <rect width="105.313" height="96.6797"

@@ -68,11 +68,20 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async fetchProductsCustomer({ commit }) {
+        async fetchProductsCustomer({ commit }, { searchText = '', category = null }) {
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
-                const response = await axios.get('/api/customer/products');
+                // Include search and category filters in the request
+                const params = {};
+                if (searchText) {
+                    params.search = searchText;
+                }
+                if (category) {
+                    params.category_id = category;
+                }
+
+                const response = await axios.get('/api/customer/products', { params });
 
                 commit('SET_PRODUCTS', response.data.data);
                 commit('SET_ERROR', null);

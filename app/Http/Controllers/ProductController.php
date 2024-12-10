@@ -16,11 +16,62 @@ class ProductController extends BaseController
     /**
      * Display a listing of the products.
      */
-    public function getProducts()
+    public function getProducts(Request $request)
     {
-        $products = Product::where('status', 'active')->get();
-        return response()->json(['message' => 'Product get successfully.', 'data' => $products], 201);
+        // Get pagination size from the request, or set a default value
+        $pageSize = $request->input('page_size', 10); // Default: 10 items per page
+
+        // Initialize the query builder for products
+        $query = Product::select('id', 'name', 'price', 'image')
+            ->where('status', 'active')
+            ->where('is_topping', 0);
+
+        // Filter by 'name' if it's passed in the request
+        if ($request->has('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+
+        // Filter by 'min_price' and 'max_price' if they are passed in the request
+        if ($request->has('min_price')) {
+            $query->where('price', '>=', $request->input('min_price'));
+        }
+
+        if ($request->has('max_price')) {
+            $query->where('price', '<=', $request->input('max_price'));
+        }
+
+        // Filter by 'category_id' if passed
+        if ($request->has('category_id')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('id', $request->input('category_id'));
+            });
+        }
+
+        // Fetch paginated products with the applied filters
+        $products = $query->paginate($pageSize);
+
+        // Transform the collection
+        $products->getCollection()->transform(function ($product) {
+            // Add categories_id and image_url to each product
+            $product->categories_id = $product->categories()->pluck('id');
+            $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
+
+            return $product;
+        });
+
+        return response()->json([
+            'message' => 'Products retrieved successfully.',
+            'data' => $products->items(), // The actual paginated data
+            'pagination' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total(),
+            ],
+        ], 200);
     }
+
+
 
     /**
      * Store a newly created product in storage.

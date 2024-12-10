@@ -46,10 +46,6 @@ class Product extends Model
         return $this->belongsToMany(Product::class, 'products_toppings', 'topping_id', 'product_id')
                     ->withTimestamps();
     }
-    public function getImageUrlAttribute()
-    {
-        return $this->image ? Storage::disk('s3')->url($this->image) : null;
-    }
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
