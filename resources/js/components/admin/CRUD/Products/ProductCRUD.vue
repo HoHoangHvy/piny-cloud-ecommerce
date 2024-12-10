@@ -857,7 +857,7 @@ const handleFileChange = (event) => {
     event.target.value = "";
 };
 const handleFileEditChange = (event) => {
-    debugger
+
     const files = event.target.files;
 
     Array.from(files).forEach((file) => {

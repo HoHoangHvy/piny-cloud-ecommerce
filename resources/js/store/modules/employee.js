@@ -76,7 +76,7 @@ export default {
                 commit('ADD_EMPLOYEE', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
-                debugger
+
                 if(error.response.status === 402) {
                     notify({
                         group: "error",

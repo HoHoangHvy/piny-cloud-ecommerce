@@ -18,60 +18,96 @@ class ProductController extends BaseController
      */
     public function getProducts(Request $request)
     {
-        // Get pagination size from the request, or set a default value
-        $pageSize = $request->input('page_size', 10); // Default: 10 items per page
+        // Get the number of items to fetch, defaulting to 10
+        $pageSize = $request->input('page_size', 10);
 
         // Initialize the query builder for products
-        $query = Product::select('id', 'name', 'price', 'image')
-            ->where('status', 'active')
-            ->where('is_topping', 0);
+        $query = Product::select('products.id as product_id',
+            'products.name as product_name',
+            'products.price as product_price',
+            'products.image as product_image',
+            'categories.id as category_id',
+            'categories.name as category_name',
+            'categories.priority')
+            ->join('category_product', 'category_product.product_id', '=', 'products.id') // Join with the pivot table
+            ->join('categories', 'categories.id', '=', 'category_product.category_id')  // Join with the categories table
+            ->where('products.status', 'active')
+            ->where('products.is_topping', 0);
 
-        // Filter by 'name' if it's passed in the request
+        // Apply name filter if present
         if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->input('name') . '%');
+            $query->where('products.name', 'like', '%' . $request->input('name') . '%');
         }
 
-        // Filter by 'min_price' and 'max_price' if they are passed in the request
+        // Apply price range filters if present
         if ($request->has('min_price')) {
-            $query->where('price', '>=', $request->input('min_price'));
+            $query->where('products.price', '>=', $request->input('min_price'));
         }
 
         if ($request->has('max_price')) {
-            $query->where('price', '<=', $request->input('max_price'));
+            $query->where('products.price', '<=', $request->input('max_price'));
         }
 
-        // Filter by 'category_id' if passed
+        // Apply category filter if present
         if ($request->has('category_id')) {
-            $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('id', $request->input('category_id'));
-            });
+            $query->where('category_product.category_id', $request->input('category_id'));
         }
 
-        // Fetch paginated products with the applied filters
-        $products = $query->paginate($pageSize);
+        // Apply cursor-based pagination if the 'last_product_id' parameter is present
+        if ($request->has('last_product_id')) {
+            $query->where('products.id', '>', $request->input('last_product_id'));
+        }
 
-        // Transform the collection
-        $products->getCollection()->transform(function ($product) {
-            // Add categories_id and image_url to each product
-            $product->categories_id = $product->categories()->pluck('id');
-            $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
+        // Order by category priority
+        $query->orderBy('categories.priority', 'asc')  // Assuming ascending priority
+        ->orderBy('products.name', 'asc');  // Order products within the category
 
-            return $product;
-        });
+        // Fetch the products
+        $products = $query->limit($pageSize)->get();
+
+        $return_data = [];
+        $prev_category_id = null;
+        foreach($products as $product){
+            if($prev_category_id != $product->category_id){
+                $return_data[$product->category_id] = [
+                    'category_name' => $product->category_name,
+                    'category_id' => $product->category_id,
+                    'priority' => $product->priority,
+                ];
+                $prev_category_id = $product->category_id;
+            }
+            $return_data[$product->category_id]['product_list'][] = [
+                'product_id' => $product->product_id,
+                'product_name' => $product->product_name,
+                'product_price' => $product->product_price,
+                'product_image' => $product->product_image ? asset('storage/' . $product->product_image) : null,
+            ];
+        }
+
+        // Determine if there are more products to load
+        $hasMore = $products->count() === $pageSize;
+
+        // Get the last product's ID to use as a cursor for the next request
+        $lastProductId = $products->isNotEmpty() ? $products->last()->product_id : null;
 
         return response()->json([
             'message' => 'Products retrieved successfully.',
-            'data' => $products->items(), // The actual paginated data
+            'data' => $this->toArray($return_data),
             'pagination' => [
-                'current_page' => $products->currentPage(),
-                'last_page' => $products->lastPage(),
-                'per_page' => $products->perPage(),
-                'total' => $products->total(),
+                'last_product_id' => $lastProductId,  // Provide the ID of the last fetched product for cursor-based pagination
+                'has_more' => $hasMore,               // Indicate if there are more products to load
             ],
         ], 200);
     }
 
-
+    public function toArray($data)
+    {
+        $returned_data = [];
+        foreach($data as $row) {
+            $returned_data[] = $row;
+        }
+        return $returned_data;
+    }
 
     /**
      * Store a newly created product in storage.
