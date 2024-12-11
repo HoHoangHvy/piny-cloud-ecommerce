@@ -53,7 +53,8 @@
                         <!-- Topping Selector -->
                         <div class="mb-2">
                             <p class="text-black font-bold text-lg mb-2">Topping</p>
-                            <div class="flex flex-wrap gap-1 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 overflow-hidden overflow-y-auto h-[145px]">
+                            <div
+                                class="flex flex-wrap gap-1 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 overflow-hidden overflow-y-auto h-[145px]">
                                 <button
                                     v-if="selectedProduct?.topping_list.length !== 0"
                                     v-for="(topping) in selectedProduct?.topping_list"
@@ -70,20 +71,42 @@
                         <div class="mb-6">
                             <p class="text-black font-bold text-lg mb-2">Note</p>
                             <div class="flex flex-wrap grid-cols-4 gap-1">
-                                <textarea v-model="note" id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Note something here"></textarea>
+                                <textarea v-model="note" id="description" rows="4"
+                                          class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                          placeholder="Note something here"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Buttons -->
-                <div class="flex justify-end items-center space-x-4 h-[10%]">
+                <div class="flex justify-between items-center space-x-4 h-[10%]">
                     <!-- Total -->
-                    <div class="">
-                        Total: {{ calculateTotal }}
+                    <div class="relative flex items-center max-w-[7rem]">
+                        <button type="button" id="decrement-button" @click="decreaseQuantity"
+                                class="flex items-center bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 hover:bg-gray-200 border border-gray-300 rounded-lg pt-3 pb-3 pr-2 pl-2 h-5 focus:ring-gray-100 focus:ring-2 focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                            </svg>
+                        </button>
+                        <input v-model="quantity" type="text" id="quantity-input"
+                               aria-describedby="helper-text-explanation"
+                               class="bg-gray-50 border-x-0 h-4 text-center text-gray-900 text-sm block w-full py-2.5 border-none"/>
+                        <button type="button" id="increment-button" @click="increaseQuantity"
+                                class="flex items-center bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-lg pt-3 pb-3 pr-2 pl-2 h-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        </button>
                     </div>
-                    <button @click="addToCart" class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
-                        Add to cart
-                    </button>
+                    <div>
+                        <span class="mr-3">
+                            Total: {{ calculateTotal }}
+                        </span>
+                        <button @click="addToCart" class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
+                            Add to cart
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -91,12 +114,25 @@
 </template>
 
 <script setup>
-import {defineProps, defineEmits, computed, ref} from 'vue';
+import {initFlowbite} from 'flowbite';
+import {defineProps, defineEmits, computed, ref, onMounted} from 'vue';
 
+onMounted(() => {
+    initFlowbite();
+});
 const props = defineProps({
     isVisible: {type: Boolean, required: true},
     selectedProduct: {type: Object, required: true}, // Pass the selected product directly
 });
+const decreaseQuantity = () => {
+    if (quantity.value > 1) {
+        quantity.value--;
+    }
+};
+
+const increaseQuantity = () => {
+    quantity.value++;
+};
 
 const emit = defineEmits(['closePopup']);
 
@@ -106,6 +142,7 @@ const selectedSize = ref({
 }); // Default size
 const selectedToppings = ref([]); // Default toppings
 const note = ref(''); // Default toppings
+const quantity = ref(1); // Default toppings
 
 // Close the popup
 const close = () => {
@@ -147,7 +184,6 @@ const formatVietnameseCurrency = (amount, showD = true) => {
 };
 // Calculate total price
 const calculateTotal = computed(() => {
-    debugger
     let total = parseFloat(props.selectedProduct?.price.replace(/[^0-9.-]+/g, "")) || 0;
     if (selectedSize.value && selectedSize.value.price) {
         total += parseFloat(selectedSize.value.price.replace(/[^0-9.-]+/g, ""));
@@ -155,6 +191,9 @@ const calculateTotal = computed(() => {
     selectedToppings.value.forEach(topping => {
         total += parseFloat(topping.price.replace(/[^0-9.-]+/g, ""));
     });
+
+    total *= quantity.value;
+
     return total.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
 });
 </script>
@@ -168,6 +207,7 @@ const calculateTotal = computed(() => {
     height: 100%;
     z-index: 50;
 }
+
 .size-button {
     font-size: 14px;
     color: #B2B2B2;
@@ -184,6 +224,7 @@ const calculateTotal = computed(() => {
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 .topping-button {
     font-size: 14px;
     color: #B2B2B2;
@@ -205,15 +246,18 @@ const calculateTotal = computed(() => {
     color: #6B4226;
     border-color: #6B4226;
 }
+
 .size-button.topping-active {
     color: white;
     background: #825B32;
     border-color: #825B32;
 }
+
 .topping-button.active {
     color: #6B4226;
     border-color: #6B4226;
 }
+
 .topping-button.topping-active {
     color: white;
     background: #825B32;
