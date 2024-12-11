@@ -159,12 +159,7 @@ const handleToppingClick = (topping) => {
 }
 // Add to cart logic
 const addToCart = () => {
-    // Logic to add to cart
-    console.log('Added to cart:', {
-        product: props.selectedProduct,
-        size: selectedSize.value,
-        toppings: selectedToppings.value,
-    });
+    // Prepare the data
     close();
 };
 const formatVietnameseCurrency = (amount, showD = true) => {

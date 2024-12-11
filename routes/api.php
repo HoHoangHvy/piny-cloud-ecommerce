@@ -68,6 +68,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/categories/options', [\App\Http\Controllers\CategoryController::class, 'getCategoryOptions']);
     Route::get('/products/toppings', [\App\Http\Controllers\ProductController::class, 'getToppingOptions']);
 
+
+    Route::post('/cart/addProduct', [\App\Http\Controllers\OrderController::class, 'addProductToCart']);
+
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);
     Route::get('/{module}/{id}', [\App\Http\Controllers\ModuleController::class, 'show']);

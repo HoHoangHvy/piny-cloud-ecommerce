@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Customer;
+use App\Models\CustomerOrder;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -18,41 +20,105 @@ class OrderController extends Controller
         $orders = Order::with(['customer', 'createdBy', 'manuallyCreatedBy', 'team'])->get();
         return response()->json($orders);
     }
-    public function addProductToCart(Request $request) {
+    public function addProductToCart(Request $request)
+    {
         $validated = $request->validate([
             'product_id' => 'required',
             'size' => 'required',
             'quantity' => 'required',
-            'toppings_id' => 'nullable',
+            'toppings_id' => 'nullable|array', // Ensure toppings_id is an array
             'note' => 'nullable',
+            'total_price' => 'required',
         ]);
 
-        if($validated['product'] == null) {
+        // Check if product exists
+        if (!$validated['product_id']) {
             return response()->json(['message' => 'Product not found.'], 404);
         }
 
-        $product = Product::findOrFail($validated['product']);
+        $product = Product::findOrFail($validated['product_id']);
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
 
-        if($request->has('order_id') && $request->get('order_id') != null) {
+        // Check if customer exists
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Check if order_id is provided
+        if ($request->has('order_id') && $request->get('order_id') != null) {
             $order = Order::find($request->get('order_id'));
         } else {
-            $currentUser = auth()->user();
+            // Create a new order if order_id is not provided
             $order = Order::create([
                 'order_number' => 'ORD' . time(),
-                'receiver_name' => $currentUser->name,
+                'receiver_name' => $customer->full_name,
                 'receiver_address' => '',
                 'payment_method' => 'Cash',
-                'payment_status' => 'pending',
-                'order_status' => 'Wait For Approval',
-                'date_created' => now(),
-                'order_total' => 0,
-                'rate' => 0,
-                'customer_feedback' => null,
-                'host_id' => null,
-                'manually_created_by' => null,
+                'order_status' => 'Draft',
                 'source' => 'Online',
+                'customer_feedback' => '',
+                'host_id' => $customer->id,
             ]);
+
+            // Attach the customer to the order using the pivot table
+            $order->customers()->attach($customer->id);
         }
+
+        // Get the pivot record (CustomerOrder) for the customer and order
+        $customerOrder = $order->customers()->where('customer_id', $customer->id)->first()->pivot;
+
+        // Add order detail using the CustomerOrder pivot
+        $orderDetail = $customerOrder->orderDetails()->create([
+            'order_detail_number' => 'OD' . time(),
+            'customer_order_id' => $customerOrder->id,
+            'product_id' => $product->id,
+            'parent_id' => null,
+            'size' => $validated['size'],
+            'quantity' => $validated['quantity'],
+            'note' => $validated['note'],
+            'total_price' => $validated['total_price'],
+        ]);
+
+        // Add toppings if provided
+        if (isset($validated['toppings_id'])) {
+            foreach ($validated['toppings_id'] as $toppingId) {
+                $topping = Product::findOrFail($toppingId);
+                $orderDetail->toppings()->create([
+                    'order_detail_number' => 'ODTP' . time(),
+                    'customer_order_id' => $customerOrder->id,
+                    'product_id' => $topping->id,
+                    'size' => 'S',
+                    'quantity' => 1,
+                    'note' => '',
+                    'parent_id' => $orderDetail->id,
+                ]);
+            }
+        }
+
+        // Prepare the response data
+        $return_data = [
+            'order' => $order,
+            'order_detail' => [
+                'id' => $orderDetail->id,
+                'order_detail_number' => $orderDetail->order_detail_number,
+                'product' => [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                ],
+                'size' => $orderDetail->size,
+                'quantity' => $orderDetail->quantity,
+                'note' => $orderDetail->note,
+                'total_price' => $orderDetail->total_price,
+                'toppings' => $orderDetail->toppings,
+            ],
+        ];
+
+        return response()->json([
+            'message' => 'Product added to cart successfully.',
+            'data' => $return_data
+        ]);
     }
     /**
      * Store a newly created order in storage.
