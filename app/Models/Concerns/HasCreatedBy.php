@@ -9,7 +9,8 @@ trait HasCreatedBy
         static::creating(function ($model) {
             $cur_user_id = auth()->id() ?? '1';
             $model->{'created_by'} = $cur_user_id;
-            if($model->team_id == null) {
+            $modelName = class_basename($model);
+            if($model->team_id == null && $modelName != 'Team' && $modelName != 'Role' && $modelName != 'Permission') {
                 $model->{'team_id'} = '1';
             }
         });

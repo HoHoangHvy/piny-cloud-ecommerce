@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -16,7 +18,42 @@ class OrderController extends Controller
         $orders = Order::with(['customer', 'createdBy', 'manuallyCreatedBy', 'team'])->get();
         return response()->json($orders);
     }
+    public function addProductToCart(Request $request) {
+        $validated = $request->validate([
+            'product_id' => 'required',
+            'size' => 'required',
+            'quantity' => 'required',
+            'toppings_id' => 'nullable',
+            'note' => 'nullable',
+        ]);
 
+        if($validated['product'] == null) {
+            return response()->json(['message' => 'Product not found.'], 404);
+        }
+
+        $product = Product::findOrFail($validated['product']);
+
+        if($request->has('order_id') && $request->get('order_id') != null) {
+            $order = Order::find($request->get('order_id'));
+        } else {
+            $currentUser = auth()->user();
+            $order = Order::create([
+                'order_number' => 'ORD' . time(),
+                'receiver_name' => $currentUser->name,
+                'receiver_address' => '',
+                'payment_method' => 'Cash',
+                'payment_status' => 'pending',
+                'order_status' => 'Wait For Approval',
+                'date_created' => now(),
+                'order_total' => 0,
+                'rate' => 0,
+                'customer_feedback' => null,
+                'host_id' => null,
+                'manually_created_by' => null,
+                'source' => 'Online',
+            ]);
+        }
+    }
     /**
      * Store a newly created order in storage.
      */
