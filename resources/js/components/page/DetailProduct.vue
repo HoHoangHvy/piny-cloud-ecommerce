@@ -14,11 +14,11 @@
                 <img v-else :src="selectedProduct.image_url" alt="Product"
                      class="w-full h-full shadow-lg rounded-lg aspect-square">
             </div>
-            <div class="flex flex-col w-[700px] p-6">
-                <div class="flex flex-row items-center justify-between h-[20%]">
+            <div class="flex flex-col w-[700px] pr-6 pl-6 pt-4 pb-2">
+                <div class="flex flex-row items-center justify-between h-[16%]">
                     <div class="w-full lg:w-2/3">
                         <h2 class="text-black text-2xl lg:text-3xl font-semibold mb-2">{{ selectedProduct?.name }}</h2>
-                        <p class="text-gray-600 text-lg lg:text-xl mb-4">
+                        <p class="text-gray-600 text-lg lg:text-xl">
                             {{ formatVietnameseCurrency(selectedProduct?.price) }}</p>
                     </div>
                     <div class="h-full">
@@ -31,10 +31,10 @@
                         </button>
                     </div>
                 </div>
-                <div class="flex w-full h-[70%]">
-                    <div class="w-full flex flex-col justify-start mb-6">
+                <div class="flex w-full h-[74%]">
+                    <div class="w-full flex flex-col justify-start mb-2">
                         <!-- Size Selector -->
-                        <div class="mb-6">
+                        <div class="mb-2">
                             <div class="flex justify-between items-center mb-2">
                                 <p class="text-black font-semibold text-lg">Size</p>
                             </div>
@@ -51,20 +51,28 @@
                         </div>
 
                         <!-- Topping Selector -->
-                        <div class="mb-6">
+                        <div class="mb-2">
                             <p class="text-black font-bold text-lg mb-2">Topping</p>
-                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            <div class="flex flex-wrap gap-1 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 overflow-hidden overflow-y-auto h-[145px]">
                                 <button
+                                    v-if="selectedProduct?.topping_list.length !== 0"
                                     v-for="(topping) in selectedProduct?.topping_list"
                                     :key="topping.id"
-                                    :class="['h-fit', { 'topping-active': selectedToppings.includes(topping) }]"
+                                    :class="['topping-button', { 'topping-active': selectedToppings.includes(topping) }]"
                                     @click="handleToppingClick(topping)"
                                 >
                                     {{ topping.name }} +{{ formatVietnameseCurrency(topping.price, false) }}
                                 </button>
+                                <span v-else>No topping available</span>
                             </div>
                         </div>
 
+                        <div class="mb-6">
+                            <p class="text-black font-bold text-lg mb-2">Note</p>
+                            <div class="flex flex-wrap grid-cols-4 gap-1">
+                                <textarea v-model="note" id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Note something here"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Buttons -->
@@ -92,8 +100,12 @@ const props = defineProps({
 
 const emit = defineEmits(['closePopup']);
 
-const selectedSize = ref('S'); // Default size
+const selectedSize = ref({
+    name: 'S',
+    price: '0',
+}); // Default size
 const selectedToppings = ref([]); // Default toppings
+const note = ref(''); // Default toppings
 
 // Close the popup
 const close = () => {
@@ -135,6 +147,7 @@ const formatVietnameseCurrency = (amount, showD = true) => {
 };
 // Calculate total price
 const calculateTotal = computed(() => {
+    debugger
     let total = parseFloat(props.selectedProduct?.price.replace(/[^0-9.-]+/g, "")) || 0;
     if (selectedSize.value && selectedSize.value.price) {
         total += parseFloat(selectedSize.value.price.replace(/[^0-9.-]+/g, ""));
@@ -155,7 +168,6 @@ const calculateTotal = computed(() => {
     height: 100%;
     z-index: 50;
 }
-
 .size-button {
     font-size: 14px;
     color: #B2B2B2;
@@ -164,10 +176,26 @@ const calculateTotal = computed(() => {
     align-items: center;
     flex-shrink: 0;
     border-radius: 10px;
-    padding: 6px 12px;
+    padding: 12px 6px;
     margin: 5px;
     height: 32px;
     border: 2px solid #B2B2B2;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.topping-button {
+    font-size: 14px;
+    color: #B2B2B2;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+    padding: 12px 6px;
+    margin: 5px;
+    height: 36px;
+    border: 1px solid #B2B2B2;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -182,18 +210,14 @@ const calculateTotal = computed(() => {
     background: #825B32;
     border-color: #825B32;
 }
-
-.modal-fade-enter-active, .modal-fade-leave-active {
-    transition: opacity 0.3s ease, transform 0.3s ease;
+.topping-button.active {
+    color: #6B4226;
+    border-color: #6B4226;
+}
+.topping-button.topping-active {
+    color: white;
+    background: #825B32;
+    border-color: #825B32;
 }
 
-.modal-fade-enter-from, .modal-fade-leave-to {
-    opacity: 0;
-    transform: scale(0.95);
-}
-
-.modal-fade-enter-to, .modal-fade-leave-from {
-    opacity: 1;
-    transform: scale(1);
-}
 </style>
