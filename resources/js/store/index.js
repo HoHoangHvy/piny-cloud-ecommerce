@@ -10,10 +10,12 @@ import customers from './modules/customer';
 import orders from './modules/order';
 import vouchers from './modules/voucher';
 import categories from './modules/category';
+import global from './modules/globalState';
 
 
 const store = createStore({
     modules: {
+        global,
         auth,
         teams,
         employees,

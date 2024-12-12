@@ -54,9 +54,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     //Products routes
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
-    Route::get('/customer/products', [ProductController::class, 'getProducts']);
-    Route::get('/customer/product/{id}', [ProductController::class, 'getProductDetail']);
-
     //Employees routes
     Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
@@ -65,7 +62,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/teams/{center}', [TeamController::class, 'destroy']);
     Route::get('/teams', [TeamController::class, 'index']);
     Route::get('/teams/options', [TeamController::class, 'getTeamOptions']);
-    Route::get('/categories/options', [\App\Http\Controllers\CategoryController::class, 'getCategoryOptions']);
     Route::get('/products/toppings', [\App\Http\Controllers\ProductController::class, 'getToppingOptions']);
 
 
@@ -84,6 +80,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
 });
 
+Route::get('/customer/product/{id}', [ProductController::class, 'getProductDetail']);
+Route::get('/customer/products/all', [ProductController::class, 'getProducts']);
+Route::get('/categories/options/all', [\App\Http\Controllers\CategoryController::class, 'getCategoryOptions']);
 
 Route::post('/auth/login', [AuthenticationController::class, 'login']);
 Route::post('/auth/auth-otp', [AuthenticationController::class, 'loginWithOtp']);

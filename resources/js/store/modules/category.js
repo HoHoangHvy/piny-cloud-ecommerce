@@ -43,7 +43,7 @@ export default {
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
-                const response = await axios.get('/api/categories/options');
+                const response = await axios.get('/api/categories/options/all');
                 commit('SET_CATEGORIES_OPTION', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
