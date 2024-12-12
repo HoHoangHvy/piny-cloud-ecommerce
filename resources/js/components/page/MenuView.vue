@@ -5,6 +5,7 @@ import {FwbButton} from "flowbite-vue";
 import {useStore} from 'vuex';
 import {ref, onMounted, watch} from "vue";
 import Marketing from "@/js/components/Marketing.vue";
+import {formatVietnameseCurrency} from '@/js/helpers/currencyFormat.js';
 
 const store = useStore();
 const currentPopup = ref(null);
@@ -155,12 +156,6 @@ watch([searchText, selectedCategory], () => {
     fetchData(); // Re-fetch products on filter changes
 });
 
-const formatVietnameseCurrency = (amount) => {
-    if (isNaN(amount)) {
-        throw new Error("Invalid number");
-    }
-    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
-};
 </script>
 
 <template>

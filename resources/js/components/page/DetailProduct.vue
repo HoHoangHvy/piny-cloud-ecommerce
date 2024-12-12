@@ -117,7 +117,7 @@
 import {initFlowbite} from 'flowbite';
 import {useStore} from 'vuex';
 import {defineProps, defineEmits, computed, ref, onMounted} from 'vue';
-
+import {formatVietnameseCurrency} from '@/js/helpers/currencyFormat.js';
 onMounted(() => {
     initFlowbite();
 });
@@ -145,6 +145,7 @@ const selectedSize = ref({
 const selectedToppings = ref([]); // Default toppings
 const note = ref(''); // Default toppings
 const quantity = ref(1); // Default toppings
+const totalPrice = ref(0); // Default toppings
 
 // Close the popup
 const close = () => {
@@ -159,26 +160,28 @@ const handleToppingClick = (topping) => {
         selectedToppings.value.splice(index, 1);
     }
 }
+
 // Add to cart logic
-const addToCart = () => {
+const addToCart = async () => {
+    if (!props.selectedProduct) {
+        console.error('Selected product is not defined');
+        return;
+    }
+
     if(store.getters.isLoggedIn === false) {
         store.dispatch('togglePopup', true);
     }
-};
-const formatVietnameseCurrency = (amount, showD = true) => {
-    if (isNaN(amount)) {
-        throw new Error("Invalid number");
-    }
 
-    // Format the currency
-    const formattedCurrency = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-        currencyDisplay: showD ? 'symbol' : 'code' // Use 'đ' if showD is true, otherwise use 'VND'
-    }).format(amount);
+    const product = {
+        product_id: props.selectedProduct.id, // Use props.selectedProduct
+        total_price: totalPrice.value ,
+        size: selectedSize.value.name,
+        toppings_id: selectedToppings.value.map(topping => topping.id),
+        note: note.value,
+        quantity: quantity.value,
+    };
 
-    // Remove the 'VND' text if showD is false
-    return showD ? formattedCurrency : formattedCurrency.replace('VND', '');
+    await store.dispatch('cart/addProductToCart', product);
 };
 // Calculate total price
 const calculateTotal = computed(() => {
@@ -191,7 +194,7 @@ const calculateTotal = computed(() => {
     });
 
     total *= quantity.value;
-
+    totalPrice.value = total;
     return total.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
 });
 </script>
