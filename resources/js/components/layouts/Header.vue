@@ -53,6 +53,7 @@ const userNavigation = [
     },
 ]
 const closePopup = () => {
+    store.dispatch('togglePopup', false);
     currentPopup.value = null;
 }
 defineOptions({
@@ -218,7 +219,7 @@ const signOut = async () => {
     </Disclosure>
     <ForgotPasswordPopup :isVisible="currentPopup === 'forgot-password'" @closePopup="closePopup" @switchPopup="switchPopup"/>
     <SignInPasswordPopup :isVisible="currentPopup === 'sign-in-password'" @closePopup="closePopup" @switchPopup="switchPopup"/>
-    <SignInOtpPopup :isVisible="currentPopup === 'sign-in'" @closePopup="closePopup" @switchPopup="switchPopup"/>
+    <SignInOtpPopup :isVisible="currentPopup === 'sign-in' || store.getters.popupVisible" @closePopup="closePopup" @switchPopup="switchPopup"/>
     <SignUpPopup :isVisible="currentPopup === 'sign-up'" @closePopup="closePopup" @switchPopup="switchPopup"/>
 </template>
 <style>

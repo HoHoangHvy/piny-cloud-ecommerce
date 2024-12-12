@@ -1,6 +1,6 @@
 <template>
     <div v-if="isVisible"
-         class="overlay fixed inset-0 bg-gray-800 bg-opacity-75 flex lg:items-center justify-end lg:justify-center"
+         class="overlay fixed inset-0 bg-gray-800 bg-opacity-75 flex lg:items-center justify-end lg:justify-center z-99999"
          @click="close">
         <div class="bg-white lg:rounded-lg shadow-lg max-w-md h-fit w-[65%] lg:h-fit lg:w-full relative" @click.stop>
             <div class="flex flex-col items-center justify-center">

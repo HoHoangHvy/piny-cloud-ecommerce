@@ -115,11 +115,13 @@
 
 <script setup>
 import {initFlowbite} from 'flowbite';
+import {useStore} from 'vuex';
 import {defineProps, defineEmits, computed, ref, onMounted} from 'vue';
 
 onMounted(() => {
     initFlowbite();
 });
+const store = useStore();
 const props = defineProps({
     isVisible: {type: Boolean, required: true},
     selectedProduct: {type: Object, required: true}, // Pass the selected product directly
@@ -159,8 +161,9 @@ const handleToppingClick = (topping) => {
 }
 // Add to cart logic
 const addToCart = () => {
-    // Prepare the data
-    close();
+    if(store.getters.isLoggedIn === false) {
+        store.dispatch('togglePopup', true);
+    }
 };
 const formatVietnameseCurrency = (amount, showD = true) => {
     if (isNaN(amount)) {

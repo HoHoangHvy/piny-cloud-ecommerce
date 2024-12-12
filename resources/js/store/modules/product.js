@@ -122,7 +122,7 @@ export default {
                 }
 
                 // Fetch the products from the API
-                const response = await axios.get('/api/customer/products', {params});
+                const response = await axios.get('/api/customer/products/all', {params});
 
                 // Commit the new products to the store
                 commit('SET_PRODUCTS', response.data.data);
@@ -162,7 +162,6 @@ export default {
         async fetchCustomerProduct({commit}, id) {
             commit('SET_LOADING', true);
             try {
-                debugger
                 const response = await axios.get(`/api/customer/product/${id}`);
                 commit('SET_PRODUCT', response.data.data);
                 commit('SET_ERROR', null);
