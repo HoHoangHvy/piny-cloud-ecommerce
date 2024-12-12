@@ -8,6 +8,8 @@ export default {
         product: null, // Stores a single product (for details/editing)
         loading: false, // Tracks loading state
         error: null, // Tracks errors
+        lastProductId: null, // Stores the last product ID for pagination
+        canLoad: false, // Stores the last product ID for pagination
     },
     mutations: {
         SET_PRODUCTS(state, products) {
@@ -36,10 +38,16 @@ export default {
         },
         SET_TOPPINGS_OPTION(state, toppings) {
             state.toppings = toppings;
+        },
+        SET_LAST_PRODUCT_ID(state, lastProductId) {
+            state.lastProductId = lastProductId;
+        },
+        SET_CAN_LOAD(state, canLoad) {
+            state.canLoad = canLoad;
         }
     },
     actions: {
-        async fetchToppingOptions({ commit }) {
+        async fetchToppingOptions({commit}) {
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
@@ -53,7 +61,7 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async fetchProducts({ commit }) {
+        async fetchProducts({commit}) {
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
@@ -68,9 +76,79 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async fetchProduct({ commit }, id) {
+        async fetchProductsCustomer({commit, state}, {
+            searchText = '',
+            category = null,
+            minPrice = null,
+            maxPrice = null,
+            fromDate = null,
+            toDate = null
+        }) {
+            commit('SET_LOADING', true);
+
+            try {
+                await axios.get('sanctum/csrf-cookie');
+                // Prepare request parameters, including search text, category, and last_product_id for cursor-based pagination
+                const params = {};
+                // Add search and category filters
+                if (searchText) {
+                    params.search = searchText;
+                }
+                if (category) {
+                    params.category_id = category;
+                }
+                // Add last_product_id if it's available (for infinite scrolling)
+                if (state.lastProductId) {
+                    params.last_product_id = state.lastProductId;
+                }
+
+                // Add price filters
+                if (minPrice) {
+                    params.min_price = minPrice;
+                }
+
+                if (maxPrice) {
+                    params.max_price = maxPrice;
+                }
+
+                // Add date filters
+
+                if (fromDate) {
+                    params.from_date = fromDate;
+                }
+
+                if (toDate) {
+                    params.to_date = toDate;
+                }
+
+                // Fetch the products from the API
+                const response = await axios.get('/api/customer/products', {params});
+
+                // Commit the new products to the store
+                commit('SET_PRODUCTS', response.data.data);
+
+                // Update the last product ID for pagination (use the last product in the response)
+                if (response.data.data.length > 0) {
+                    const lastProduct = response.data.pagination.last_product_id;
+                    const canLoad = response.data.pagination.has_more;
+                    commit('SET_LAST_PRODUCT_ID', lastProduct);
+                    commit('SET_CAN_LOAD', canLoad);
+                }
+
+                // Commit any error state (in this case, there is no error)
+                commit('SET_ERROR', null);
+
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching products.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        async fetchProduct({commit}, id) {
             commit('SET_LOADING', true);
             try {
+
                 const response = await axios.get(`/api/products/${id}`);
                 commit('SET_PRODUCT', response.data.data);
                 commit('SET_ERROR', null);
@@ -81,7 +159,21 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async createProduct({ commit }, productData) {
+        async fetchCustomerProduct({commit}, id) {
+            commit('SET_LOADING', true);
+            try {
+                debugger
+                const response = await axios.get(`/api/customer/product/${id}`);
+                commit('SET_PRODUCT', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching product:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching product.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        async createProduct({commit}, productData) {
             commit('SET_LOADING', true);
             try {
                 await axios.get('sanctum/csrf-cookie');
@@ -99,10 +191,10 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async updateProduct({ commit }, { id, productData }) {
+        async updateProduct({commit}, {id, productData}) {
             commit('SET_LOADING', true);
             try {
-                debugger
+
                 const response = await axios.put(`/api/products/${id}`, productData);
 
                 commit('UPDATE_PRODUCT', response.data.data);
@@ -114,7 +206,7 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async deleteProduct({ commit }, id) {
+        async deleteProduct({commit}, id) {
             commit('SET_LOADING', true);
             try {
                 await axios.delete(`/api/products/${id}`);

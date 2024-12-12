@@ -241,7 +241,7 @@ const handleFocus = () => {
                             </div>
                             <button @click="signUp"
                                     :disabled="loading"
-                                    class="w-full text-white bg-[#B38B60] hover:bg-[#e1b083] focus:ring-4 focus:outline-none focus:ring-primary-300 font-inter rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#B38B60] dark:hover:bg-[#B38B60] dark:focus:ring-primary-800">
+                                    class="w-full text-white bg-[#6B4226] hover:bg-[#5A3621] focus:ring-4 focus:outline-none focus:ring-primary-300 font-inter rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#6B4226] dark:hover:bg-[#6B4226] dark:focus:ring-primary-800">
                                 <span v-if="!loading">{{ t('LBL_SIGNUP') }}</span>
                                 <span v-else>{{ t('LBL_SIGNING_UP') }}...</span>
                             </button>
@@ -250,7 +250,7 @@ const handleFocus = () => {
                                        class=" font-inter text-black dark:text-gray-400">{{
                                         t('LBL_ALREADY_HAVE_AN_ACCOUNT?')
                                     }}</label>
-                                <a @click="switchToSignIn" class="hover:underline text-[#B38B60]"
+                                <a @click="switchToSignIn" class="hover:underline text-[#6B4226]"
                                    target="_blank">{{ t('LBL_SIGNIN') }}</a>
                             </div>
 

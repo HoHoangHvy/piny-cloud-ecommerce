@@ -18,7 +18,7 @@
                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                    required=""/>
                             <button @click="sendCode"
-                                    class="w-full text-white bg-[#B38B60] hover:bg-[#B38B60] font-inter rounded-lg  px-5 py-2.5 mt-4">
+                                    class="w-full text-white bg-[#6B4226] hover:bg-[#6B4226] font-inter rounded-lg  px-5 py-2.5 mt-4">
                                 {{ t('LBL_SEND_CODE') }}
                             </button>
                         </div>
@@ -31,7 +31,7 @@
                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                    required/>
                             <button @click="verifyCode"
-                                    class="w-full text-white bg-[#B38B60] hover:bg-[#B38B60]  font-inter rounded-lg text-sm px-5 py-2.5 mt-4">
+                                    class="w-full text-white bg-[#6B4226] hover:bg-[#6B4226]  font-inter rounded-lg text-sm px-5 py-2.5 mt-4">
                                 {{ t('LBL_VERIFY_CODE') }}
                             </button>
                         </div>
@@ -109,7 +109,7 @@
                                 </div>
                             </div>
                             <button @click="resetPassword"
-                                    class="w-full text-white bg-[#B38B60] hover:bg-[#B38B60] font-inter rounded-lg text-sm px-5 py-2.5 mt-4">
+                                    class="w-full text-white bg-[#6B4226] hover:bg-[#6B4226] font-inter rounded-lg text-sm px-5 py-2.5 mt-4">
                                 {{ t('LBL_CONFIRM_RESET') }}
                             </button>
                         </div>
@@ -121,7 +121,7 @@
                             <div class="bg-white p-8 rounded-lg w-75" @click.stop>
                                 <p class="font-inter text-black text-center">{{ t('LBL_UPDATE_SUCCESSFUL') }}!</p>
                                 <button @click="closePopup"
-                                        class="w-full text-white bg-[#B38B60] hover:bg-[#B38B60] font-inter rounded-lg text-sm px-5 py-2.5 mt-4">
+                                        class="w-full text-white bg-[#6B4226] hover:bg-[#6B4226] font-inter rounded-lg text-sm px-5 py-2.5 mt-4">
                                     {{ t('LBL_OK') }}
                                 </button>
                             </div>

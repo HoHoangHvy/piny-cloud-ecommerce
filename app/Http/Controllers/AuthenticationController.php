@@ -119,7 +119,7 @@ class AuthenticationController extends BaseController
         // Make the HTTP request using Laravel's HTTP client
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'App 93c17591673d903f7730b44c3b4909fb-b0de3d80-4840-4458-b159-32ade0678c0f',
+                'Authorization' => 'App '. getenv('API_SPEED_SMS_KEY'),
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
             ])

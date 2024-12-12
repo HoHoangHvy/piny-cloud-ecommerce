@@ -10,9 +10,38 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory, HasUuid, HasCreatedBy;
+
+    protected $fillable = [
+        'id',
+        'order_number',
+        'receiver_name',
+        'receiver_address',
+        'payment_method',
+        'payment_status',
+        'order_status',
+        'order_total',
+        'rate',
+        'customer_feedback',
+        'host_id',
+        'source',
+        'team_id',
+        'created_by',
+    ];
+
+    // Relationship with the host customer
+    public function host()
+    {
+        return $this->belongsTo(Customer::class, 'host_id');
+    }
+
+    // Many-to-Many relationship with customers
+
     public function customers()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsToMany(Customer::class, 'customers_orders')
+            ->using(CustomerOrder::class) // Use the CustomerOrder pivot model
+            ->withPivot('id') // Include the pivot table's ID
+            ->withTimestamps();
     }
     public function users()
     {

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();;
             $table->uuid('customer_order_id');
             $table->uuid('product_id');
-            $table->uuid('parent_id'); //For topping order_details
+            $table->uuid('parent_id')->nullable();
             $table->string('order_detail_number');
             $table->mediumInteger('quantity');
             $table->decimal('total_price', 8, 2)->default(0);

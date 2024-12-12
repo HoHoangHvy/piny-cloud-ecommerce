@@ -106,7 +106,7 @@
                             <th scope="col" class="p-4">Description</th>
                             <th scope="col" class="p-4">Type</th>
                             <th scope="col" class="p-4">Team</th>
-                            <th scope="col" class="p-4">Actions</th>
+                            <th scope="col" class="p-4">Priority</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -126,6 +126,7 @@
                             <td class="p-4">{{ item.description }}</td>
                             <td class="p-4">{{ item.type }}</td>
                             <td class="p-4">{{ item.team_name }}</td>
+                            <td class="p-4">{{ item.priority }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
                                     <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item.id)" data-drawer-target="drawer-update-category" data-drawer-show="drawer-update-category" class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">

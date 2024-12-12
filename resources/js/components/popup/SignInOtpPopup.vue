@@ -33,7 +33,7 @@
                                 </a>
                             </div>
                             <button type="submit"
-                                    class="w-full text-white bg-[#B38B60] hover:bg-[#e1b083] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#B38B60] dark:hover:bg-[#B38B60] dark:focus:ring-primary-800">
+                                    class="w-full text-white bg-[#6B4226] hover:bg-[#5A3621] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#6B4226] dark:hover:bg-[#6B4226] dark:focus:ring-primary-800">
                                 {{ t('LBL_SEND_OTP') }}
                             </button>
                             <div class="flex items-center space-x-2">
@@ -42,7 +42,7 @@
                                         t('LBL_DONT_HAVE_AN_ACCOUNT?')
                                     }}</label>
                                 <a @click="switchToPopup('sign-up')"
-                                   class="hover:underline font-inter text-[#B38B60]" target="_parent">{{
+                                   class="hover:underline font-inter text-[#6B4226]" target="_parent">{{
                                         t('LBL_SIGNUP')
                                     }}</a>
                             </div>
@@ -81,7 +81,7 @@
                         <span v-else><a href="#" @click="resendCode" class="font-bold cursor-pointer">{{$lang('LBL_RESEND')}}</a></span>
                     </p>
 
-                    <button class="bg-[#B38B60] text-white px-4 py-2 rounded-lg mt-1 hover:bg-[#e1b083] " @click="authenticateOtp">
+                    <button class="bg-[#6B4226] text-white px-4 py-2 rounded-lg mt-1 hover:bg-[#5A3621] " @click="authenticateOtp">
                         {{ t('LBL_SIGNIN') }}
                     </button>
                 </div>

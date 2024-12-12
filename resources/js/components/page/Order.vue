@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
             <!--Card 1-->
             <div class="mt-6 sm:mt-8 lg:grid lg:grid-cols-2 gap-8">
-                <div class="w-full lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg border-2 border-[#B38B60] dark:divide-gray-700 dark:border-gray-700 lg:max-w-xl xl:max-w-2xl">
+                <div class="w-full lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg border-2 border-[#6B4226] dark:divide-gray-700 dark:border-gray-700 lg:max-w-xl xl:max-w-2xl">
                     <!--Delivery-->
                     <div class="space-y-1 p-6 pl-10">
                         <div class="flex items-center justify-between">
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </svg>
                             </div>
                                 <svg width="65" height="5" viewBox="0 0 65 1" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: -4px;">
-                                    <line y1="0.5" x2="65" y2="0.5" stroke="#B38B60"/>
+                                    <line y1="0.5" x2="65" y2="0.5" stroke="#6B4226"/>
                                 </svg>
                             <div/>
                             <!--Address, Delivery time-->
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </svg>
                         </div>
                         <svg width="65" height="5" viewBox="0 0 65 1" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: -4px;">
-                            <line y1="0.5" x2="65" y2="0.5" stroke="#B38B60"/>
+                            <line y1="0.5" x2="65" y2="0.5" stroke="#6B4226"/>
                         </svg>
 
                         <div class="mt-4" id="order-list">
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 <!--Card 2-->
                 <div class="mt-6 grow sm:mt-8 lg:mt-0">
-                    <div class="w-full h-full space-y-6 rounded-lg border-2 border-[#B38B60] bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                    <div class="w-full h-full space-y-6 rounded-lg border-2 border-[#6B4226] bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <!-- Payment method -->
                         <div class="flex flex-col space-y-3 pl-6 mb-10">
                             <div class="flex items-center justify-between relative">
@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 </svg>
                             </div>
                             <svg width="65" height="5" viewBox="0 0 65 1" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: -4px; margin-bottom: 10px;">
-                                <line y1="0.5" x2="65" y2="0.5" stroke="#B38B60"/>
+                                <line y1="0.5" x2="65" y2="0.5" stroke="#6B4226"/>
                             </svg>
 
                             <div class="flex items-center space-x-2">
@@ -296,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 </div>
                             </div>
                             <svg width="65" height="5" viewBox="0 0 65 1" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: -4px;">
-                                <line y1="0.5" x2="65" y2="0.5" stroke="#B38B60"/>
+                                <line y1="0.5" x2="65" y2="0.5" stroke="#6B4226"/>
                             </svg>
                         </div>
                         <div class="w-full space-y-4 bg-gray-50 p-6 dark:bg-gray-800 border-gray-700">
@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <!--Voucher-->
                                 <!-- Trigger Voucher -->
                                 <div class="flex">
-                                    <dt class="font-bold hover:underline cursor-pointer text-lg text-[#B38B60]" @click="openVoucherModal">{{ t('LBL_VOUCHER')}}</dt>
+                                    <dt class="font-bold hover:underline cursor-pointer text-lg text-[#6B4226]" @click="openVoucherModal">{{ t('LBL_VOUCHER')}}</dt>
                                 </div>
                                 <!-- Voucher Popup Modal -->
                                 <div v-if="voucherModalVisible" class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center">
@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <div class="ml-4">
                                                     <p class="text-black font-inter">Freeship</p>
                                                 </div>
-                                                <button class="bg-[#B38B60] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
+                                                <button class="bg-[#6B4226] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
                                             </div>
                                             <div class="flex items-center justify-between border p-4 rounded-lg">
                                                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -356,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <div class="ml-4">
                                                     <p class="text-black font-inter">20% Off</p>
                                                 </div>
-                                                <button class="bg-[#B38B60] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
+                                                <button class="bg-[#6B4226] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
                                             </div>
                                             <div class="flex items-center justify-between border p-4 rounded-lg">
                                                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -377,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <div class="ml-4">
                                                     <p class="text-black font-inter">10% Off + Free ship</p>
                                                 </div>
-                                                <button class="bg-[#B38B60] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
+                                                <button class="bg-[#6B4226] text-white px-4 py-2 rounded-lg">{{$lang('LBL_USE_NOW')}}</button>
                                             </div>
                                             <!-- Thêm nhiều Voucher khác tại đây -->
                                         </div>
@@ -403,7 +403,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         </div>
                         <!--Pay button-->
                         <div class="gap-4 sm:flex sm:items-start">
-                            <button type="button" class="w-full rounded-lg border border-gray-200 bg-[#B38B60] px-5 py-2.5 text-sm font-inter text-white hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">{{$lang('LBL_PAY')}}</button>
+                            <button type="button" class="w-full rounded-lg border border-gray-200 bg-[#6B4226] px-5 py-2.5 text-sm font-inter text-white hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">{{$lang('LBL_PAY')}}</button>
                         </div>
                     </div>
                 </div>
@@ -415,16 +415,16 @@ document.addEventListener("DOMContentLoaded", function() {
 <style scoped>
 
 .form-radio {
-    @apply appearance-none w-4 h-4 border-2 border-[#B38B60] rounded-full cursor-pointer transition-all;
+    @apply appearance-none w-4 h-4 border-2 border-[#6B4226] rounded-full cursor-pointer transition-all;
     background-color: white; /* Nền trắng cho radio button */
     position: relative; /* Để chứa phần ::after */
 }
 .form-radio:checked {
-    @apply bg-white border-[#B38B60]; /* Nền trắng và viền nâu khi được chọn */
+    @apply bg-white border-[#6B4226]; /* Nền trắng và viền nâu khi được chọn */
 }
 .form-radio:checked::after {
     content: '';
-    @apply block w-2.5 h-2.5 rounded-full bg-[#B38B60]; /* Hình tròn nhỏ màu nâu */
+    @apply block w-2.5 h-2.5 rounded-full bg-[#6B4226]; /* Hình tròn nhỏ màu nâu */
     position: absolute; /* Để căn giữa */
     top: 50%; /* Đưa phần tử xuống giữa theo chiều dọc */
     left: 50%; /* Đưa phần tử sang giữa theo chiều ngang */

@@ -29,6 +29,15 @@ class Customer extends Model
             $customer->date_registered = $customer->date_registered ?? Carbon::now();
         });
     }
+    // Customer.php
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'customers_orders')
+            ->using(CustomerOrder::class) // Use the CustomerOrder pivot model
+            ->withPivot('id') // Include the pivot table's ID
+            ->withTimestamps();
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

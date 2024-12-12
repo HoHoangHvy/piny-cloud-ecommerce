@@ -592,7 +592,7 @@
                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cost</label>
                         <input v-model="formEdit.cost" type="number" id="price"
                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                               placeholder="Cost" required>
+                               placeholder="Cost">
                     </div>
                     <div v-show="formEdit.is_topping === false">
                         <label for="price"
@@ -600,7 +600,7 @@
                             M</label>
                         <input v-model="formEdit.up_m_price" type="number" id="price"
                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                               placeholder="Size M" required>
+                               placeholder="Size M" >
                     </div>
                     <div v-show="formEdit.is_topping === false">
                         <label for="price"
@@ -608,7 +608,7 @@
                             L</label>
                         <input v-model="formEdit.up_l_price" type="number" id="price"
                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                               placeholder="Size L" required>
+                               placeholder="Size L">
                     </div>
                 </div>
                 <div class="sm:col-span-2"><label for="description"
@@ -618,20 +618,20 @@
                     placeholder="Write product description here"></textarea></div>
             </div>
             <div class="mb-4">
-                <label for="images" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label for="imagesEdit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     Product Images
                 </label>
                 <div
                     class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                 >
                     <input
-                        id="images"
+                        id="imagesEdit"
                         type="file"
                         class="hidden"
                         multiple
-                        @change="handleFileChange"
+                        @change="handleFileEditChange"
                     />
-                    <label for="images" class="cursor-pointer flex flex-col items-center">
+                    <label for="imagesEdit" class="cursor-pointer flex flex-col items-center">
                         <div class="flex flex-col justify-center items-center pt-5 pb-6">
                             <svg
                                 aria-hidden="true"
@@ -659,7 +659,7 @@
             </div>
             <div class="flex gap-4 mt-4">
                 <div
-                    v-for="(image, index) in imagesEditPreview"
+                    v-for="(image, index) in formEdit.images_list"
                     :key="index"
                     class="relative"
                 >
@@ -669,7 +669,24 @@
                         class="w-24 h-24 object-cover rounded-md border"
                     />
                     <button
-                        @click="removeImage(index)"
+                        @click="removeImageEdit(index)"
+                        type="button"
+                        class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 text-xs"
+                    >
+                        ✕
+                    </button>
+                </div>
+                <div
+                    v-for="(image, index) in imagesEditPreview"
+                    :key="index"
+                    class="relative"
+                >
+                    <img
+                        :src="image"
+                        class="w-24 h-24 object-cover rounded-md border"
+                    />
+                    <button
+                        @click="removeImageEdit(index)"
                         type="button"
                         class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 text-xs"
                     >
@@ -802,7 +819,8 @@ const formEdit = reactive({
     team_id: null,
     categories_id: [],
     toppings_id: [],
-    images: [],
+    images_list: [],
+    images_new: [],
 });
 const imagesPreview = ref([]);
 const imagesEditPreview = ref([]);
@@ -838,11 +856,42 @@ const handleFileChange = (event) => {
     // Reset input value to allow re-adding the same file
     event.target.value = "";
 };
+const handleFileEditChange = (event) => {
+
+    const files = event.target.files;
+
+    Array.from(files).forEach((file) => {
+        // Validate image size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert("File size must not exceed 5MB");
+            return;
+        }
+
+        // Validate file type
+        if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
+            alert("Only JPG, PNG, and GIF files are allowed");
+            return;
+        }
+        // Generate preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagesEditPreview.value.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Reset input value to allow re-adding the same file
+    event.target.value = "";
+};
 
 // Remove image
 const removeImage = (index) => {
     form.images.splice(index, 1); // Remove from actual image files
     imagesPreview.value.splice(index, 1); // Remove from previews
+};
+const removeImageEdit = (index) => {
+    formEdit.images_list.splice(index, 1); // Remove from actual image files
+    imagesEditPreview.value.splice(index, 1); // Remove from previews
 };
 
 // Fetch products data from Vuex store
@@ -921,8 +970,8 @@ const updateProduct = async () => {
         });
         formData2.append('is_topping', formEdit.is_topping ? 1 : 0);
         // Append images to FormData
-        formEdit.images.forEach((image, index) => {
-            formData2.append(`images[${index}]`, image);  // Append images with index
+        imagesEditPreview.value.forEach((image, index) => {
+            formEdit.images_new.push(image);  // Append images with index
         });
 
         // Debugging: Log the contents of FormData
@@ -975,11 +1024,9 @@ const deleteProduct = async () => {
 // Drawer open/close logic
 const openUpdateModal = async (voucherId) => {
     await store.dispatch('products/fetchProduct', voucherId);
-    debugger
     if (store.getters["products/singleProduct"]) {
         Object.assign(formEdit, store.getters["products/singleProduct"]);
         formEdit.is_topping = formEdit.is_topping === 1;
-        imagesEditPreview.value = formEdit.images_list;
         updateDrawerInstance.show();
     }
 };
