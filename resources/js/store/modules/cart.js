@@ -35,11 +35,11 @@ export default {
         },
     },
     actions: {
-        async fetchCart({ commit }) {
+        async addProductToCart({ commit }, product) {
             commit('SET_LOADING', true);
             try {
-                await axios.get('sanctum/csrf-cookie');
-                const response = await axios.get('/api/cart/addProduct');
+                debugger
+                const response = await axios.post('/api/cart/addProduct', product);
 
                 commit('SET_CART', response.data.data);
                 commit('SET_ERROR', null);
@@ -50,56 +50,16 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async fetchOrder({ commit }, id) {
+        async fetchOrderDetails({ commit }) {
             commit('SET_LOADING', true);
             try {
-                const response = await axios.get(`/api/cart/${id}`);
-                commit('SET_ORDER', response.data.data);
+                const response = await axios.get('/api/cart/fetchCart'); // Adjust the API endpoint
+                debugger
+                commit('SET_CART', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
-                console.error('Error fetching order:', error);
-                commit('SET_ERROR', error.response?.data || 'Error fetching order.');
-            } finally {
-                commit('SET_LOADING', false);
-            }
-        },
-        async createOrder({ commit }, orderData) {
-            commit('SET_LOADING', true);
-            try {
-
-                await axios.get('sanctum/csrf-cookie');
-                const response = await axios.post('/api/cart', orderData);
-                commit('ADD_ORDER', response.data.data);
-                commit('SET_ERROR', null);
-            } catch (error) {
-                console.error('Error creating order:', error);
-                commit('SET_ERROR', error.response?.data || 'Error creating order.');
-            } finally {
-                commit('SET_LOADING', false);
-            }
-        },
-        async updateOrder({ commit }, { id, orderData }) {
-            commit('SET_LOADING', true);
-            try {
-                const response = await axios.put(`/api/cart/${id}`, orderData);
-                commit('UPDATE_ORDER', response.data.data);
-                commit('SET_ERROR', null);
-            } catch (error) {
-                console.error('Error updating order:', error);
-                commit('SET_ERROR', error.response?.data || 'Error updating order.');
-            } finally {
-                commit('SET_LOADING', false);
-            }
-        },
-        async deleteOrder({ commit }, id) {
-            commit('SET_LOADING', true);
-            try {
-                await axios.delete(`/api/cart/${id}`);
-                commit('DELETE_ORDER', id);
-                commit('SET_ERROR', null);
-            } catch (error) {
-                console.error('Error deleting order:', error);
-                commit('SET_ERROR', error.response?.data || 'Error deleting order.');
+                console.error('Error fetching order details:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching order details.');
             } finally {
                 commit('SET_LOADING', false);
             }

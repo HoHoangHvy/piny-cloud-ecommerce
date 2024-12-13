@@ -11,12 +11,14 @@ import orders from './modules/order';
 import vouchers from './modules/voucher';
 import categories from './modules/category';
 import global from './modules/globalState';
+import cart from './modules/cart';
 
 
 const store = createStore({
     modules: {
         global,
         auth,
+        cart,
         teams,
         employees,
         roles,

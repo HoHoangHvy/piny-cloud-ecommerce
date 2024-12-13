@@ -2,11 +2,11 @@
 import Header from "../components/layouts/Header.vue";
 import FooterCustomer from "@/js/components/layouts/Footer.vue";
 import CartIcon from "@/js/components/admin/CartIcon.vue";
-import CartPopup from "@/js/components/popup/CartPopup.vue";
+import CartDrawer from "@/js/components/popup/CartDrawer.vue";
 
 export default {
     name: 'CustomerLayout',
-    components: {CartPopup, CartIcon, FooterCustomer, Header},
+    components: {CartDrawer, CartIcon, FooterCustomer, Header},
     data() {
         return {
             currentPopup: null, // Initialize currentPopup as null

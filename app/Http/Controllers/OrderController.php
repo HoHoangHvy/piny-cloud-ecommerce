@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Customer;
 use App\Models\CustomerOrder;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,7 @@ class OrderController extends Controller
         $orders = Order::with(['customer', 'createdBy', 'manuallyCreatedBy', 'team'])->get();
         return response()->json($orders);
     }
+
     public function addProductToCart(Request $request)
     {
         $validated = $request->validate([
@@ -48,6 +50,8 @@ class OrderController extends Controller
         // Check if order_id is provided
         if ($request->has('order_id') && $request->get('order_id') != null) {
             $order = Order::find($request->get('order_id'));
+            $order->order_total += $validated['total_price'];
+            $order->save();
         } else {
             // Create a new order if order_id is not provided
             $order = Order::create([
@@ -58,6 +62,7 @@ class OrderController extends Controller
                 'order_status' => 'Draft',
                 'source' => 'Online',
                 'customer_feedback' => '',
+                'order_total' => $validated['total_price'],
                 'host_id' => $customer->id,
             ]);
 
@@ -120,32 +125,140 @@ class OrderController extends Controller
             'data' => $return_data
         ]);
     }
+
+    public function fetchCart(Request $request)
+    {
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Get the latest order with status 'Draft' for the customer
+        $orders = Order::where('host_id', $customer->id)
+            ->where('order_status', 'Draft')
+            ->get();
+
+        if ($orders->isEmpty()) {
+            return response()->json(['message' => 'Cart is empty.'], 404);
+        }
+
+        $return_data = [];
+
+        foreach($orders as $order) {
+            $total_price = 0;
+            // Fetch order details only if the relationship exists
+            $orderCustomer = $order->customers()->where('customer_id', $customer->id)->first();
+
+            if ($orderCustomer) {
+                // Get order details if the relationship exists
+                $orderDetails = $orderCustomer->pivot->orderDetails()
+                    ->where('parent_id', null)
+                    ->with('toppings.product') // Include topping product details
+                    ->get();
+
+                $data = [
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'host_id' => $order->host_id,
+                    'order_detail' => []
+                ];
+
+                foreach ($orderDetails as $orderDetail) {
+                    $total_price += $orderDetail->total_price;
+                    $data['order_detail'][] = [
+                        'id' => $orderDetail->id,
+                        'order_detail_number' => $orderDetail->order_detail_number,
+                        'product_name' => $orderDetail->product->name,
+                        'product_price' => $orderDetail->product->price,
+                        'size' => $orderDetail->size,
+                        'quantity' => $orderDetail->quantity,
+                        'note' => $orderDetail->note,
+                        'total_price' => $orderDetail->total_price,
+                        'toppings' => $orderDetail->toppings->map(function ($topping) {
+                            return [
+                                'id' => $topping->id,
+                                'product_name' => $topping->product->name,
+                                'product_price' => $topping->product->price,
+                            ];
+                        }),
+                    ];
+                }
+                $data['total_price'] = $total_price;
+                $return_data[] = $data;
+            }
+        }
+
+        return response()->json([
+            'message' => 'Cart fetched successfully.',
+            'data' => $return_data
+        ]);
+    }
+
+    public function removeProductFromCart(Request $request)
+    {
+        $validated = $request->validate([
+            'order_detail_id' => 'required | exists:order_details,id',
+        ]);
+
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found . '], 404);
+        }
+
+        // Fetch the order detail to delete
+        $orderDetail = OrderDetail::findOrFail($validated['order_detail_id']);
+
+        // Ensure the order belongs to the current customer and is in 'Draft' status
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('id', $orderDetail->customer_order_id)
+            ->whereHas('order', function ($query) {
+                $query->where('order_status', 'Draft');
+            })
+            ->first();
+
+        if (!$customerOrder) {
+            return response()->json(['message' => 'Unauthorized or invalid order detail . '], 403);
+        }
+
+        // Delete related toppings (if any)
+        $orderDetail->toppings()->delete();
+
+        // Delete the order detail
+        $orderDetail->delete();
+
+        return response()->json(['message' => 'Product removed from cart successfully . ']);
+    }
+
     /**
      * Store a newly created order in storage.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'order_number' => 'required|string|unique:orders,order_number|max:255',
-            'receiver_name' => 'required|string|max:255',
-            'receiver_address' => 'required|string|max:255',
-            'payment_method' => 'required|in:Banking,Cash',
-            'payment_status' => 'required|in:pending,paid',
-            'order_status' => 'required|in:Wait For Approval,In Progress,Delivering,Delivered,Completed,Cancelled',
-            'date_created' => 'required|date',
-            'order_total' => 'nullable|numeric|min:0',
-            'rate' => 'nullable|integer|min:0|max:5',
-            'customer_feedback' => 'nullable|string|max:255',
-            'host_id' => 'required|uuid|exists:customers,id',
-            'manually_created_by' => 'nullable|uuid|exists:users,id',
-            'source' => 'required|in:Offline,Online',
-            'team_id' => 'required|uuid|exists:teams,id',
-            'created_by' => 'required|uuid|exists:users,id',
+            'order_number' => 'required | string | unique:orders,order_number | max:255',
+            'receiver_name' => 'required | string | max:255',
+            'receiver_address' => 'required | string | max:255',
+            'payment_method' => 'required | in:Banking,Cash',
+            'payment_status' => 'required | in:pending,paid',
+            'order_status' => 'required | in:Wait for Approval, In Progress, Delivering, Delivered, Completed, Cancelled',
+            'date_created' => 'required | date',
+            'order_total' => 'nullable | numeric | min:0',
+            'rate' => 'nullable | integer | min:0 | max:5',
+            'customer_feedback' => 'nullable | string | max:255',
+            'host_id' => 'required | uuid | exists:customers,id',
+            'manually_created_by' => 'nullable | uuid | exists:users,id',
+            'source' => 'required | in:Offline,Online',
+            'team_id' => 'required | uuid | exists:teams,id',
+            'created_by' => 'required | uuid | exists:users,id',
         ]);
 
         $order = Order::create($validated);
 
-        return response()->json(['message' => 'Order created successfully.', 'data' => $order], 201);
+        return response()->json(['message' => 'Order created successfully . ', 'data' => $order], 201);
     }
 
     /**
@@ -164,27 +277,27 @@ class OrderController extends Controller
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'order_number' => 'nullable|string|unique:orders,order_number,' . $id . '|max:255',
-            'receiver_name' => 'nullable|string|max:255',
-            'receiver_address' => 'nullable|string|max:255',
-            'payment_method' => 'nullable|in:Banking,Cash',
-            'payment_status' => 'nullable|in:pending,paid',
-            'order_status' => 'nullable|in:Wait For Approval,In Progress,Delivering,Delivered,Completed,Cancelled',
-            'date_created' => 'nullable|date',
-            'order_total' => 'nullable|numeric|min:0',
-            'rate' => 'nullable|integer|min:0|max:5',
-            'customer_feedback' => 'nullable|string|max:255',
-            'host_id' => 'nullable|uuid|exists:customers,id',
-            'manually_created_by' => 'nullable|uuid|exists:users,id',
-            'source' => 'nullable|in:Offline,Online',
-            'team_id' => 'nullable|uuid|exists:teams,id',
-            'created_by' => 'nullable|uuid|exists:users,id',
+            'order_number' => 'nullable | string | unique:orders,order_number,' . $id . ' | max:255',
+            'receiver_name' => 'nullable | string | max:255',
+            'receiver_address' => 'nullable | string | max:255',
+            'payment_method' => 'nullable | in:Banking,Cash',
+            'payment_status' => 'nullable | in:pending,paid',
+            'order_status' => 'nullable | in:Wait for Approval, In Progress, Delivering, Delivered, Completed, Cancelled',
+            'date_created' => 'nullable | date',
+            'order_total' => 'nullable | numeric | min:0',
+            'rate' => 'nullable | integer | min:0 | max:5',
+            'customer_feedback' => 'nullable | string | max:255',
+            'host_id' => 'nullable | uuid | exists:customers,id',
+            'manually_created_by' => 'nullable | uuid | exists:users,id',
+            'source' => 'nullable | in:Offline,Online',
+            'team_id' => 'nullable | uuid | exists:teams,id',
+            'created_by' => 'nullable | uuid | exists:users,id',
         ]);
 
         $order = Order::findOrFail($id);
         $order->update($validated);
 
-        return response()->json(['message' => 'Order updated successfully.', 'data' => $order]);
+        return response()->json(['message' => 'Order updated successfully . ', 'data' => $order]);
     }
 
     /**
@@ -195,7 +308,7 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
         $order->delete();
 
-        return response()->json(['message' => 'Order deleted successfully.']);
+        return response()->json(['message' => 'Order deleted successfully . ']);
     }
 
     /**
@@ -206,7 +319,7 @@ class OrderController extends Controller
         $order = Order::withTrashed()->findOrFail($id);
         $order->restore();
 
-        return response()->json(['message' => 'Order restored successfully.']);
+        return response()->json(['message' => 'Order restored successfully . ']);
     }
 
     /**
@@ -217,6 +330,6 @@ class OrderController extends Controller
         $order = Order::withTrashed()->findOrFail($id);
         $order->forceDelete();
 
-        return response()->json(['message' => 'Order permanently deleted.']);
+        return response()->json(['message' => 'Order permanently deleted . ']);
     }
 }
