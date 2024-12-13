@@ -4,7 +4,8 @@ export default {
     namespaced: true,
     state: {
         cart: [], // Stores all cart
-        order: null, // Stores a single order (for details/editing)
+        existedCarts: [], // Stores all cart
+        singleCart: null, // Stores a single CART (for details/editing)
         loading: false, // Tracks loading state
         error: null, // Tracks errors
     },
@@ -12,20 +13,17 @@ export default {
         SET_CART(state, cart) {
             state.cart = cart;
         },
-        SET_ORDER(state, order) {
-            state.order = order;
+        ADD_CART(state, CART) {
+            state.existedCarts.push(CART);
         },
-        ADD_ORDER(state, order) {
-            state.cart.push(order);
-        },
-        UPDATE_ORDER(state, updatedOrder) {
-            const index = state.cart.findIndex((emp) => emp.id === updatedOrder.id);
+        UPDATE_CART(state, updatedCART) {
+            const index = state.cart.findIndex((emp) => emp.id === updatedCART.id);
             if (index !== -1) {
-                state.cart.splice(index, 1, updatedOrder);
+                state.cart.splice(index, 1, updatedCART);
             }
         },
-        DELETE_ORDER(state, orderId) {
-            state.cart = state.cart.filter((emp) => emp.id !== orderId);
+        DELETE_CART(state, CARTId) {
+            state.cart = state.cart.filter((emp) => emp.id !== CARTId);
         },
         SET_LOADING(state, isLoading) {
             state.loading = isLoading;
@@ -33,6 +31,12 @@ export default {
         SET_ERROR(state, error) {
             state.error = error;
         },
+        SET_EXISTED_CART(state, carts) {
+            state.existedCarts = carts;
+        },
+        SET_SINGLE_CART(state, cart) {
+            state.singleCart = cart;
+        }
     },
     actions: {
         async addProductToCart({ commit }, product) {
@@ -50,7 +54,7 @@ export default {
                 commit('SET_LOADING', false);
             }
         },
-        async fetchOrderDetails({ commit }) {
+        async fetchCarts({ commit }) {
             commit('SET_LOADING', true);
             try {
                 const response = await axios.get('/api/cart/fetchCart'); // Adjust the API endpoint
@@ -58,16 +62,70 @@ export default {
                 commit('SET_CART', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {
-                console.error('Error fetching order details:', error);
-                commit('SET_ERROR', error.response?.data || 'Error fetching order details.');
+                console.error('Error fetching CART details:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching CART details.');
             } finally {
                 commit('SET_LOADING', false);
             }
         },
+        async deleteCart({commit}, cartId) {
+            commit('SET_LOADING', true);
+            try {
+                const response = await axios.delete(`/api/cart/deleteCart/${cartId}`);
+                commit('DELETE_CART', cartId);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error deleting CART:', error);
+                commit('SET_ERROR', error.response?.data || 'Error deleting CART.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        async getExistedCart({ commit }) {
+            commit('SET_LOADING', true);
+            try {
+                const response = await axios.get('/api/cart/getExistedCart'); // Adjust the API endpoint
+                commit('SET_EXISTED_CART', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching CART details:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching CART details.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        async loadCartDetails({ commit }, CARTId) {
+            commit('SET_LOADING', true);
+            try {
+                const response = await axios.get(`/api/cart/loadCart/${CARTId}`); // Adjust the API endpoint
+                commit('SET_SINGLE_CART', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error fetching CART details:', error);
+                commit('SET_ERROR', error.response?.data || 'Error fetching CART details.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        async createCart({ commit }, cart) {
+            commit('SET_LOADING', true);
+            try {
+                const response = await axios.post('/api/cart/createCart', cart); // Adjust the API endpoint
+                commit('ADD_CART', response.data.data);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error creating CART:', error);
+                commit('SET_ERROR', error.response?.data || 'Error creating CART.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        }
+
     },
     getters: {
+        existedCarts: (state) => state.existedCarts,
         allCart: (state) => state.cart,
-        singleOrder: (state) => state.order,
+        singleCart: (state) => state.singleCart,
         isLoading: (state) => state.loading,
         error: (state) => state.error,
     },

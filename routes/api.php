@@ -68,6 +68,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/cart/addProduct', [\App\Http\Controllers\OrderController::class, 'addProductToCart']);
     Route::delete('/cart/removeProduct', [\App\Http\Controllers\OrderController::class, 'removeProductFromCart']);
     Route::get('/cart/fetchCart', [\App\Http\Controllers\OrderController::class, 'fetchCart']);
+    Route::get('/cart/getExistedCart', [\App\Http\Controllers\OrderController::class, 'getExistedCart']);
+    Route::get('/cart/loadCart/{id}', [\App\Http\Controllers\OrderController::class, 'loadCartDetail']);
+    Route::get('/cart/deleteCart/{id}', [\App\Http\Controllers\OrderController::class, 'deleteCart']);
+    Route::post('/cart/createCart', [\App\Http\Controllers\OrderController::class, 'createCart']);
 
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);

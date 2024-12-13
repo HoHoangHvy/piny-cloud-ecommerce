@@ -26,6 +26,8 @@ class Order extends Model
         'source',
         'team_id',
         'created_by',
+        'custom_name',
+        'type',
     ];
 
     // Relationship with the host customer
