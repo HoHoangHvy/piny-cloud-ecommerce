@@ -106,7 +106,7 @@
                             Add to cart
                         </button>
                     </div>
-
+                    <CartPopup :isVisible="showCartSelection" :listCart="listCart" @closePopup="closeCartSelect"/>
                 </div>
             </div>
         </div>
@@ -118,6 +118,7 @@ import {initFlowbite} from 'flowbite';
 import {useStore} from 'vuex';
 import {defineProps, defineEmits, computed, ref, onMounted} from 'vue';
 import {formatVietnameseCurrency} from '@/js/helpers/currencyFormat.js';
+import CartPopup from "@/js/components/popup/CartPopup.vue";
 onMounted(() => {
     initFlowbite();
 });
@@ -146,7 +147,12 @@ const selectedToppings = ref([]); // Default toppings
 const note = ref(''); // Default toppings
 const quantity = ref(1); // Default toppings
 const totalPrice = ref(0); // Default toppings
+const listCart = ref([]); // Default toppings
+const showCartSelection = ref(false); // Default toppings
 
+const closeCartSelect = () => {
+    showCartSelection.value = false;
+};
 // Close the popup
 const close = () => {
     emit('closePopup');
@@ -172,16 +178,22 @@ const addToCart = async () => {
         store.dispatch('togglePopup', true);
     }
 
-    const product = {
-        product_id: props.selectedProduct.id, // Use props.selectedProduct
-        total_price: totalPrice.value ,
-        size: selectedSize.value.name,
-        toppings_id: selectedToppings.value.map(topping => topping.id),
-        note: note.value,
-        quantity: quantity.value,
-    };
+    await store.dispatch('cart/fetchCarts');
+    if(store.getters['cart/allCart'].length !== 0) {
+        listCart.value = store.getters['cart/allCart'];
+        showCartSelection.value = true;
+    } else {
+        const product = {
+            product_id: props.selectedProduct.id, // Use props.selectedProduct
+            total_price: totalPrice.value ,
+            size: selectedSize.value.name,
+            toppings_id: selectedToppings.value.map(topping => topping.id),
+            note: note.value,
+            quantity: quantity.value,
+        };
 
-    await store.dispatch('cart/addProductToCart', product);
+        await store.dispatch('cart/addProductToCart', product);
+    }
 };
 // Calculate total price
 const calculateTotal = computed(() => {

@@ -14,7 +14,7 @@ const activeTab = ref('first') // Tab active state
 const openDrawer = () => {
     isVisible.value = true; // Set visibility to true
     updateDrawerInstance.show(); // Show drawer
-    store.dispatch('cart/fetchOrderDetails'); // Fetch order details from Vuex action
+    store.dispatch('cart/fetchCarts'); // Fetch order details from Vuex action
 }
 
 defineExpose({
@@ -23,7 +23,7 @@ defineExpose({
 
 const fetchData = async () => {
     debugger
-    await store.dispatch('cart/fetchOrderDetails');
+    await store.dispatch('cart/fetchCarts');
     cartData.value = store.getters['cart/allCart'];
 }
 onMounted(() => {
