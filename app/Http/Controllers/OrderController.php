@@ -21,38 +21,39 @@ class OrderController extends Controller
         $orders = Order::with(['customer', 'createdBy', 'manuallyCreatedBy', 'team'])->get();
         return response()->json($orders);
     }
-    public function deleteCart(Request $request, $id)
+    public function deleteCart($orderId)
     {
-        $validated = $request->validate([
-            'order_id' => 'required | exists:orders,id',
-        ]);
+        try {
+            // Find the order by ID
+            $order = Order::findOrFail($orderId);
 
-        $currentUser = auth()->user();
-        $customer = Customer::where('user_id', $currentUser->id)->first();
+            // Fetch all related pivot records (customers_orders) for this order
+            $customerOrders = CustomerOrder::where('order_id', $orderId)->get();
 
-        if (!$customer) {
-            return response()->json(['message' => 'Customer not found.'], 404);
+            // Loop through each pivot record and delete the associated order details
+            foreach ($customerOrders as $customerOrder) {
+                // Delete toppings first (if any)
+                foreach ($customerOrder->orderDetails()->where('parent_id', null)->get() as $orderDetail) {
+                    // Delete toppings associated with this order detail
+                    OrderDetail::where('parent_id', $orderDetail->id)->delete();
+                }
+
+                // Delete the order details
+                $customerOrder->orderDetails()->delete();
+            }
+
+            // Detach all customers from the order (this will remove the pivot records)
+            $order->customers()->detach();
+
+            // Then delete the main order
+            $order->delete();
+
+            return response()->json(['message' => 'Order deleted successfully.'], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-
-        // Fetch the order to delete
-        $order = Order::findOrFail($id);
-
-        // Ensure the order belongs to the current customer and is in 'Draft' status
-        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
-            ->where('id', $order->host_id)
-            ->whereHas('order', function ($query) {
-                $query->where('order_status', 'Draft');
-            })
-            ->first();
-
-        if (!$customerOrder) {
-            return response()->json(['message' => 'Unauthorized or invalid order.'], 403);
-        }
-
-        // Delete the order
-        $order->delete();
-
-        return response()->json(['message' => 'Cart deleted successfully.']);
     }
     public function createCart(Request $request)
     {
@@ -319,9 +320,10 @@ class OrderController extends Controller
 
                 $data = [
                     'type' => $order->type,
-                    'name' => $order->custom_name ? $order->custom_name : $order->order_number,
+                    'name' => !empty($order->custom_name) ? $order->custom_name : $order->order_number,
                     'order_id' => $order->id,
                     'order_number' => $order->order_number,
+                    'date_created' => $order->created_at,
                     'host_id' => $order->host_id,
                     'order_detail' => []
                 ];
@@ -335,8 +337,10 @@ class OrderController extends Controller
                         'product_price' => $orderDetail->product->price,
                         'size' => $orderDetail->size,
                         'quantity' => $orderDetail->quantity,
+                        'image' => $orderDetail->product->product_image ? asset($orderDetail->product->product_image) : null,
                         'note' => $orderDetail->note,
                         'total_price' => $orderDetail->total_price,
+                        'count_topping' => $orderDetail->toppings->count(),
                         'toppings' => $orderDetail->toppings->map(function ($topping) {
                             return [
                                 'id' => $topping->id,

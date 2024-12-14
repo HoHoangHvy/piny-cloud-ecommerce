@@ -22,8 +22,8 @@ export default {
                 state.cart.splice(index, 1, updatedCART);
             }
         },
-        DELETE_CART(state, CARTId) {
-            state.cart = state.cart.filter((emp) => emp.id !== CARTId);
+        DELETE_CART(state, cartId) {
+            state.cart = state.cart.filter((emp) => emp.id !== cartId);
         },
         SET_LOADING(state, isLoading) {
             state.loading = isLoading;
@@ -119,7 +119,7 @@ export default {
             } finally {
                 commit('SET_LOADING', false);
             }
-        }
+        },
 
     },
     getters: {
