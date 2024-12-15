@@ -103,12 +103,10 @@
                                 </div>
                             </th>
                             <th scope="col" class="p-4">Order</th>
-                            <th scope="col" class="p-4">Gender</th>
-                            <th scope="col" class="p-4">Level</th>
-                            <th scope="col" class="p-4">Date of Birth</th>
-                            <th scope="col" class="p-4">Phone</th>
-                            <th scope="col" class="p-4">Email</th>
+                            <th scope="col" class="p-4">Customer</th>
                             <th scope="col" class="p-4">Team</th>
+                            <th scope="col" class="p-4">Total</th>
+                            <th scope="col" class="p-4">Status</th>
                             <th scope="col" class="p-4">Create At</th>
                         </tr>
                         </thead>
@@ -125,13 +123,11 @@
                                     <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                                 </div>
                             </td>
-                            <td class="p-4">{{ item.full_name }}</td>
-                            <td class="p-4">{{ item.gender }}</td>
-                            <td class="p-4">{{ item.level }}</td>
-                            <td class="p-4">{{ formatDateTime(item.date_of_birth) }}</td>
-                            <td class="p-4">{{ item.phone_number }}</td>
-                            <td class="p-4">{{ item.email }}</td>
+                            <td class="p-4">{{ item.order_number }}</td>
+                            <td class="p-4">{{ item.host_id }}</td>
                             <td class="p-4">{{ item.team_name }}</td>
+                            <td class="p-4">{{ item.order_total }}</td>
+                            <td class="p-4">{{ item.order_status }}</td>
                             <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
@@ -218,29 +214,12 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form @submit.prevent="handleCreateOrder">
+                <form @submit.prevent="handleCreateOrder" class="max-h-[calc(100vh-100px)] overflow-y-auto">
                     <div class="grid gap-4 mb-4 sm:grid-cols-2">
                         <div>
-                            <label for="full_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Full Name</label>
-                            <input v-model="form.full_name" type="text" id="full_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Full Name" required>
-                        </div>
-                        <div>
-                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                            <input v-model="form.email" type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Email" required>
-                        </div>
-                        <div>
-                            <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                            <input v-model="form.phone_number" type="text" id="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Phone Number" required>
-                        </div>
-                        <div>
-                            <label for="date_of_birth" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
-                            <input v-model="form.date_of_birth" type="date" id="date_of_birth" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                        </div>
-                        <div>
-                            <label for="gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
-                            <select v-model="form.gender" id="gender" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                            <label for="customer_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Customer</label>
+                            <select v-model="form.customer_id" id="customer_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <option v-for="customer in store.getters['customers/allCustomers']" :value="customer.id" :key="customer.id">{{ customer.full_name }}</option>
                             </select>
                         </div>
                         <div>
@@ -250,19 +229,238 @@
                             </select>
                         </div>
                         <div>
-                            <label for="level" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Level</label>
-                            <input v-model="form.level" type="text" id="level" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Level" required>
+                            <label for="receiver_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Receiver Name</label>
+                            <input v-model="form.receiver_name" type="text" id="receiver_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Receiver Name" required>
                         </div>
                         <div>
-                            <label for="date_registered" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date Registered</label>
-                            <input v-model="form.date_registered" type="date" id="date_registered" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                            <label for="receiver_address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Receiver Address</label>
+                            <input v-model="form.receiver_address" type="text" id="receiver_address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Receiver Address" required>
+                        </div>
+                        <div>
+                            <label for="payment_method" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Payment Method</label>
+                            <select v-model="form.payment_method" id="payment_method" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <option value="Cash">Cash</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="payment_status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Payment Status</label>
+                            <select v-model="form.payment_status" id="payment_status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="order_status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Order Status</label>
+                            <select v-model="form.order_status" id="order_status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <option value="Draft">Draft</option>
+                                <option value="Wait For Approval">Wait For Approval</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Delivering">Delivering</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+
+                            </select>
+                        </div>
+                        <div>
+                            <label for="source" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Source</label>
+                            <select v-model="form.source" id="source" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <option value="Online">Online</option>
+                                <option value="Offline">Offline</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="products" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Products</label>
+                            <button type="button" @click="openProductModal" class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-green hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                                Add Product
+                            </button>
+                        </div>
+                        <!-- Add Product Modal -->
+                        <div v-if="showProductModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                            <div class="bg-white rounded-lg shadow-lg w-4/5 p-6">
+                                <h2 class="text-xl font-bold mb-4">Select Product</h2>
+                                <div class="mb-4">
+                                    <input
+                                        v-model="searchQuery"
+                                        type="text"
+                                        placeholder="Search products..."
+                                        class="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-primary-500 focus:border-primary-500"
+                                    />
+                                </div>
+                                <!-- Danh sách sản phẩm -->
+                                <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                                    <div v-for="product in availableProducts" :key="product.id" class="flex items-center space-x-4">
+                                        <div>
+                                            <input
+                                                type="radio"
+                                                :value="product.id"
+                                                v-model="selectedProduct"
+                                                class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                                            />
+                                        </div>
+                                        <div class="w-full flex items-center space-x-4">
+                                            <div class="flex-1">
+                                                <p class="font-medium">{{ product.name }}</p>
+                                                <p class="text-sm text-gray-500">Price: {{ product.price }}</p>
+                                            </div>
+                                            <input
+                                                type="number"
+                                                v-model.number="productQuantities[product.id]"
+                                                min="1"
+                                                placeholder="Qty"
+                                                class="mt-2 w-20 p-1 border border-gray-300 rounded ml-auto"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Phân trang -->
+                                <div class="flex items-center justify-center space-x-4 mt-20">
+                                    <button
+                                        @click="goToPage(currentPage - 1)"
+                                        :disabled="currentPage === 1"
+                                        class="w-24 h-10 text-base bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed flex justify-center items-center"
+                                    >
+                                        Previous
+                                    </button>
+                                    <span class="text-base font-medium">Page {{ currentPage }} of {{ totalPages }}</span>
+                                    <button
+                                        @click="goToPage(currentPage + 1)"
+                                        :disabled="currentPage === totalPages"
+                                        class="w-24 h-10 text-base bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed flex justify-center items-center"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                                <!-- Nút hành động -->
+                                <div class="flex justify-end space-x-4 mt-4">
+                                    <button
+                                        @click="closeProductModal"
+                                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        @click="confirmProductSelection"
+                                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Confirm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hiển thị sản phẩm đã chọn ở đây -->
+                        <div class="col-span-2 mt-4">
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selected Products:</label>
+                            <div v-for="(product, index) in this.selectedProducts" :key="index" class="border rounded p-2 mb-2">
+                                <p class="font-medium">{{ product.product.name }} (Quantity: {{ product.quantity }}) x  {{ product.product.price }}</p>
+                                <ul>
+                                    <li v-for="topping in product.toppings" :key="topping.id" class="text-sm text-gray-700">
+                                        Topping: {{ getToppingName(topping.id) }} (Quantity: {{ topping.quantity }}) x {{ getToppingPrice(topping.id) }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+<!--                        <div>-->
+<!--                            <label for="voucher_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Voucher</label>-->
+<!--                            <select v-model="form.voucher_id" id="voucher_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>-->
+<!--                                <option v-for="voucher in store.getters['vouchers/allTeamsOption']" :value="voucher.id" :key="voucher.id">{{ voucher.name }}</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+                        <div
+                            id="total"
+                            class="text-lg font-semibold text-gray-900 dark:text-white"
+                        >
+                            Total:
+                            <input
+                                type="number"
+                                id="total"
+                                v-model="total"
+                                readonly
+                            />
+                        </div>
+
+                        <!-- Topping Modal -->
+                        <div v-if="showToppingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                            <div class="bg-white rounded-lg shadow-lg w-4/5 p-6">
+                                <h2 class="text-xl font-bold mb-4">Select Toppings</h2>
+                                <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                                    <div v-for="topping in paginatedToppings" :key="topping.id" class="flex items-center space-x-4">
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                :value="topping.id"
+                                                v-model="selectedToppings"
+                                                class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                                            />
+                                        </div>
+                                        <div class="w-full flex items-center space-x-4">
+                                            <div class="flex-1">
+                                                <p class="font-medium">{{ topping.name }}</p>
+                                                <p class="text-sm text-gray-500">Price: {{ topping.price }}</p>
+                                            </div>
+                                            <input
+                                                type="number"
+                                                v-model.number="toppingQuantities[topping.id]"
+                                                min="1"
+                                                placeholder="Qty"
+                                                class="mt-2 w-20 p-1 border border-gray-300 rounded ml-auto"
+                                            />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Pagination Controls for Toppings -->
+                                <div class="flex items-center justify-center space-x-4 mt-4">
+                                    <button
+                                        @click="goToToppingPage(currentToppingPage - 1)"
+                                        :disabled="currentToppingPage === 1"
+                                        class="w-24 h-10 text-base bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed flex justify-center items-center"
+                                    >
+                                        Previous
+                                    </button>
+                                    <span class="text-base font-medium">Page {{ currentToppingPage }} of {{ totalToppingPages }}</span>
+                                    <button
+                                        @click="goToToppingPage(currentToppingPage + 1)"
+                                        :disabled="currentToppingPage === totalToppingPages"
+                                        class="w-24 h-10 text-base bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed flex justify-center items-center"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+
+                                <div class="flex justify-end space-x-4 mt-4">
+                                    <button
+                                        @click="closeToppingModal"
+                                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        @click="confirmToppingSelection"
+                                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Confirm
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
-                        <button type="submit" class="w-full sm:w-auto justify-center text-white inline-flex bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Add order</button>
-                        <button data-modal-toggle="create-order-modal" type="button" class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                            <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        <button type="submit"
+                                class="w-full sm:w-auto justify-center text-white inline-flex bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
+                            Add order
+                        </button>
+                        <button data-modal-toggle="create-employee-modal" type="button"
+                                class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                            <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"/>
                             </svg>
                             Discard
                         </button>
@@ -288,7 +486,7 @@
                         <input v-model="formEdit.name" type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Order name" required="">
                     </div>
                     <div>
-                        <label for="adress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+                        <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
                         <input v-model="formEdit.address" type="text" name="brand" id="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Order Address" required="">
                     </div>
                 </div>
@@ -358,14 +556,13 @@ const moduleName = 'orders'; // Module name for the CRUD operations
 
 // Reactive form data
 const form = reactive({
-    name: '',
-    date_of_birth: '',
-    phone_number: '',
-    email: '',
-    gender: '',
-    level: '',
+    host_id: '',
     team_id: '',
-    date_registered: '',
+    receiver_name: '',
+    receiver_address: '',
+    payment_method: '',
+    source: '',
+    order_total: ''
 });
 const formEdit = reactive({
     id: null,
@@ -397,7 +594,7 @@ const fetchData = async () => {
 
 // Handle create Order
 const handleCreateOrder = async () => {
-    try {
+    try {php
         await store.dispatch('orders/createOrder', { ...form });
         notify({
             group: "foo",
@@ -513,4 +710,170 @@ onMounted(() => {
     updateDrawerInstance = new Drawer($updateDrawer, drawerOptions);
     deleteModalInstance = new Modal($deleteModal, modalOptions);
 });
+</script>
+
+<script>
+export default {
+    data() {
+        return {
+            host_id:'',
+            team_id:'',
+            receiver_name:'',
+            receiver_address:'',
+            source:'',
+            payment_method:'',
+            voucher_id:'',
+            total:0,
+            showProductModal: false,
+            showToppingModal: false,
+            availableProducts: [], // Sản phẩm hiển thị trong modal
+            selectedProducts: [],
+            selectedProduct: null, // Sản phẩm được chọn
+            selectedToppings: [], // Danh sách topping được chọn
+            productQuantities: {},// Số lượng sản phẩm theo ID
+            toppingQuantities: {},
+            currentPage: 1, // Trang hiện tại
+            totalPages: 1, // Tổng số trang
+            itemsPerPage: 10, // Số sản phẩm mỗi trang
+            searchQuery: '',
+            currentToppingPage: 1,
+            itemsPerToppingPage: 10,
+        };
+    },
+    computed: {
+        allProducts() {
+            return this.$store.getters['products/allProducts'];
+        },
+        filteredProducts() {
+            // Lọc sản phẩm theo từ khóa tìm kiếm
+            return this.allProducts.filter(product =>
+                product.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+            );
+        },
+        availableProducts() {
+            // Lấy sản phẩm hiện có theo phân trang và tìm kiếm
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            const end = start + this.itemsPerPage;
+            return this.filteredProducts.slice(start, end);
+        },
+        availableToppings() {
+            return this.$store.getters['products/toppingsOption'];
+        },
+        totalToppingPages() {
+            return Math.ceil(this.availableToppings.length / this.itemsPerToppingPage);
+        },
+        paginatedToppings() {
+            const start = (this.currentToppingPage - 1) * this.itemsPerToppingPage;
+            return this.availableToppings.slice(start, start + this.itemsPerToppingPage);
+        },
+        orderTotal() {
+            return this.selectedProducts.reduce((total, product) => {
+                const productTotal = product.quantity * product.product.price;
+                const toppingTotal = product.toppings.reduce((toppingSum, topping) => {
+                    const toppingPrice = this.getToppingPrice(topping.id); // Hàm lấy giá topping
+                    return toppingSum + topping.quantity * toppingPrice;
+                }, 0);
+                return total + productTotal + toppingTotal;
+            }, 0);
+        },
+    },
+    watch: {
+        allProducts: {
+            immediate: true,
+            handler() {
+                this.calculatePagination();
+            },
+        },
+        searchQuery: {
+            handler() {
+                this.calculatePagination(); // Tính toán lại phân trang khi thay đổi từ khóa tìm kiếm
+            },
+        },
+        selectedProducts: {
+            handler() {
+                this.total = this.orderTotal; // Cập nhật tổng khi selectedProducts thay đổi
+            },
+            deep: true,
+        },
+    },
+    methods: {
+
+        calculatePagination() {
+            const totalItems = this.filteredProducts.length; // Sử dụng filteredProducts
+            this.totalPages = Math.ceil(totalItems / this.itemsPerPage);
+            this.currentPage = 1; // Reset về trang 1 khi tìm kiếm
+        },
+        goToPage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.currentPage = page;
+        },
+        openProductModal() {
+            this.showProductModal = true;
+            this.calculatePagination(); // Tính toán phân trang khi mở modal
+        },
+        closeProductModal() {
+            this.showProductModal = false;
+        },
+        confirmProductSelection() {
+            const product = this.$store.getters['products/allProducts'].find(p => p.id === this.selectedProduct);
+            const quantity = this.productQuantities[this.selectedProduct] || 1; // Mặc định số lượng là 1 nếu không nhập
+
+            if (product) {
+                this.selectedProducts.push({
+                    product,
+                    quantity,
+                    toppings: [] // Khởi tạo danh sách topping cho sản phẩm
+                });
+                this.openToppingModal(); // Reset modal cho lần chọn tiếp theo
+            } else {
+                alert('Please select a product before confirming.');
+            }
+        },
+        resetProductModal() {
+            this.selectedProduct = null;
+            this.productQuantities = {}; // Đặt lại số lượng cho lần chọn tiếp theo
+        },
+        openToppingModal() {
+            this.showToppingModal = true;
+        },
+        closeToppingModal() {
+            this.showToppingModal = false;
+        },
+        goToToppingPage(page) {
+            if (page < 1 || page > this.totalToppingPages) return; // Validate page number
+            this.currentToppingPage = page;
+        },
+        confirmToppingSelection() {
+            const selectedProduct = this.selectedProducts[this.selectedProducts.length - 1]; // Lấy sản phẩm cuối cùng đã được thêm
+            if (selectedProduct) {
+                this.selectedToppings.forEach(toppingId => {
+                    const quantity = this.toppingQuantities[toppingId] || 1; // Mặc định số lượng là 1 nếu không nhập
+                    selectedProduct.toppings.push({
+                        id: toppingId,
+                        quantity: quantity
+                    });
+                });
+                this.resetToppingModal();
+                this.resetProductModal(); // Reset modal
+                this.closeToppingModal();
+                this.closeProductModal();
+            } else {
+                alert('Please select a product before adding toppings.');
+            }
+        },
+        resetToppingModal() {
+            this.selectedToppings = [];
+            this.toppingQuantities = {}; // Đặt lại số lượng cho topping
+            this.showToppingModal = false; // Đóng modal topping
+        },
+        getToppingName(toppingId) {
+            const topping = this.$store.getters['products/toppingsOption'].find(t => t.id === toppingId);
+            return topping ? topping.name : 'Unknown Topping';
+        },
+        getToppingPrice(toppingId) {
+            const topping = this.$store.getters['products/allProducts'].find(t => t.id === toppingId);
+            return topping ? topping.price : 'Unknown Topping';
+        },
+    },
+};
 </script>

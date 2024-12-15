@@ -6,6 +6,7 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Customer;
 use App\Models\CustomerOrder;
+use App\Models\Employee;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
@@ -415,12 +416,74 @@ class OrderController extends Controller
             'source' => 'required | in:Offline,Online',
             'team_id' => 'required | uuid | exists:teams,id',
             'created_by' => 'required | uuid | exists:users,id',
+            'selectedProducts' => 'required|array',
         ]);
 
-        $order = Order::create($validated);
+        // If validation fails, return the error response
+        if ($validated->fails()) {
+            return response()->json(['error' => $validated->errors()], 422);
+        }
+        else {
 
+            $customer = $request->input('customer_id');
+
+            // Create a new order
+            $order = Order::create([
+                'order_number' => 'ORD' . time(),
+                'receiver_name' => $request->input('receiver_name'),
+                'receiver_address' => $request->input('receiver_address'),
+                'payment_method' => $request->input('payment_method'),
+                'order_status' => $request->input('order_status'),
+                'type' => 'Personal',
+                'source' => $request->input('source'),
+                'customer_feedback' => '',
+                'order_total' => $request->input('total'),
+                'host_id' => $customer,
+            ]);
+
+            // Attach the customer to the order using the pivot table
+            $order->customers()->attach($customer);
+        }
+
+        // Get the pivot record (CustomerOrder) for the customer and order
+        $customerOrder = $order->customers()->where('customer_id', $customer)->first()->pivot;
+
+        // Add order detail using the CustomerOrder pivot
+
+        foreach ($validated['selectedProducts'] as $item) {
+            // Create the order detail for the product
+            $orderDetail = $customerOrder->orderDetails()->create([
+                'order_detail_number' => 'OD' . time(),
+                'customer_order_id' => $customerOrder->id,
+                'product_id' => $item['product']['id'],
+                'parent_id' => null,
+                'size' => $validated['size'] ?? null,
+                'quantity' => $item['quantity'],
+                'note' => $validated['note'] ?? null,
+                'total_price' => $item['quantity'] * $item['product']['price'],
+            ]);
+
+            // Loop through toppings for this product and create associated toppings
+            if (isset($item['toppings'])) {
+            foreach ($item['toppings'] as $topping) {
+
+
+            $orderDetail->toppings()->create([
+                'order_detail_number' => 'ODTP' . time(), // Generate a unique order detail number
+                'customer_order_id' => $customerOrder->id, // Associate with the customer order
+                'product_id' => $topping->id, // Use the ID of the topping
+                'size' => 'S', // Set size (you may need to adjust this based on your requirements)
+                'quantity' => $topping['quantity'], // Get the quantity from the topping data
+                'note' => '', // Add any notes if applicable
+                'parent_id' => $orderDetail->id, // Set the parent ID to associate with the order product
+            ]);
+        }
+    }
+        }
         return response()->json(['message' => 'Order created successfully . ', 'data' => $order], 201);
     }
+
+
 
     /**
      * Display the specified order.
