@@ -255,7 +255,7 @@ const error = computed(() => store.getters['cart/error']);
                     </div>
                 </div>
 
-                <div class="order-items overflow-y-auto h-[600px] p-4 scrollbar-thin">
+                <div class="order-items overflow-y-auto h-[625px] p-4 scrollbar-thin">
                     <div
                         v-for="(item, itemIndex) in cart.order_detail"
                         :key="item.id"
@@ -336,7 +336,7 @@ const error = computed(() => store.getters['cart/error']);
                     </div>
                 </div>
 
-                <div class="flex justify-between h-full">
+                <div class="flex justify-between h-full p-4">
                     <div class="order-total flex h-full justify-center flex-col items-center font-semibold">
                         <span>Total: {{ formatVietnameseCurrency(cart.total_price) }}</span>
                     </div>
