@@ -6,6 +6,7 @@ import {useStore} from 'vuex';
 import {formatVietnameseCurrency} from "../../helpers/currencyFormat.js";
 import {formatDate} from "@/js/helpers/dateFormat.js";
 import {notify} from "notiwind";
+import PaymentDetail from "@/js/components/popup/PaymentDetail.vue";
 
 let updateDrawerInstance = null; // Drawer instance
 const isVisible = ref(false);
@@ -14,6 +15,7 @@ const expandedItems = ref({});
 const activeTab = ref(0); // Default to the first tab
 const isDropdownOpen = ref(false); // Controls the dropdown visibility
 const cartData = ref([])
+const showPaymentDetail = ref(false)
 const openDrawer = () => {
     isVisible.value = true;
     updateDrawerInstance.show();
@@ -115,6 +117,10 @@ const deleteCart = (cartId) => {
         }, 4000);
     }
 };
+
+const togglePaymentDetail = () => {
+    showPaymentDetail.value = !showPaymentDetail.value;
+}
 
 // Computed properties for visible and hidden tabs
 const visibleTabs = computed(() => {
@@ -249,111 +255,114 @@ const error = computed(() => store.getters['cart/error']);
                 role="tabpanel"
                 :aria-labelledby="`tab-${index}`"
             >
-                <div class="order-summary flex justify-between p-4">
-                    <div>
-                        <strong>Cart Name:</strong> {{ cart.name }}
-                    </div>
-                    <div>
-                        <strong>Date Created:</strong> {{ formatDate(cart.date_created) }}
-                    </div>
-                </div>
-
-                <div class="order-items overflow-y-auto h-[718px] p-4 scrollbar-thin">
-                    <div
-                        v-for="(item, itemIndex) in cart.order_detail"
-                        :key="item.id"
-                        class="order-item mb-4 cursor-pointer shadow-lg hover:shadow-xl rounded-xl"
-                        @click="toggleToppings(item.id)"
-                    >
-                        <!-- Product Details -->
-                        <div class="flex gap-4 h-full rounded-lg">
-                            <div class="w-[12%]">
-                                <img
-                                    v-if="item.image === null"
-                                    src="@/assets/images/empty-image.jpg"
-                                    alt="Product"
-                                    class="w-full shadow-lg rounded-lg aspect-square"
-                                >
-                                <img
-                                    v-else
-                                    :src="item.image"
-                                    alt="Product"
-                                    class="w-full shadow-lg rounded-lg aspect-square"
-                                >
-                            </div>
-                            <div class="flex justify-between items-center h-full w-[88%]">
-                                <div class="flex flex-col justify-between">
-                                    <div class="flex items-center">
-                                        <div class="font-semibold">{{ item.product_name }} ({{ item.size }})</div>
-                                        <span class="ml-2 text-sm text-gray-500">x{{ item.quantity }}</span>
-                                    </div>
-                                    <span class="text-sm text-gray-500">Note: {{ item.note }}</span>
-                                    <span class="text-sm text-gray-500">Toppings: {{
-                                            item.count_topping
-                                        }} toppings</span>
-                                </div>
-                                <div class="font-semibold">{{ formatVietnameseCurrency(item.total_price) }}</div>
-                                <button
-                                    class="text-red-500 cursor-pointer hover:text-red-700 rounded-full hover:bg-red-200 p-1 mr-1"
-                                    @click.stop="deleteProduct(cart.order_id, item.id)"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         stroke-width="1.5" stroke="currentColor" class="size-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                                    </svg>
-                                </button>
-                            </div>
+                <PaymentDetail :cart="cart" :is-visible="showPaymentDetail" @showPaymentDetail="togglePaymentDetail"/>
+                <div v-if="!showPaymentDetail">
+                    <div class="order-summary flex justify-between p-4">
+                        <div>
+                            <strong>Cart Name:</strong> {{ cart.name }}
                         </div>
+                        <div>
+                            <strong>Date Created:</strong> {{ formatDate(cart.date_created) }}
+                        </div>
+                    </div>
 
-                        <!-- Toppings -->
-                        <transition
-                            name="topping-transition"
-                            appear
+                    <div class="order-items overflow-y-auto h-[718px] p-4 scrollbar-thin">
+                        <div
+                            v-for="(item, itemIndex) in cart.order_detail"
+                            :key="item.id"
+                            class="order-item mb-4 cursor-pointer shadow-lg hover:shadow-xl rounded-xl"
+                            @click="toggleToppings(item.id)"
                         >
-                            <div
-                                v-show="expandedItems[item.id]"
-                                class="toppings mt-2"
-                            >
-                                <div v-if="item.toppings.length === 0">No toppings seleted</div>
-                                <div
-                                    v-for="(topping, toppingIndex) in item.toppings"
-                                    :key="toppingIndex"
-                                    class="shadow-item flex justify-between text-sm hover:bg-gray-100 pt-1 pl-2 pr-1 rounded-lg"
-                                >
-                                    <div class="w-55 overflow-hidden overflow-x-clip">{{ topping.product_name }}</div>
-                                    <div>+{{ formatVietnameseCurrency(topping.product_price) }}</div>
-                                    <button
-                                        class="text-red-500 cursor-pointer hover:text-red-700 rounded-full hover:bg-red-200 p-1 mb-1"
-                                        @click.stop="deleteTopping(cart.order_id, item.id, topping.id)"
+                            <!-- Product Details -->
+                            <div class="flex gap-4 h-full rounded-lg">
+                                <div class="w-[12%]">
+                                    <img
+                                        v-if="item.image === null"
+                                        src="@/assets/images/empty-image.jpg"
+                                        alt="Product"
+                                        class="w-full shadow-lg rounded-lg aspect-square"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                             class="size-4">
-                                            <path fill-rule="evenodd"
-                                                  d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                                                  clip-rule="evenodd"/>
+                                    <img
+                                        v-else
+                                        :src="item.image"
+                                        alt="Product"
+                                        class="w-full shadow-lg rounded-lg aspect-square"
+                                    >
+                                </div>
+                                <div class="flex justify-between items-center h-full w-[88%]">
+                                    <div class="flex flex-col justify-between">
+                                        <div class="flex items-center">
+                                            <div class="font-semibold">{{ item.product_name }} ({{ item.size }})</div>
+                                            <span class="ml-2 text-sm text-gray-500">x{{ item.quantity }}</span>
+                                        </div>
+                                        <span class="text-sm text-gray-500">Note: {{ item.note }}</span>
+                                        <span class="text-sm text-gray-500">Toppings: {{
+                                                item.count_topping
+                                            }} toppings</span>
+                                    </div>
+                                    <div class="font-semibold">{{ formatVietnameseCurrency(item.total_price) }}</div>
+                                    <button
+                                        class="text-red-500 cursor-pointer hover:text-red-700 rounded-full hover:bg-red-200 p-1 mr-1"
+                                        @click.stop="deleteProduct(cart.order_id, item.id)"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                             stroke-width="1.5" stroke="currentColor" class="size-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
                                         </svg>
                                     </button>
                                 </div>
                             </div>
-                        </transition>
-                    </div>
-                </div>
 
-                <div class="flex justify-between h-full p-4">
-                    <div class="order-total flex h-full justify-center flex-col items-center font-semibold">
-                        <span>Total: {{ formatVietnameseCurrency(cart.total_price) }}</span>
+                            <!-- Toppings -->
+                            <transition
+                                name="topping-transition"
+                                appear
+                            >
+                                <div
+                                    v-show="expandedItems[item.id]"
+                                    class="toppings mt-2"
+                                >
+                                    <div v-if="item.toppings.length === 0">No toppings seleted</div>
+                                    <div
+                                        v-for="(topping, toppingIndex) in item.toppings"
+                                        :key="toppingIndex"
+                                        class="shadow-item flex justify-between text-sm hover:bg-gray-100 pt-1 pl-2 pr-1 rounded-lg"
+                                    >
+                                        <div class="w-55 overflow-hidden overflow-x-clip">{{ topping.product_name }}</div>
+                                        <div>+{{ formatVietnameseCurrency(topping.product_price) }}</div>
+                                        <button
+                                            class="text-red-500 cursor-pointer hover:text-red-700 rounded-full hover:bg-red-200 p-1 mb-1"
+                                            @click.stop="deleteTopping(cart.order_id, item.id, topping.id)"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                                 class="size-4">
+                                                <path fill-rule="evenodd"
+                                                      d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                                                      clip-rule="evenodd"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </transition>
+                        </div>
                     </div>
-                    <div class="flex gap-1">
-                        <button
-                            class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-full border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
-                            @click="deleteCart(cart.order_id)"
-                        >
-                            Delete
-                        </button>
-                        <button class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
-                            Go to Payment
-                        </button>
+
+                    <div class="flex justify-between h-full p-4">
+                        <div class="order-total flex h-full justify-center flex-col items-center font-semibold">
+                            <span>Total: {{ formatVietnameseCurrency(cart.total_price) }}</span>
+                        </div>
+                        <div class="flex gap-1">
+                            <button
+                                class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-full border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
+                                @click="deleteCart(cart.order_id)"
+                            >
+                                Delete
+                            </button>
+                            <button @click="togglePaymentDetail" class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
+                                Go to Payment
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
