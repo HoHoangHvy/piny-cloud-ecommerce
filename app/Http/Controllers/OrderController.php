@@ -114,6 +114,24 @@ class OrderController extends Controller
             return response()->json(['message' => 'Customer not found.'], 404);
         }
 
+        if(empty($validated['order_ids'])) {
+            //Create order
+            $order = Order::create([
+                'order_number' => 'ORD' . time(),
+                'receiver_name' => $customer->full_name,
+                'receiver_address' => '',
+                'payment_method' => 'Cash',
+                'order_status' => 'Draft',
+                'type' => 'Personal',
+                'custom_name' => '',
+                'source' => 'Online',
+                'customer_feedback' => '',
+                'order_total' => 0,
+                'host_id' => $customer->id,
+            ]);
+            $order->customers()->attach($customer->id);
+            $validated['order_ids'] = [$order->id];
+        }
         $orderIds = $validated['order_ids']; // Array of order IDs
         $addedProducts = []; // To store the added products for each cart
 
@@ -147,7 +165,7 @@ class OrderController extends Controller
                 'parent_id' => null,
                 'size' => $validated['size'],
                 'quantity' => $validated['quantity'],
-                'note' => $validated['note'],
+                'note' => $validated['note'] ?? '',
                 'total_price' => $validated['total_price'],
             ]);
 

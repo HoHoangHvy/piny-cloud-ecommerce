@@ -184,6 +184,9 @@ const actions = {
     },
 };
 const mutations = {
+    setCartCount(state, args) {
+        state.customerInfo.count_cart = args;
+    },
     setUser(state, args) {
         if(args.user.user_type === 'customer') {
             state.customerInfo = args.customer_info;

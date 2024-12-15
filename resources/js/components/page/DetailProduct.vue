@@ -118,6 +118,7 @@ import {useStore} from 'vuex';
 import {defineProps, defineEmits, computed, ref, onMounted} from 'vue';
 import {formatVietnameseCurrency} from '@/js/helpers/currencyFormat.js';
 import CartPopup from "@/js/components/popup/CartPopup.vue";
+import {notify} from "notiwind";
 
 const store = useStore();
 const props = defineProps({
@@ -187,7 +188,14 @@ const addToCart = async () => {
         listCart.value = store.getters['cart/allCart'];
         showCartSelection.value = true;
     } else {
-        await store.dispatch('cart/addProductToCart', product);
+        await store.dispatch('cart/addProductToCart', {product: product.value});
+        store.commit('setCartCount', 1)
+        notify({
+            group: "foo",
+            title: "Success",
+            text: "Add to cart successfully!",
+        }, 4000);
+        close();
     }
 };
 // Calculate total price

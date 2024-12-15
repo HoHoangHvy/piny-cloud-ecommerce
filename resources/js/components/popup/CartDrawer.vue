@@ -230,7 +230,7 @@ const error = computed(() => store.getters['cart/error']);
                         class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         @click="selectHiddenTab(hiddenIndex + visibleTabs.length)"
                     >
-                        {{ hiddenCart.name }}
+                        {{ hiddenCart.name }} ({{ hiddenCart.count_product }})
                     </button>
                 </div>
             </div>
@@ -315,6 +315,7 @@ const error = computed(() => store.getters['cart/error']);
                                 v-show="expandedItems[item.id]"
                                 class="toppings mt-2"
                             >
+                                <div v-if="item.toppings.length === 0">No toppings seleted</div>
                                 <div
                                     v-for="(topping, toppingIndex) in item.toppings"
                                     :key="toppingIndex"
