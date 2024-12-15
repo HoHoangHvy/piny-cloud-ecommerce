@@ -326,6 +326,7 @@ class OrderController extends Controller
                     'order_number' => $order->order_number,
                     'date_created' => $order->created_at,
                     'host_id' => $order->host_id,
+                    'count_product' => $orderDetails->count() ?? 0,
                     'order_detail' => []
                 ];
 

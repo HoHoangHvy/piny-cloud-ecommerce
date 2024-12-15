@@ -190,7 +190,7 @@ const error = computed(() => store.getters['cart/error']);
                     >
                         <button
                             :class="[
-                            'inline-block mr-[1px] pl-2 pr-2 rounded-t-lg bg-gray-100 border-gray-100 border-2',
+                            'relative flex justify-center items-center mr-[1px] pl-3 pr-3 rounded-t-lg bg-gray-100 border-gray-100 border-2',
                             activeTab === index ? 'pb-[4px] border-[#6B4226] bg-white h-[102%] border-t-2 border-r-2 border-l-2 border-b-0 text-[#6B4226] font-bold' : 'h-[98%] hover:text-gray-600 dark:hover:text-gray-300',
                         ]"
                             :id="`tab-${index}`"
@@ -201,6 +201,9 @@ const error = computed(() => store.getters['cart/error']);
                             :aria-selected="activeTab === index"
                         >
                             {{ cart.name }}
+                            <div class="absolute top-[0px] right-[0px] bg-red-500 z-999 text-white text-2xs ml-2 rounded-full w-4 h-4 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                                {{ cart.count_product }}
+                            </div>
                         </button>
                     </li>
                 </ul>
@@ -255,7 +258,7 @@ const error = computed(() => store.getters['cart/error']);
                     </div>
                 </div>
 
-                <div class="order-items overflow-y-auto h-[625px] p-4 scrollbar-thin">
+                <div class="order-items overflow-y-auto h-[718px] p-4 scrollbar-thin">
                     <div
                         v-for="(item, itemIndex) in cart.order_detail"
                         :key="item.id"

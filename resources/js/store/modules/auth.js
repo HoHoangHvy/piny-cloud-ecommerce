@@ -6,12 +6,14 @@ import store from "@/js/store/index.js";
 const state = {
     user: null,
     role: null,
+    customerInfo: null,
     permissions: null,
     visibleModule: null,
     token: localStorage.getItem('token') || null,
     status: "",
 };
 const getters = {
+    customerInfo: state => state.customerInfo,
     modules: state => state.visibleModule,
     role: state => state.role,
     isLoggedIn: state => !!state.token,
@@ -183,7 +185,9 @@ const actions = {
 };
 const mutations = {
     setUser(state, args) {
-
+        if(args.user.user_type === 'customer') {
+            state.customerInfo = args.customer_info;
+        }
         state.user = args.user;
         state.role = args.roles[0];
         state.permissions = args.permissions;
