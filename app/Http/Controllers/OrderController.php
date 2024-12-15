@@ -97,14 +97,15 @@ class OrderController extends Controller
             'toppings_id' => 'nullable|array', // Ensure toppings_id is an array
             'note' => 'nullable',
             'total_price' => 'required',
+            'order_ids' => 'array', // Ensure order_ids is an array
         ]);
 
         // Check if product exists
-        if (!$validated['product_id']) {
+        $product = Product::findOrFail($validated['product_id']);
+        if (!$product) {
             return response()->json(['message' => 'Product not found.'], 404);
         }
 
-        $product = Product::findOrFail($validated['product_id']);
         $currentUser = auth()->user();
         $customer = Customer::where('user_id', $currentUser->id)->first();
 
@@ -113,83 +114,82 @@ class OrderController extends Controller
             return response()->json(['message' => 'Customer not found.'], 404);
         }
 
-        // Check if order_id is provided
-        if ($request->has('order_id') && $request->get('order_id') != null) {
-            $order = Order::find($request->get('order_id'));
+        $orderIds = $validated['order_ids']; // Array of order IDs
+        $addedProducts = []; // To store the added products for each cart
+
+        foreach ($orderIds as $orderId) {
+            // Fetch the order
+            $order = Order::find($orderId);
+
+            // If the order doesn't exist, skip it
+            if (!$order) {
+                continue;
+            }
+
+            // Ensure the order belongs to the current customer
+            $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+                ->where('order_id', $order->id)
+                ->first();
+
+            if (!$customerOrder) {
+                continue; // Skip if the customer doesn't have access to this order
+            }
+
+            // Update the order total
             $order->order_total += $validated['total_price'];
             $order->save();
-        } else {
-            // Create a new order if order_id is not provided
-            $order = Order::create([
-                'order_number' => 'ORD' . time(),
-                'receiver_name' => $customer->full_name,
-                'receiver_address' => '',
-                'payment_method' => 'Cash',
-                'order_status' => 'Draft',
-                'type' => 'Personal',
-                'source' => 'Online',
-                'customer_feedback' => '',
-                'order_total' => $validated['total_price'],
-                'host_id' => $customer->id,
+
+            // Add order detail using the CustomerOrder pivot
+            $orderDetail = $customerOrder->orderDetails()->create([
+                'order_detail_number' => 'OD' . time(),
+                'customer_order_id' => $customerOrder->id,
+                'product_id' => $product->id,
+                'parent_id' => null,
+                'size' => $validated['size'],
+                'quantity' => $validated['quantity'],
+                'note' => $validated['note'],
+                'total_price' => $validated['total_price'],
             ]);
 
-            // Attach the customer to the order using the pivot table
-            $order->customers()->attach($customer->id);
-        }
-
-        // Get the pivot record (CustomerOrder) for the customer and order
-        $customerOrder = $order->customers()->where('customer_id', $customer->id)->first()->pivot;
-
-        // Add order detail using the CustomerOrder pivot
-        $orderDetail = $customerOrder->orderDetails()->create([
-            'order_detail_number' => 'OD' . time(),
-            'customer_order_id' => $customerOrder->id,
-            'product_id' => $product->id,
-            'parent_id' => null,
-            'size' => $validated['size'],
-            'quantity' => $validated['quantity'],
-            'note' => $validated['note'],
-            'total_price' => $validated['total_price'],
-        ]);
-
-        // Add toppings if provided
-        if (isset($validated['toppings_id'])) {
-            foreach ($validated['toppings_id'] as $toppingId) {
-                $topping = Product::findOrFail($toppingId);
-                $orderDetail->toppings()->create([
-                    'order_detail_number' => 'ODTP' . time(),
-                    'customer_order_id' => $customerOrder->id,
-                    'product_id' => $topping->id,
-                    'size' => 'S',
-                    'quantity' => 1,
-                    'note' => '',
-                    'parent_id' => $orderDetail->id,
-                ]);
+            // Add toppings if provided
+            if (isset($validated['toppings_id'])) {
+                foreach ($validated['toppings_id'] as $toppingId) {
+                    $topping = Product::findOrFail($toppingId);
+                    $orderDetail->toppings()->create([
+                        'order_detail_number' => 'ODTP' . time(),
+                        'customer_order_id' => $customerOrder->id,
+                        'product_id' => $topping->id,
+                        'size' => 'S',
+                        'quantity' => 1,
+                        'note' => '',
+                        'parent_id' => $orderDetail->id,
+                    ]);
+                }
             }
-        }
 
-        // Prepare the response data
-        $return_data = [
-            'order' => $order,
-            'order_detail' => [
-                'id' => $orderDetail->id,
-                'order_detail_number' => $orderDetail->order_detail_number,
-                'product' => [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'price' => $product->price,
+            // Prepare the response data for this cart
+            $addedProducts[] = [
+                'order_id' => $order->id,
+                'order_detail' => [
+                    'id' => $orderDetail->id,
+                    'order_detail_number' => $orderDetail->order_detail_number,
+                    'product' => [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'price' => $product->price,
+                    ],
+                    'size' => $orderDetail->size,
+                    'quantity' => $orderDetail->quantity,
+                    'note' => $orderDetail->note,
+                    'total_price' => $orderDetail->total_price,
+                    'toppings' => $orderDetail->toppings,
                 ],
-                'size' => $orderDetail->size,
-                'quantity' => $orderDetail->quantity,
-                'note' => $orderDetail->note,
-                'total_price' => $orderDetail->total_price,
-                'toppings' => $orderDetail->toppings,
-            ],
-        ];
+            ];
+        }
 
         return response()->json([
-            'message' => 'Product added to cart successfully.',
-            'data' => $return_data
+            'message' => 'Product added to multiple carts successfully.',
+            'data' => $addedProducts,
         ]);
     }
     public function getExistedCart(Request $request) {
@@ -298,6 +298,7 @@ class OrderController extends Controller
         // Get the latest order with status 'Draft' for the customer
         $orders = Order::where('host_id', $customer->id)
             ->where('order_status', 'Draft')
+            ->orderBy('updated_at', 'DESC')
             ->get();
 
         if ($orders->isEmpty()) {
@@ -364,6 +365,7 @@ class OrderController extends Controller
     public function removeProductFromCart(Request $request)
     {
         $validated = $request->validate([
+            'cart_id' => 'required | exists:orders,id', // Ensure the cart_id (order_id) exists
             'order_detail_id' => 'required | exists:order_details,id',
         ]);
 
@@ -371,33 +373,93 @@ class OrderController extends Controller
         $customer = Customer::where('user_id', $currentUser->id)->first();
 
         if (!$customer) {
-            return response()->json(['message' => 'Customer not found . '], 404);
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch the order (cart)
+        $order = Order::findOrFail($validated['cart_id']);
+
+        // Ensure the order belongs to the current customer
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('order_id', $order->id)
+            ->first();
+
+        if (!$customerOrder) {
+            return response()->json(['message' => 'Unauthorized or invalid order.'], 403);
         }
 
         // Fetch the order detail to delete
         $orderDetail = OrderDetail::findOrFail($validated['order_detail_id']);
 
-        // Ensure the order belongs to the current customer and is in 'Draft' status
-        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
-            ->where('id', $orderDetail->customer_order_id)
-            ->whereHas('order', function ($query) {
-                $query->where('order_status', 'Draft');
-            })
-            ->first();
-
-        if (!$customerOrder) {
-            return response()->json(['message' => 'Unauthorized or invalid order detail . '], 403);
+        // Ensure the order detail belongs to the specified order
+        if ($orderDetail->customer_order_id !== $customerOrder->id) {
+            return response()->json(['message' => 'Unauthorized or invalid order detail.'], 403);
         }
 
         // Delete related toppings (if any)
         $orderDetail->toppings()->delete();
 
+        // Update the order total
+        $order->order_total -= $orderDetail->total_price;
+        $order->save();
+
         // Delete the order detail
         $orderDetail->delete();
 
-        return response()->json(['message' => 'Product removed from cart successfully . ']);
+        return response()->json(['message' => 'Product removed from cart successfully.']);
     }
+    public function removeToppingFromCart(Request $request)
+    {
+        $validated = $request->validate([
+            'cart_id' => 'required | exists:orders,id', // Ensure the cart_id (order_id) exists
+            'order_detail_id' => 'required | exists:order_details,id',
+            'topping_id' => 'required | exists:order_details,id',
+        ]);
 
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch the order (cart)
+        $order = Order::findOrFail($validated['cart_id']);
+
+        // Ensure the order belongs to the current customer
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('order_id', $order->id)
+            ->first();
+
+        if (!$customerOrder) {
+            return response()->json(['message' => 'Unauthorized or invalid order.'], 403);
+        }
+
+        // Fetch the order detail
+        $orderDetail = OrderDetail::findOrFail($validated['order_detail_id']);
+
+        // Ensure the order detail belongs to the specified order
+        if ($orderDetail->customer_order_id !== $customerOrder->id) {
+            return response()->json(['message' => 'Unauthorized or invalid order detail.'], 403);
+        }
+
+        // Fetch the topping to delete
+        $topping = OrderDetail::findOrFail($validated['topping_id']);
+
+        // Ensure the topping belongs to the specified order detail
+        if ($topping->parent_id !== $orderDetail->id) {
+            return response()->json(['message' => 'Unauthorized or invalid topping.'], 403);
+        }
+
+        // Update the order total
+        $order->order_total -= $topping->total_price;
+        $order->save();
+
+        // Delete the topping
+        $topping->delete();
+
+        return response()->json(['message' => 'Topping removed from cart successfully.']);
+    }
     /**
      * Store a newly created order in storage.
      */

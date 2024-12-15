@@ -1,6 +1,6 @@
 <script setup>
 import {initFlowbite, Drawer} from 'flowbite';
-import {defineExpose} from 'vue';
+import {defineExpose, onBeforeUnmount} from 'vue';
 import {onMounted, ref, computed} from "vue";
 import {useStore} from 'vuex';
 import {formatVietnameseCurrency} from "../../helpers/currencyFormat.js";
@@ -63,15 +63,43 @@ onMounted(() => {
     };
     updateDrawerInstance = new Drawer($updateDrawer, drawerOptions);
     fetchData();
+    document.addEventListener('click', clickOutsideHandler)
 });
-
+const clickOutsideHandler = (event) => {
+    if (!event.target.closest('.dropdown') && !event.target.closest('.trigger-dropdown')) {
+        isDropdownOpen.value = false;
+    }
+};
+onBeforeUnmount(() => document.removeEventListener('click', clickOutsideHandler));
 const toggleToppings = (itemId) => {
     expandedItems.value[itemId] = !expandedItems.value[itemId];
 };
 
-const deleteProduct = (cartId, productId) => {
+const deleteProduct = (cartId, orderDetailId) => {
     if (confirm('Are you sure you want to delete this product?')) {
-        store.dispatch('cart/deleteProduct', {cartId, productId});
+        store.dispatch('cart/deleteProduct', {
+            cartId,
+            orderDetailId
+        });
+        fetchData();
+
+        notify({
+            group: "foo",
+            title: "Success",
+            text: "Delete product successfully!",
+        }, 4000);
+    }
+};
+const deleteTopping = (cartId, orderDetailId, toppingId) => {
+    if (confirm('Are you sure you want to delete this topping?')) {
+        store.dispatch('cart/deleteTopping', {cartId, orderDetailId, toppingId});
+        fetchData();
+
+        notify({
+            group: "foo",
+            title: "Success",
+            text: "Delete topping successfully!",
+        }, 4000);
     }
 };
 
@@ -79,6 +107,12 @@ const deleteCart = (cartId) => {
     if (confirm('Are you sure you want to delete this cart?')) {
         store.dispatch('cart/deleteCart', cartId);
         fetchData();
+
+        notify({
+            group: "foo",
+            title: "Success",
+            text: "Delete cart successfully!",
+        }, 4000);
     }
 };
 
@@ -156,8 +190,8 @@ const error = computed(() => store.getters['cart/error']);
                     >
                         <button
                             :class="[
-                            'inline-block mr-[1px] pl-2 pr-2 rounded-t-lg h-[98%] bg-gray-100',
-                            activeTab === index ? 'border-[#6B4226] bg-white h-[102%] border-t-2 border-r-2 border-l-2 border-b-0 text-[#6B4226] font-bold' : 'hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300',
+                            'inline-block mr-[1px] pl-2 pr-2 rounded-t-lg bg-gray-100 border-gray-100 border-2',
+                            activeTab === index ? 'pb-[4px] border-[#6B4226] bg-white h-[102%] border-t-2 border-r-2 border-l-2 border-b-0 text-[#6B4226] font-bold' : 'h-[98%] hover:text-gray-600 dark:hover:text-gray-300',
                         ]"
                             :id="`tab-${index}`"
                             @click="activeTab = index"
@@ -174,7 +208,7 @@ const error = computed(() => store.getters['cart/error']);
             <!-- Plus Icon for Hidden Tabs -->
             <div v-if="hiddenTabs.length > 0" class="relative">
                 <button
-                    class="inline-block bg-gray-100 p-2 rounded-full hover:text-gray-600 hover:border-gray-300 hover:bg-gray-300 dark:hover:text-gray-300"
+                    class="trigger-dropdown inline-block bg-gray-100 p-2 rounded-full hover:text-gray-600 hover:border-gray-300 hover:bg-gray-300 dark:hover:text-gray-300"
                     @click="toggleDropdown"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
@@ -185,7 +219,7 @@ const error = computed(() => store.getters['cart/error']);
                 <!-- Dropdown for Hidden Tabs -->
                 <div
                     v-if="isDropdownOpen"
-                    class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
+                    class="dropdown absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                 >
                     <button
                         v-for="(hiddenCart, hiddenIndex) in hiddenTabs"
@@ -221,11 +255,11 @@ const error = computed(() => store.getters['cart/error']);
                     </div>
                 </div>
 
-                <div class="order-items overflow-y-auto h-[600px] p-4">
+                <div class="order-items overflow-y-auto h-[600px] p-4 scrollbar-thin">
                     <div
                         v-for="(item, itemIndex) in cart.order_detail"
                         :key="item.id"
-                        class="order-item mb-4 cursor-pointer shadow-lg hover:shadow-xl rounded-2xl"
+                        class="order-item mb-4 cursor-pointer shadow-lg hover:shadow-xl rounded-xl"
                         @click="toggleToppings(item.id)"
                     >
                         <!-- Product Details -->
@@ -287,7 +321,7 @@ const error = computed(() => store.getters['cart/error']);
                                     <div>+{{ formatVietnameseCurrency(topping.product_price) }}</div>
                                     <button
                                         class="text-red-500 cursor-pointer hover:text-red-700 rounded-full hover:bg-red-200 p-1 mb-1"
-                                        @click.stop="deleteTopping(cart.order_id, item.id)"
+                                        @click.stop="deleteTopping(cart.order_id, item.id, topping.id)"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                              class="size-4">
@@ -380,7 +414,6 @@ const error = computed(() => store.getters['cart/error']);
 
 .order-summary {
     background-color: #f9fafb;
-    border-radius: 5px;
 }
 
 .order-item {

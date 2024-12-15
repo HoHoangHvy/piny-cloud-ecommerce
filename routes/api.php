@@ -65,8 +65,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/products/toppings', [\App\Http\Controllers\ProductController::class, 'getToppingOptions']);
 
 
-    Route::post('/cart/addProduct', [\App\Http\Controllers\OrderController::class, 'addProductToCart']);
-    Route::delete('/cart/removeProduct', [\App\Http\Controllers\OrderController::class, 'removeProductFromCart']);
+    Route::post('/cart/addProductToCart', [\App\Http\Controllers\OrderController::class, 'addProductToCart']);
+    Route::post('/cart/removeProductFromCart', [\App\Http\Controllers\OrderController::class, 'removeProductFromCart']);
+    Route::post('/cart/removeToppingFromCart', [\App\Http\Controllers\OrderController::class, 'removeToppingFromCart']);
     Route::get('/cart/fetchCart', [\App\Http\Controllers\OrderController::class, 'fetchCart']);
     Route::get('/cart/getExistedCart', [\App\Http\Controllers\OrderController::class, 'getExistedCart']);
     Route::get('/cart/loadCart/{id}', [\App\Http\Controllers\OrderController::class, 'loadCartDetail']);

@@ -106,7 +106,7 @@
                             Add to cart
                         </button>
                     </div>
-                    <CartPopup :isVisible="showCartSelection" :listCart="listCart" @closePopup="closeCartSelect"/>
+                    <CartPopup :isVisible="showCartSelection" :listCart="listCart" :product="product" @closePopup="closeCartSelect"/>
                 </div>
             </div>
         </div>
@@ -114,14 +114,11 @@
 </template>
 
 <script setup>
-import {initFlowbite} from 'flowbite';
 import {useStore} from 'vuex';
 import {defineProps, defineEmits, computed, ref, onMounted} from 'vue';
 import {formatVietnameseCurrency} from '@/js/helpers/currencyFormat.js';
 import CartPopup from "@/js/components/popup/CartPopup.vue";
-onMounted(() => {
-    initFlowbite();
-});
+
 const store = useStore();
 const props = defineProps({
     isVisible: {type: Boolean, required: true},
@@ -149,7 +146,7 @@ const quantity = ref(1); // Default toppings
 const totalPrice = ref(0); // Default toppings
 const listCart = ref([]); // Default toppings
 const showCartSelection = ref(false); // Default toppings
-
+const product = ref({});
 const closeCartSelect = () => {
     showCartSelection.value = false;
 };
@@ -177,21 +174,19 @@ const addToCart = async () => {
     if(store.getters.isLoggedIn === false) {
         store.dispatch('togglePopup', true);
     }
-
+    product.value = {
+        product_id: props.selectedProduct.id, // Use props.selectedProduct
+        total_price: totalPrice.value ,
+        size: selectedSize.value.name,
+        toppings_id: selectedToppings.value.map(topping => topping.id),
+        note: note.value,
+        quantity: quantity.value,
+    }
     await store.dispatch('cart/fetchCarts');
     if(store.getters['cart/allCart'].length !== 0) {
         listCart.value = store.getters['cart/allCart'];
         showCartSelection.value = true;
     } else {
-        const product = {
-            product_id: props.selectedProduct.id, // Use props.selectedProduct
-            total_price: totalPrice.value ,
-            size: selectedSize.value.name,
-            toppings_id: selectedToppings.value.map(topping => topping.id),
-            note: note.value,
-            quantity: quantity.value,
-        };
-
         await store.dispatch('cart/addProductToCart', product);
     }
 };
