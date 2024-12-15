@@ -89,7 +89,8 @@ const isSelectedCart = (order_id) => {
     }
 }
 const toggleSelectedCart = (cart) => {
-    if (isSelectedCart(cart)) selectedCarts.value.pop(cart)
+    debugger
+    if (isSelectedCart(cart.order_id)) selectedCarts.value.pop(cart)
     else selectedCarts.value.push(cart)
 }
 const close = () => {
