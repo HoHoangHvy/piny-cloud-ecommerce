@@ -7,6 +7,7 @@ import {formatVietnameseCurrency} from "../../helpers/currencyFormat.js";
 import {formatDate} from "@/js/helpers/dateFormat.js";
 import {notify} from "notiwind";
 import PaymentDetail from "@/js/components/popup/PaymentDetail.vue";
+import DetailProduct from "@/js/components/page/DetailProduct.vue";
 
 let updateDrawerInstance = null; // Drawer instance
 const isVisible = ref(false);
@@ -16,6 +17,8 @@ const activeTab = ref(0); // Default to the first tab
 const isDropdownOpen = ref(false); // Controls the dropdown visibility
 const cartData = ref([])
 const showPaymentDetail = ref(false)
+const showProductDetail = ref(false)
+const selectedProduct = ref({})
 const openDrawer = () => {
     isVisible.value = true;
     updateDrawerInstance.show();
@@ -43,6 +46,7 @@ const handleCreateCart = async () => {
             text: "Cart created successfully!",
         }, 4000);
         fetchData();
+        store.commit('setCartCount', store.getters['cart/allCart'].length);
     }
 }
 const fetchData = async () => {
@@ -91,6 +95,31 @@ const deleteProduct = (cartId, orderDetailId) => {
             text: "Delete product successfully!",
         }, 4000);
     }
+};
+const childRef = ref(null); // Create a reference for the child
+
+const editProduct = (cartId, orderDetailId) => {
+    let productDetail = cartData.value.find(cart => cart.order_id === cartId).order_detail.find(item => item.id === orderDetailId);
+    store.dispatch('products/fetchCustomerProduct', productDetail.product_id).then(() => {
+        selectedProduct.value = {
+            ...store.getters["products/singleProduct"],
+            quantity: productDetail.quantity,
+            note: productDetail.note,
+            size: {
+                name: productDetail.size,
+            },
+            order_id: cartId,
+        };
+        let selectedToppingIds = productDetail.toppings.map(topping => topping.topping_id);
+        selectedProduct.value.topping_list = selectedProduct.value.topping_list.map(topping => {
+            topping.is_selected = selectedToppingIds.includes(topping.id);
+            return topping;
+        });
+        selectedProduct.value.orderId = cartId;
+        selectedProduct.value.orderDetailId = orderDetailId;
+        childRef.value.loadExistedData(selectedProduct.value);
+        showProductDetail.value = true;
+    });
 };
 const deleteTopping = (cartId, orderDetailId, toppingId) => {
     if (confirm('Are you sure you want to delete this topping?')) {
@@ -146,35 +175,34 @@ const selectHiddenTab = (index) => {
     activeTab.value = 0; // Set the active tab to the first tab (now the selected tab)
     isDropdownOpen.value = false; // Close the dropdown
 };
-
+const closePopup = () => {
+    showProductDetail.value = false;
+};
 const isLoading = computed(() => store.getters['cart/isLoading']);
 const error = computed(() => store.getters['cart/error']);
 </script>
 
 
 <template>
-
+    <DetailProduct @refetch-cart="fetchData()" ref="childRef" :is-edit="true" :isVisible="showProductDetail" :selectedProduct="selectedProduct" @closePopup="closePopup" id="detail-product"/>
     <div
         id="drawer-update-product"
         v-show="isVisible"
-        class="fixed top-0 right-0 z-99 w-full h-screen max-w-3xl pt-4 p-6 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800"
+        class="fixed top-0 z-99 right-0 w-full h-screen max-w-3xl overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800"
         tabindex="-1"
         aria-labelledby="drawer-update-product-label"
         aria-hidden="true"
     >
-        <div class="drawer-header flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-semibold ml-2">Carts</h2>
+        <div class="drawer-header flex justify-between items-center pl-4 pr-4 pt-4 pb-2">
+            <h2 class="text-3xl font-semibold">Carts</h2>
             <button @click="isVisible = false" class="text-2xl">&times;</button>
         </div>
 
-        <div v-if="error" class="text-center text-red-500">
-            Error: {{ error }}
-        </div>
-
         <!-- Custom Tabs -->
-        <div class="m-4 border-[#6B4226] flex border-b-2 h-10 justify-between">
+        <div class="ml-6 mr-6 mt-4 mb-4 border-[#6B4226] flex border-b-2 h-10 justify-between">
             <div class="flex">
-                <button class="mr-[1px] bg-[#6B4226] text-white pl-2 pr-2 font-bold rounded-t-lg" data-modal-toggle="create-cart-modal" data-modal-target="create-cart-modal">
+                <button class="mr-[1px] bg-[#6B4226] text-white pl-2 pr-2 font-bold rounded-t-lg"
+                        data-modal-toggle="create-cart-modal" data-modal-target="create-cart-modal">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                         <path fill-rule="evenodd"
                               d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
@@ -207,7 +235,8 @@ const error = computed(() => store.getters['cart/error']);
                             :aria-selected="activeTab === index"
                         >
                             {{ cart.name }}
-                            <div class="absolute top-[0px] right-[0px] bg-red-500 z-999 text-white text-2xs ml-2 rounded-full w-4 h-4 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                            <div
+                                class="absolute top-[0px] right-[0px] bg-red-500 z-999 text-white text-2xs ml-2 rounded-full w-4 h-4 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
                                 {{ cart.count_product }}
                             </div>
                         </button>
@@ -221,7 +250,9 @@ const error = computed(() => store.getters['cart/error']);
                     @click="toggleDropdown"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
-                        <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                              d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
+                              clip-rule="evenodd"/>
                     </svg>
                 </button>
 
@@ -257,7 +288,7 @@ const error = computed(() => store.getters['cart/error']);
             >
                 <PaymentDetail :cart="cart" :is-visible="showPaymentDetail" @showPaymentDetail="togglePaymentDetail"/>
                 <div v-if="!showPaymentDetail">
-                    <div class="order-summary flex justify-between p-4">
+                    <div class="order-summary flex justify-between pl-6 pr-6 pb-4">
                         <div>
                             <strong>Cart Name:</strong> {{ cart.name }}
                         </div>
@@ -266,7 +297,7 @@ const error = computed(() => store.getters['cart/error']);
                         </div>
                     </div>
 
-                    <div class="order-items overflow-y-auto h-[718px] p-4 scrollbar-thin">
+                    <div class="order-items overflow-y-auto h-[718px] pl-6 pr-6 scrollbar-thin">
                         <div
                             v-for="(item, itemIndex) in cart.order_detail"
                             :key="item.id"
@@ -301,16 +332,29 @@ const error = computed(() => store.getters['cart/error']);
                                             }} toppings</span>
                                     </div>
                                     <div class="font-semibold">{{ formatVietnameseCurrency(item.total_price) }}</div>
-                                    <button
-                                        class="text-red-500 cursor-pointer hover:text-red-700 rounded-full hover:bg-red-200 p-1 mr-1"
-                                        @click.stop="deleteProduct(cart.order_id, item.id)"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                             stroke-width="1.5" stroke="currentColor" class="size-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                                        </svg>
-                                    </button>
+                                    <div>
+                                        <button
+                                            class="text-gray-500 cursor-pointer hover:text-gray-700 rounded-full hover:bg-gray-200 p-1 mr-1"
+                                            @click.stop="editProduct(cart.order_id, item.id)"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                 stroke-width="1.5" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
+                                            </svg>
+                                        </button>
+                                        <button
+                                            class="text-red-500 cursor-pointer hover:text-red-700 rounded-full hover:bg-red-200 p-1 mr-1"
+                                            @click.stop="deleteProduct(cart.order_id, item.id)"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                 stroke-width="1.5" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -329,13 +373,17 @@ const error = computed(() => store.getters['cart/error']);
                                         :key="toppingIndex"
                                         class="shadow-item flex justify-between text-sm hover:bg-gray-100 pt-1 pl-2 pr-1 rounded-lg"
                                     >
-                                        <div class="w-55 overflow-hidden overflow-x-clip">{{ topping.product_name }}</div>
-                                        <div>+{{ formatVietnameseCurrency(topping.product_price) }}</div>
+                                        <div class="w-55 overflow-hidden overflow-x-clip">{{
+                                                topping.name
+                                            }}
+                                        </div>
+                                        <div>+{{ formatVietnameseCurrency(topping.price) }}</div>
                                         <button
                                             class="text-red-500 cursor-pointer hover:text-red-700 rounded-full hover:bg-red-200 p-1 mb-1"
                                             @click.stop="deleteTopping(cart.order_id, item.id, topping.id)"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                 fill="currentColor"
                                                  class="size-4">
                                                 <path fill-rule="evenodd"
                                                       d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
@@ -359,7 +407,8 @@ const error = computed(() => store.getters['cart/error']);
                             >
                                 Delete
                             </button>
-                            <button @click="togglePaymentDetail" class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
+                            <button @click="togglePaymentDetail"
+                                    class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
                                 Go to Payment
                             </button>
                         </div>
@@ -402,7 +451,9 @@ const error = computed(() => store.getters['cart/error']);
                         <div>
                             <label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cart
                                 Type</label>
-                            <select v-model="form.type" id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                            <select v-model="form.type" id="type"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    required>
                                 <option value="Personal">Personal</option>
                                 <option value="Group">Group</option>
                             </select>
@@ -421,14 +472,6 @@ const error = computed(() => store.getters['cart/error']);
 
 </template>
 <style scoped>
-.drawer-header {
-    background-color: #f8fafc;
-}
-
-.order-summary {
-    background-color: #f9fafb;
-}
-
 .order-item {
     padding: 15px;
     background-color: white;

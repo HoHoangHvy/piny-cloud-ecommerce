@@ -292,8 +292,8 @@ class OrderController extends Controller
                 'toppings' => $orderDetail->toppings->map(function ($topping) {
                     return [
                         'id' => $topping->id,
-                        'product_name' => $topping->product->name,
-                        'product_price' => $topping->product->price,
+                        'name' => $topping->product->name,
+                        'price' => $topping->product->price,
                     ];
                 }),
             ];
@@ -353,6 +353,7 @@ class OrderController extends Controller
                     $data['order_detail'][] = [
                         'id' => $orderDetail->id,
                         'order_detail_number' => $orderDetail->order_detail_number,
+                        'product_id' => $orderDetail->product->id,
                         'product_name' => $orderDetail->product->name,
                         'product_price' => $orderDetail->product->price,
                         'size' => $orderDetail->size,
@@ -364,8 +365,9 @@ class OrderController extends Controller
                         'toppings' => $orderDetail->toppings->map(function ($topping) {
                             return [
                                 'id' => $topping->id,
-                                'product_name' => $topping->product->name,
-                                'product_price' => $topping->product->price,
+                                'topping_id' => $topping->product->id,
+                                'name' => $topping->product->name,
+                                'price' => $topping->product->price,
                             ];
                         }),
                     ];
@@ -380,7 +382,112 @@ class OrderController extends Controller
             'data' => $return_data
         ]);
     }
+    public function updateProductInCart(Request $request)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'order_detail_id' => 'required|exists:order_details,id',
+            'size' => 'required',
+            'quantity' => 'required|integer|min:1',
+            'toppings_id' => 'nullable|array', // Ensure toppings_id is an array
+            'note' => 'nullable|string',
+            'total_price' => 'required|numeric|min:0',
+        ]);
 
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        // Check if customer exists
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch the order
+        $order = Order::findOrFail($validated['order_id']);
+
+        // Ensure the order belongs to the current customer
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('order_id', $order->id)
+            ->first();
+
+        if (!$customerOrder) {
+            return response()->json(['message' => 'Unauthorized or invalid order.'], 403);
+        }
+
+        // Fetch the order detail to update
+        $orderDetail = OrderDetail::findOrFail($validated['order_detail_id']);
+
+        // Ensure the order detail belongs to the specified order
+        if ($orderDetail->customer_order_id !== $customerOrder->id) {
+            return response()->json(['message' => 'Unauthorized or invalid order detail.'], 403);
+        }
+
+        // Calculate the difference in total price before and after update
+        $previousTotalPrice = $orderDetail->total_price;
+        $newTotalPrice = $validated['total_price'];
+        $priceDifference = $newTotalPrice - $previousTotalPrice;
+
+        // Update the order total
+        $order->order_total += $priceDifference;
+        $order->save();
+
+        // Update the order detail
+        $orderDetail->update([
+            'size' => $validated['size'],
+            'quantity' => $validated['quantity'],
+            'note' => $validated['note'] ?? '',
+            'total_price' => $validated['total_price'],
+        ]);
+
+        // Remove all existing toppings
+        $orderDetail->toppings()->delete();
+
+        // Add new toppings if provided
+        if (isset($validated['toppings_id'])) {
+            foreach ($validated['toppings_id'] as $toppingId) {
+                $topping = Product::findOrFail($toppingId);
+                $orderDetail->toppings()->create([
+                    'order_detail_number' => 'ODTP' . time(),
+                    'customer_order_id' => $customerOrder->id,
+                    'product_id' => $topping->id,
+                    'size' => 'S',
+                    'quantity' => 1,
+                    'note' => '',
+                    'parent_id' => $orderDetail->id,
+                ]);
+            }
+        }
+
+        // Prepare the response data
+        $updatedProduct = [
+            'order_id' => $order->id,
+            'order_detail' => [
+                'id' => $orderDetail->id,
+                'order_detail_number' => $orderDetail->order_detail_number,
+                'product' => [
+                    'id' => $orderDetail->product->id,
+                    'name' => $orderDetail->product->name,
+                    'price' => $orderDetail->product->price,
+                ],
+                'size' => $orderDetail->size,
+                'quantity' => $orderDetail->quantity,
+                'note' => $orderDetail->note,
+                'total_price' => $orderDetail->total_price,
+                'toppings' => $orderDetail->toppings->map(function ($topping) {
+                    return [
+                        'id' => $topping->id,
+                        'name' => $topping->product->name,
+                        'price' => $topping->product->price,
+                    ];
+                }),
+            ],
+        ];
+
+        return response()->json([
+            'message' => 'Product updated in cart successfully.',
+            'data' => $updatedProduct,
+        ]);
+    }
     public function removeProductFromCart(Request $request)
     {
         $validated = $request->validate([

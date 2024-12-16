@@ -42,8 +42,8 @@
                             </div>
                             <div class="toppings mt-2 text-sm">
                                 <div v-for="(topping, toppingIndex) in item.toppings" :key="toppingIndex"
-                                     class="flex justify-between">
-                                    <div>{{ topping.product_name }} (x{{ topping.quantity }})</div>
+                                     class="flex justify-between w-full">
+                                    <div>{{ topping.name }} (+{{ formatVietnameseCurrency(topping.price) }})</div>
                                 </div>
                             </div>
                         </div>
@@ -71,6 +71,7 @@
 import {defineProps, defineEmits, ref} from 'vue';
 import { useStore } from 'vuex';
 import {notify} from "notiwind";
+import {formatVietnameseCurrency} from "../../helpers/currencyFormat.js";
 
 const store = useStore();
 const emit = defineEmits();
@@ -89,7 +90,7 @@ const isSelectedCart = (order_id) => {
     }
 }
 const toggleSelectedCart = (cart) => {
-    debugger
+
     if (isSelectedCart(cart.order_id)) selectedCarts.value.pop(cart)
     else selectedCarts.value.push(cart)
 }

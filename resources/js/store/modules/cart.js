@@ -62,7 +62,7 @@ export default {
         async addProductToCart({ commit }, { product, order_ids }) {
             commit('SET_LOADING', true);
             try {
-                debugger
+
                 const response = await axios.post('/api/cart/addProductToCart', {
                     ...product,
                     order_ids: order_ids, // Send the array of cart IDs to the backend
@@ -178,6 +178,22 @@ export default {
             } catch (error) {
                 console.error('Error deleting topping from cart:', error);
                 commit('SET_ERROR', error.response?.data || 'Error deleting topping from cart.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        async updateProductInCart({ commit }, { orderId, orderDetailId, product }) {
+            commit('SET_LOADING', true);
+            try {
+                const response = await axios.put('/api/cart/updateProductInCart', {
+                    order_id: orderId,
+                    order_detail_id: orderDetailId,
+                    ...product, // Pass the updated product details (size, quantity, toppings_id, etc.)
+                });
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error updating product in cart:', error);
+                commit('SET_ERROR', error.response?.data || 'Error updating product in cart.');
             } finally {
                 commit('SET_LOADING', false);
             }

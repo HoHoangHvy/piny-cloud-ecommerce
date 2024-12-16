@@ -5,7 +5,7 @@
         @click="close"
     >
         <div
-            class="bg-white rounded-lg shadow-lg w-[1300px] h-[600px] relative flex"
+            class="bg-white rounded-lg shadow-lg w-[1300px] h-[600px] relative flex z-9999"
             @click.stop
         >
             <div class="w-[600px] h-[600px]">
@@ -58,8 +58,8 @@
                                 <button
                                     v-if="selectedProduct?.topping_list.length !== 0"
                                     v-for="(topping) in selectedProduct?.topping_list"
-                                    :key="topping.id"
-                                    :class="['topping-button', { 'topping-active': selectedToppings.includes(topping) }]"
+                                    :key="topping.id + selectedToppingsKey"
+                                    :class="['topping-button', { 'topping-active': topping.is_selected }]"
                                     @click="handleToppingClick(topping)"
                                 >
                                     {{ topping.name }} +{{ formatVietnameseCurrency(topping.price, false) }}
@@ -102,8 +102,11 @@
                         <span class="mr-3">
                             Total: {{ calculateTotal }}
                         </span>
-                        <button @click="addToCart" class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
+                        <button v-if="!isEdit" @click="addToCart" class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
                             Add to cart
+                        </button>
+                        <button v-else @click="saveEditing" class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
+                            Confirm
                         </button>
                     </div>
                     <CartPopup :isVisible="showCartSelection" :listCart="listCart" :product="product" @closePopup="closeCartSelect"/>
@@ -115,7 +118,7 @@
 
 <script setup>
 import {useStore} from 'vuex';
-import {defineProps, defineEmits, computed, ref, onMounted} from 'vue';
+import {defineProps, defineEmits, defineExpose, computed, ref, onMounted, watch} from 'vue';
 import {formatVietnameseCurrency} from '@/js/helpers/currencyFormat.js';
 import CartPopup from "@/js/components/popup/CartPopup.vue";
 import {notify} from "notiwind";
@@ -124,18 +127,22 @@ const store = useStore();
 const props = defineProps({
     isVisible: {type: Boolean, required: true},
     selectedProduct: {type: Object, required: true}, // Pass the selected product directly
+    isEdit: {type: Boolean, required: true}, // Pass the selected product directly
 });
+
 const decreaseQuantity = () => {
     if (quantity.value > 1) {
         quantity.value--;
     }
 };
-
+const isToppingSelected = (toppingId) => {
+    return selectedToppings.value.findIndex(topping => topping.id === toppingId) !== -1;
+};
 const increaseQuantity = () => {
     quantity.value++;
 };
 
-const emit = defineEmits(['closePopup']);
+const emit = defineEmits(['closePopup', 'refetch-cart']);
 
 const selectedSize = ref({
     name: 'S',
@@ -148,6 +155,11 @@ const totalPrice = ref(0); // Default toppings
 const listCart = ref([]); // Default toppings
 const showCartSelection = ref(false); // Default toppings
 const product = ref({});
+const selectedToppingsKey = ref(0); // Key to force re-render
+
+watch(selectedToppings, () => {
+    selectedToppingsKey.value += 1; // Increment the key to force re-render
+});
 const closeCartSelect = () => {
     showCartSelection.value = false;
 };
@@ -156,15 +168,47 @@ const close = () => {
     emit('closePopup');
 };
 
-const handleToppingClick = (topping) => {
-    const index = selectedToppings.value.findIndex(t => t.id === topping.id);
-    if (index === -1) {
-        selectedToppings.value.push(topping);
-    } else {
-        selectedToppings.value.splice(index, 1);
+const loadExistedData = (orderDetail) => {
+    if (orderDetail) {
+        quantity.value = orderDetail.quantity;
+        selectedSize.value = orderDetail.size;
+        note.value = orderDetail.note;
     }
 }
+defineExpose({ loadExistedData });
 
+const handleToppingClick = (topping) => {
+    topping.is_selected = !topping.is_selected;
+}
+const saveEditing = async () => {
+    if (!props.selectedProduct) {
+        console.error('Selected product is not defined');
+        return;
+    }
+    product.value = {
+        total_price: totalPrice.value ,
+        size: selectedSize.value.name,
+        toppings_id: props.selectedProduct.topping_list.filter(topping => topping.is_selected).map(topping => topping.id),
+        note: note.value,
+        quantity: quantity.value,
+    }
+    try {
+        await store.dispatch('cart/updateProductInCart', {
+            orderId: props.selectedProduct.orderId,
+            orderDetailId: props.selectedProduct.orderDetailId,
+            product: product.value,
+        });
+        notify({
+            group: "foo",
+            title: "Success",
+            text: "Update product successfully!",
+        }, 4000);
+        close();
+        emit('refetch-cart');
+    } catch (error) {
+        console.error('Failed to update product:', error);
+    }
+}
 // Add to cart logic
 const addToCart = async () => {
     if (!props.selectedProduct) {
@@ -179,7 +223,7 @@ const addToCart = async () => {
         product_id: props.selectedProduct.id, // Use props.selectedProduct
         total_price: totalPrice.value ,
         size: selectedSize.value.name,
-        toppings_id: selectedToppings.value.map(topping => topping.id),
+        toppings_id: props.selectedProduct.topping_list.filter(topping => topping.is_selected).map(topping => topping.id),
         note: note.value,
         quantity: quantity.value,
     }
@@ -204,7 +248,7 @@ const calculateTotal = computed(() => {
     if (selectedSize.value && selectedSize.value.price) {
         total += parseFloat(selectedSize.value.price.replace(/[^0-9.-]+/g, ""));
     }
-    selectedToppings.value.forEach(topping => {
+    props.selectedProduct.topping_list.filter(topping => topping.is_selected).forEach(topping => {
         total += parseFloat(topping.price.replace(/[^0-9.-]+/g, ""));
     });
 
@@ -221,7 +265,7 @@ const calculateTotal = computed(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 50;
+    z-index: 999;
 }
 
 .size-button {

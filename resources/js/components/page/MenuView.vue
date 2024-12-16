@@ -159,7 +159,7 @@ watch([searchText, selectedCategory], () => {
 </script>
 
 <template>
-    <DetailProduct :isVisible="currentPopup === 'details'" :selectedProduct="selectedProduct" @closePopup="closePopup" id="detail-producy"/>
+    <DetailProduct :isVisible="currentPopup === 'details'" :selectedProduct="selectedProduct" @closePopup="closePopup" :is-edit="false" id="detail-product"/>
     <Marketing></Marketing>
 
     <!-- Search and Filter Section -->

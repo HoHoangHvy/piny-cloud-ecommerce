@@ -119,6 +119,7 @@ class ProductController extends BaseController
                     'id' => $topping->id,
                     'name' => $topping->name,
                     'price' => $topping->price,
+                    'is_selected' => false
                 ];
             });
 
