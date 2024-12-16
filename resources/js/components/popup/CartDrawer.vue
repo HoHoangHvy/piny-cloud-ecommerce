@@ -194,12 +194,12 @@ const error = computed(() => store.getters['cart/error']);
         aria-hidden="true"
     >
         <div class="drawer-header flex justify-between items-center pl-4 pr-4 pt-4 pb-2">
-            <h2 class="text-3xl font-semibold">Carts</h2>
+            <h2 class="text-3xl font-semibold text-[#6B4226]">Carts</h2>
             <button @click="isVisible = false" class="text-2xl">&times;</button>
         </div>
 
         <!-- Custom Tabs -->
-        <div class="ml-6 mr-6 mt-4 mb-4 border-[#6B4226] flex border-b-2 h-10 justify-between">
+        <div class="ml-6 mr-6 mt-4 mb-4 border-[#6B4226] bg-white flex border-b-2 h-10 justify-between">
             <div class="flex">
                 <button class="mr-[1px] bg-[#6B4226] text-white pl-2 pr-2 font-bold rounded-t-lg"
                         data-modal-toggle="create-cart-modal" data-modal-target="create-cart-modal">
@@ -224,8 +224,8 @@ const error = computed(() => store.getters['cart/error']);
                     >
                         <button
                             :class="[
-                            'relative flex justify-center items-center mr-[1px] pl-3 pr-3 rounded-t-lg bg-gray-100 border-gray-100 border-2',
-                            activeTab === index ? 'pb-[4px] border-[#6B4226] bg-white h-[102%] border-t-2 border-r-2 border-l-2 border-b-0 text-[#6B4226] font-bold' : 'h-[98%] hover:text-gray-600 dark:hover:text-gray-300',
+                            'relative flex justify-center items-center mr-[1px] pl-3 pr-3 rounded-t-lg border-gray-100 border-2',
+                            activeTab === index ? 'pb-[4px] border-[#6B4226] bg-white h-[102%] border-t-2 border-r-2 border-l-2 border-b-0 text-[#6B4226] font-bold' : 'h-[98%] hover:text-gray-600 bg-gray-50 dark:hover:text-gray-300',
                         ]"
                             :id="`tab-${index}`"
                             @click="activeTab = index"
@@ -279,7 +279,7 @@ const error = computed(() => store.getters['cart/error']);
                 v-for="(cart, index) in cartData"
                 :key="cart.order_id"
                 :class="[
-                    'rounded-lg bg-gray-50 dark:bg-gray-800',
+                    'rounded-lg bg-white dark:bg-gray-800',
                     activeTab === index ? '' : 'hidden',
                 ]"
                 :id="`tab-content-${index}`"

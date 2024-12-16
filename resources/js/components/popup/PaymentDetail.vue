@@ -49,116 +49,142 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <template>
     <section v-if="isVisible">
-        <div class="mx-auto max-w-screen-xl pr-2 pl-4">
-            <div class="flex flex-col mt-6 sm:mt-8 gap-8">
-                <!-- Delivery Section -->
-                <div
-                    class="w-full lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg border-2 border-[#6B4226] dark:divide-gray-700 dark:border-gray-700 lg:max-w-xl xl:max-w-2xl">
-                    <div class="space-y-1 p-6 pl-10">
-                        <div class="flex items-center justify-between">
-                            <label class="font-inter font-bold text-black dark:text-white">{{
-                                    t('LBL_DELIVERY')
-                                }}</label>
-                        </div>
-                        <svg width="65" height="5" viewBox="0 0 65 1" fill="none" xmlns="http://www.w3.org/2000/svg"
-                             style="margin-top: -4px;">
-                            <line y1="0.5" x2="65" y2="0.5" stroke="#6B4226"/>
-                        </svg>
-                        <div class="mt-4">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="font-inter text-black dark:text-gray-400">{{
-                                            t('LBL_PROVINCE')
-                                        }}</label>
-                                    <select class="w-full p-2 border rounded">
-                                        <option value="">Select Province</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="font-inter text-black dark:text-gray-400">{{
-                                            t('LBL_DISTRICT')
-                                        }}</label>
-                                    <select class="w-full p-2 border rounded">
-                                        <option value="">Select District</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="font-inter text-black dark:text-gray-400">{{ t('LBL_WARD') }}</label>
-                                    <select class="w-full p-2 border rounded">
-                                        <option value="">Select Ward</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="font-inter text-black dark:text-gray-400">{{
-                                            t('LBL_STREET')
-                                        }}</label>
-                                    <input type="text" class="w-full p-2 border rounded" placeholder="Enter Street">
-                                </div>
+        <div class="mx-auto max-w-screen-xl pr-6 pl-6 bg-white">
+            <div class="flex flex-col mt-2 justify-center bg-white items-center sm:mt-4 gap-8">
+                <div class="flex gap-2 bg-white w-full">
+                    <div
+                        class="bg-gray-50 shadow-lg w-[50%] lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg dark:divide-gray-700 dark:border-gray-700 xl:max-w-2xl">
+                        <div class="space-y-1 p-5 pt-4">
+                            <div class="flex gap-1 items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke-width="1.5" stroke="#6B4226" class="size-6 mb-[2px]">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
+                                </svg>
+                                <label class="font-bold text-[#6B4226] dark:text-white">
+                                    {{
+                                        t('LBL_DELIVERY')
+                                    }}</label>
                             </div>
-                        </div>
-                        <div class="mt-4">
-                            <label class="font-inter text-black dark:text-gray-400">{{ t('LBL_DELIVERY_TIME') }}</label>
-                            <div class="flex gap-4">
-                                <div class="w-1/2">
-                                    <select class="w-full p-2 border rounded">
-                                        <option value="today">{{ t('LBL_TODAY') }}</option>
-                                        <option value="tomorrow">{{ t('LBL_TOMORROW') }}</option>
-                                        <option value="day-after-tomorrow">{{ t('LBL_DAY_AFTER_TOMORROW') }} -
-                                            {{ dayAfterTomorrow }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="w-1/2">
-                                    <input type="time" class="w-full p-2 border rounded">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <label class="font-inter text-black dark:text-gray-400">{{
-                                    t('LBL_RECIPIENT_NAME')
-                                }}</label>
-                            <input type="text" class="w-full p-2 border rounded" placeholder="Enter Name">
-                        </div>
-                        <div class="mt-4">
-                            <label class="font-inter text-black dark:text-gray-400">{{ t('LBL_PHONE_NUMBER') }}</label>
-                            <input type="text" class="w-full p-2 border rounded" placeholder="Enter Phone Number">
-                        </div>
-                        <div class="mt-4">
-                            <label class="font-inter text-black dark:text-gray-400">{{ t('LBL_NOTE') }}</label>
-                            <input type="text" class="w-full p-2 border rounded" placeholder="Enter Note">
-                        </div>
-                    </div>
-                    <!-- Order Details -->
-                    <div class="space-y-1 p-6 pl-10">
-                        <div class="flex items-center justify-between">
-                            <label class="font-inter font-bold text-black dark:text-white">{{
-                                    t('LBL_ORDER_DETAILS')
-                                }}</label>
-                        </div>
-                        <svg width="65" height="5" viewBox="0 0 65 1" fill="none" xmlns="http://www.w3.org/2000/svg"
-                             style="margin-top: -4px;">
-                            <line y1="0.5" x2="65" y2="0.5" stroke="#6B4226"/>
-                        </svg>
-                        <div class="mt-4" id="order-list">
-                            <div class="order-item flex justify-between items-center border-b py-2">
-                                <div class="flex items-start">
-                                    <i class="fa fa-pen mr-3"></i>
+                            <div class="mt-4">
+                                <div class="grid grid-cols-2 gap-2">
                                     <div>
-                                        <h5 class="font-inter text-black">1 x Trà Đen Macchiato</h5>
-                                        <p class="font-inter text-black">L, Trân châu đen</p>
+                                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                                        <select
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        >
+                                            <option value="">Select Province</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">District</label>
+                                        <select
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        >
+
+                                            <option value="">Select District</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <p class="font-inter text-black mr-4">69.000 VND</p>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <div>
+                                        <label
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ward</label>
+                                        <select
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        >
+                                            <option value="">Select Ward</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Street </label>
+                                        <input type="text"
+                                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                               placeholder="Enter Street">
+                                    </div>
+                                </div>
                             </div>
-                            <!-- Add more order items here -->
+                        </div>
+                    </div>
+                    <div
+                        class="bg-gray-50 w-[50%] shadow-lg lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg dark:divide-gray-700 dark:border-gray-700 xl:max-w-2xl">
+                        <div class="space-y-1 p-5 pt-4">
+                            <div class="flex gap-1 items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                     stroke="#6B4226" class="size-5 mb-[2px]">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+                                </svg>
+                                <label class="font-inter font-bold text-[#6B4226] dark:text-white">Receiver</label>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
+                                        t('LBL_RECIPIENT_NAME')
+                                    }}</label>
+                                <input type="text"
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                       placeholder="Enter Name">
+                            </div>
+                            <div class="mt-4">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
+                                        t('LBL_PHONE_NUMBER')
+                                    }}</label>
+                                <input type="text"
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                       placeholder="Enter Phone Number">
+                            </div>
+                            <div class="mt-4">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
+                                        t('LBL_NOTE')
+                                    }}</label>
+                                <input type="text"
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                       placeholder="Enter Note">
+                            </div>
                         </div>
                     </div>
                 </div>
-
+                <div>
+                    <div class="order-items overflow-y-auto h-[718px] pl-6 pr-6 scrollbar-thin">
+                        <div
+                            v-for="(item, itemIndex) in cart.order_detail"
+                            :key="item.id"
+                            class="order-item mb-4 cursor-pointer shadow-lg hover:shadow-xl rounded-xl w-full"
+                        >
+                            <!-- Product Details -->
+                            <div class="flex gap-4 h-full bg-gray-50 rounded-lg p-4 w-full">
+                                <div class="flex flex-col w-full">
+                                    <div class="flex items-center justify-between w-[100%]">
+                                        <div class="flex w-full">
+                                            <div class="font-semibold">{{ item.product_name }} ({{ item.size }})</div>
+                                            <span class="ml-2 text-sm text-gray-500">x{{ item.quantity }}</span>
+                                        </div>
+                                        <div class="font-semibold">{{
+                                                formatVietnameseCurrency(item.total_price)
+                                            }}
+                                        </div>
+                                    </div>
+                                    <span class="text-sm text-gray-500">Note: {{ item.note }}</span>
+                                    <span class="text-sm text-gray-500">
+                                            <span
+                                                v-for="(topping, toppingIndex) in item.toppings"
+                                                :key="toppingIndex"
+                                                class="text-sm"
+                                            >
+                                                {{ topping.name }}<span
+                                                v-if="toppingIndex !== item.toppings.length - 1">, </span>
+                                            </span>
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Payment Section -->
                 <div class="mt-6 grow sm:mt-8 lg:mt-0">
                     <div
-                        class="w-full h-full space-y-6 rounded-lg border-2 border-[#6B4226] bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        class="w-full h-full space-y-6 rounded-lg border-2 border-[#6B4226] bg-[#ECEBDE] p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <div class="flex flex-col space-y-3 pl-6 mb-10">
                             <div class="flex items-center justify-between relative">
                                 <label class="font-inter font-bold text-black dark:text-white">{{
@@ -204,7 +230,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="w-full space-y-4 bg-gray-50 p-6 dark:bg-gray-800 border-gray-700">
                             <div class="space-y-2" style="margin-top: -35px;">
                                 <dl class="flex items-center justify-between gap-4">
-                                    <dt class="font-inter text-black dark:text-gray-400">{{ t('LBL_PRICE') }}</dt>
+                                    <dt class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ t('LBL_PRICE') }}
+                                    </dt>
                                     <dd class="font-inter text-black dark:text-white">157.000 VND</dd>
                                 </dl>
                                 <div class="flex">
@@ -237,15 +265,21 @@ document.addEventListener("DOMContentLoaded", function () {
                                     </div>
                                 </div>
                                 <dl class="flex items-center justify-between gap-4">
-                                    <dt class="font-inter text-black dark:text-gray-400">{{ t('LBL_DISCOUNT') }}</dt>
-                                    <dd class="font-inter text-black dark:text-gray-400">-20.000 VND</dd>
+                                    <dt class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ t('LBL_DISCOUNT') }}
+                                    </dt>
+                                    <dd class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">-20.000
+                                        VND
+                                    </dd>
                                 </dl>
                                 <dl class="flex items-center justify-between gap-4">
-                                    <dt class="font-inter text-black dark:text-gray-400">{{
+                                    <dt class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
                                             t('LBL_DELIVERY_FEE')
                                         }}
                                     </dt>
-                                    <dd class="font-inter text-black dark:text-gray-400">20.000 VND</dd>
+                                    <dd class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">20.000
+                                        VND
+                                    </dd>
                                 </dl>
                             </div>
                             <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
