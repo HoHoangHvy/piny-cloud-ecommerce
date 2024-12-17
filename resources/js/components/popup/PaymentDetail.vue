@@ -72,8 +72,9 @@ const totalAmount = computed(() => {
 });
 
 const filteredDistricts = computed(() => {
+    debugger
     if (!form.value.province) return [];
-    return districts.value.filter(d => d.ProvinceID.toString() === form.value.province);
+    return districts.value.filter(d => d.ProvinceID.toString() === form.value.province.toString());
 });
 
 // Fetch wards from the GHN API via Laravel backend
@@ -369,7 +370,6 @@ const saveAddress = () => {
                                         class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Branch</label>
                                     <select
                                         v-model="form.branch"
-                                        @change="fetchShippingFee(form.branch)"
                                         class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     >
                                         <option v-for="team in store.getters['teams/allTeamsOption']" :value="team.id" :key="team.id">{{ team.name }}</option>

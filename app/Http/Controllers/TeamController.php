@@ -53,9 +53,9 @@ class TeamController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'city' => 'string|max:255',
-            'state' => 'string|max:255',
-            'ward' => 'string|max:255',
+            'city' => 'max:255',
+            'state' => 'max:255',
+            'ward' => 'max:255',
             'description' => 'string|max:255',
         ]);
 

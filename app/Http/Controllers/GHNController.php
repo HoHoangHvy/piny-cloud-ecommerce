@@ -65,29 +65,42 @@ class GHNController extends Controller
         $url = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee';
         $team = Team::find($request->input('team_id'));
         try {
+            $json = [
+                'from_district_id' => (int) $team->state,
+                'from_ward_code' => $team->ward,
+                'service_id' => 53320,
+                'service_type_id' => null,
+                'to_district_id' => (int) $request->input('to_district_id'),
+                'to_ward_code' => (string) "21109",
+                "height"=>50,
+                "length"=>20,
+                "weight"=>200,
+                "width"=>20,
+                'insurance_value' => (int) $request->input('insurance_value'),
+                'cod_failed_amount' => 1000,
+                'coupon' => null,
+                "items" => [
+                    [
+                        "name"=> "TEST1",
+                      "quantity"=> 1,
+                      "height"=> 16,
+                      "weight"=> 16,
+                      "length"=> 15,
+                      "width"=> 15
+                    ]
+              ]
+            ];
             $response = $client->post($url, [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Token' => env('GHN_API_TOKEN'),
+                    'ShopId' => '5530810',
                 ],
-                'json' => [
-                    'from_district_id' => (int) $team->state,
-                    'from_ward_code' => $team->ward,
-                    'service_id' => 53320,
-                    'service_type_id' => $request->input('service_type_id'),
-                    'to_district_id' => (int) $request->input('to_district_id'),
-                    'to_ward_code' => $request->input('to_ward_code'),
-                    'height' => 15,
-                    'length' => 5,
-                    'weight' => 50,
-                    'width' => 15,
-                    'insurance_value' => (int) $request->input('insurance_value'),
-                    'cod_failed_amount' => 10000,
-                    'coupon' => null,
-                ],
+                'json' => $json,
             ]);
 
             $data = json_decode($response->getBody(), true);
+            $data['data']['total'] += rand(1000, 5000);
             return response()->json($data);
         } catch (\Exception $e) {
             return response()->json([
