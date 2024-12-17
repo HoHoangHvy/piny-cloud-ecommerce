@@ -10,6 +10,7 @@ const store = useStore();
 const emit = defineEmits(['showPaymentDetail']);
 const props = defineProps({
     isVisible: {type: Boolean, required: true},
+    index: {type: Number, required: true},
     cart: {type: Object, required: true}
 });
 const {t} = useI18n();
@@ -145,22 +146,28 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div class="order-items overflow-y-auto h-[718px] pl-6 pr-6 scrollbar-thin">
+                <div class="w-full">
+                    <div class="flex gap-1 items-center ml-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#6B4226" class="size-5 mb-[2px]">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                        </svg>
+                        <label class="font-inter font-bold text-[#6B4226] dark:text-white">Order details</label>
+                    </div>
+                    <div class="overflow-y-auto rounded-lg w-full shadow-lg h-fit pl-6 pr-6 scrollbar-thin">
                         <div
                             v-for="(item, itemIndex) in cart.order_detail"
                             :key="item.id"
-                            class="order-item mb-4 cursor-pointer shadow-lg hover:shadow-xl rounded-xl w-full"
+                            class="order-item mb-1 rounded-xl w-full last:pb-4"
                         >
                             <!-- Product Details -->
-                            <div class="flex gap-4 h-full bg-gray-50 rounded-lg p-4 w-full">
+                            <div class="flex gap-1 h-full bg-white rounded-lg pr-4 pl-4 pt-4 w-full">
                                 <div class="flex flex-col w-full">
                                     <div class="flex items-center justify-between w-[100%]">
                                         <div class="flex w-full">
                                             <div class="font-semibold">{{ item.product_name }} ({{ item.size }})</div>
                                             <span class="ml-2 text-sm text-gray-500">x{{ item.quantity }}</span>
                                         </div>
-                                        <div class="font-semibold">{{
+                                        <div class="font-semibold text-md">{{
                                                 formatVietnameseCurrency(item.total_price)
                                             }}
                                         </div>
@@ -187,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         class="w-full h-full space-y-6 rounded-lg border-2 border-[#6B4226] bg-[#ECEBDE] p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <div class="flex flex-col space-y-3 pl-6 mb-10">
                             <div class="flex items-center justify-between relative">
-                                <label class="font-inter font-bold text-black dark:text-white">{{
+                                <label class="font-inter font-bold text-gray-500 dark:text-white">{{
                                         t('LBL_PAYMENT_METHOD')
                                     }}</label>
                             </div>
@@ -197,28 +204,28 @@ document.addEventListener("DOMContentLoaded", function () {
                             </svg>
                             <div class="flex items-center space-x-2">
                                 <input id="cash" type="radio" name="payment" class="form-radio" checked>
-                                <label for="cash" class="text-black">{{ t('LBL_CASH') }}</label>
+                                <label for="cash" class="text-gray-500">{{ t('LBL_CASH') }}</label>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <input id="momo" type="radio" name="payment" class="form-radio">
-                                <label for="momo" class="text-black">Momo</label>
+                                <label for="momo" class="text-gray-500">Momo</label>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <input id="zalopay" type="radio" name="payment" class="form-radio">
-                                <label for="zalopay" class="text-black">Zalopay</label>
+                                <label for="zalopay" class="text-gray-500">Zalopay</label>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <input id="visa" type="radio" name="payment" class="form-radio">
-                                <label for="visa" class="text-black">Visa</label>
+                                <label for="visa" class="text-gray-500">Visa</label>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <input id="vnpay" type="radio" name="payment" class="form-radio">
-                                <label for="vnpay" class="text-black">VNPAY</label>
+                                <label for="vnpay" class="text-gray-500">VNPAY</label>
                             </div>
                         </div>
                         <div class="pl-6 pt-2 border-t">
                             <div class="flex items-center justify-between relative">
-                                <label class="font-inter font-bold text-black dark:text-white">{{
+                                <label class="font-inter font-bold text-gray-500 dark:text-white">{{
                                         t('LBL_PAYMENT_INFOMATION')
                                     }}</label>
                             </div>
@@ -233,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <dt class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         {{ t('LBL_PRICE') }}
                                     </dt>
-                                    <dd class="font-inter text-black dark:text-white">157.000 VND</dd>
+                                    <dd class="font-inter text-gray-500 dark:text-white">157.000 VND</dd>
                                 </dl>
                                 <div class="flex">
                                     <dt class="font-bold hover:underline cursor-pointer text-lg text-[#6B4226]"
@@ -244,14 +251,14 @@ document.addEventListener("DOMContentLoaded", function () {
                                      class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center">
                                     <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
                                         <div class="flex justify-between items-center">
-                                            <h2 class="font-bold text-black text-lg mb-4">{{ t('LBL_VOUCHER') }}</h2>
+                                            <h2 class="font-bold text-gray-500 text-lg mb-4">{{ t('LBL_VOUCHER') }}</h2>
                                             <XIcon class="h-6 w-6 text-gray-500 cursor-pointer"
                                                    @click="closeVoucherModal"/>
                                         </div>
                                         <div class="grid grid-cols-1 gap-4">
                                             <div class="flex items-center justify-between border p-4 rounded-lg">
                                                 <div class="ml-4">
-                                                    <p class="text-black font-inter">Freeship</p>
+                                                    <p class="text-gray-500 font-inter">Freeship</p>
                                                 </div>
                                                 <button class="bg-[#6B4226] text-white px-4 py-2 rounded-lg">
                                                     {{ t('LBL_USE_NOW') }}
@@ -259,7 +266,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                             </div>
                                             <!-- Add more vouchers here -->
                                         </div>
-                                        <button class="mt-4 text-sm text-black hover:underline"
+                                        <button class="mt-4 text-sm text-gray-500 hover:underline"
                                                 @click="closeVoucherModal">{{ t('LBL_CLOSE') }}
                                         </button>
                                     </div>
@@ -283,8 +290,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </dl>
                             </div>
                             <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                                <dt class="text-lg font-bold text-black dark:text-white">{{ t('LBL_TOTAL') }}</dt>
-                                <dd class="text-lg font-bold text-black dark:text-white">157.000 VND</dd>
+                                <dt class="text-lg font-bold text-gray-500 dark:text-white">{{ t('LBL_TOTAL') }}</dt>
+                                <dd class="text-lg font-bold text-gray-500 dark:text-white">157.000 VND</dd>
                             </dl>
                         </div>
                         <div class="gap-4 sm:flex sm:items-start">
@@ -300,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="flex gap-1 justify-end p-2 mt-4">
             <button
                 class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-full border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
-                @click="emit('showPaymentDetail')"
+                @click="emit('showPaymentDetail', index)"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="size-4 mr-2">

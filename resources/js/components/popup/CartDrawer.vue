@@ -16,7 +16,7 @@ const expandedItems = ref({});
 const activeTab = ref(0); // Default to the first tab
 const isDropdownOpen = ref(false); // Controls the dropdown visibility
 const cartData = ref([])
-const showPaymentDetail = ref(false)
+const showPaymentDetail = ref([])
 const showProductDetail = ref(false)
 const selectedProduct = ref({})
 const openDrawer = () => {
@@ -53,6 +53,8 @@ const fetchData = async () => {
     await store.dispatch('cart/fetchCarts');
     cartData.value = store.getters['cart/allCart']
 };
+
+showPaymentDetail.value = Array(cartData.value.length).fill(false);
 
 onMounted(() => {
     initFlowbite();
@@ -147,8 +149,8 @@ const deleteCart = (cartId) => {
     }
 };
 
-const togglePaymentDetail = () => {
-    showPaymentDetail.value = !showPaymentDetail.value;
+const togglePaymentDetail = (index) => {
+    showPaymentDetail.value[index] = !showPaymentDetail.value[index];
 }
 
 // Computed properties for visible and hidden tabs
@@ -286,8 +288,8 @@ const error = computed(() => store.getters['cart/error']);
                 role="tabpanel"
                 :aria-labelledby="`tab-${index}`"
             >
-                <PaymentDetail :cart="cart" :is-visible="showPaymentDetail" @showPaymentDetail="togglePaymentDetail"/>
-                <div v-if="!showPaymentDetail">
+                <PaymentDetail :cart="cart" :is-visible="showPaymentDetail[index]" :index="index" @showPaymentDetail="togglePaymentDetail"/>
+                <div v-if="!showPaymentDetail[index]">
                     <div class="order-summary flex justify-between pl-6 pr-6 pb-4">
                         <div>
                             <strong>Cart Name:</strong> {{ cart.name }}
@@ -407,7 +409,7 @@ const error = computed(() => store.getters['cart/error']);
                             >
                                 Delete
                             </button>
-                            <button @click="togglePaymentDetail"
+                            <button @click="togglePaymentDetail(index)"
                                     class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
                                 Go to Payment
                             </button>
