@@ -190,7 +190,7 @@ const error = computed(() => store.getters['cart/error']);
     <div
         id="drawer-update-product"
         v-show="isVisible"
-        class="fixed top-0 z-99 right-0 w-full h-screen max-w-3xl overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800"
+        class="fixed top-0 z-99 right-0 w-full h-screen max-w-3xl overflow-y-auto transition-transform -translate-x-full bg-gray-100 dark:bg-gray-800"
         tabindex="-1"
         aria-labelledby="drawer-update-product-label"
         aria-hidden="true"
@@ -201,7 +201,7 @@ const error = computed(() => store.getters['cart/error']);
         </div>
 
         <!-- Custom Tabs -->
-        <div class="ml-6 mr-6 mt-4 mb-4 border-[#6B4226] bg-white flex border-b-2 h-10 justify-between">
+        <div class="ml-6 mr-6 mt-4 mb-4 border-[#6B4226] bg-gray-100 flex border-b-2 h-10 justify-between">
             <div class="flex">
                 <button class="mr-[1px] bg-[#6B4226] text-white pl-2 pr-2 font-bold rounded-t-lg"
                         data-modal-toggle="create-cart-modal" data-modal-target="create-cart-modal">
@@ -226,8 +226,8 @@ const error = computed(() => store.getters['cart/error']);
                     >
                         <button
                             :class="[
-                            'relative flex justify-center items-center mr-[1px] pl-3 pr-3 rounded-t-lg border-gray-100 border-2',
-                            activeTab === index ? 'pb-[4px] border-[#6B4226] bg-white h-[102%] border-t-2 border-r-2 border-l-2 border-b-0 text-[#6B4226] font-bold' : 'h-[98%] hover:text-gray-600 bg-gray-50 dark:hover:text-gray-300',
+                            'relative flex justify-center items-center pl-3 pr-3 rounded-t-lg border-gray-100 border-2',
+                            activeTab === index ? 'pb-[4px] border-[#6B4226] bg-gray-100 h-[102%] border-t-2 border-r-2 border-l-2 border-b-0 text-[#6B4226] font-bold' : 'h-[98%] hover:text-gray-600 bg-white dark:hover:text-gray-300',
                         ]"
                             :id="`tab-${index}`"
                             @click="activeTab = index"
@@ -261,7 +261,7 @@ const error = computed(() => store.getters['cart/error']);
                 <!-- Dropdown for Hidden Tabs -->
                 <div
                     v-if="isDropdownOpen"
-                    class="dropdown absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
+                    class="dropdown absolute right-0 mt-2 w-48 bg-gray-100 border border-gray-200 rounded-md shadow-lg z-10"
                 >
                     <button
                         v-for="(hiddenCart, hiddenIndex) in hiddenTabs"
@@ -281,7 +281,7 @@ const error = computed(() => store.getters['cart/error']);
                 v-for="(cart, index) in cartData"
                 :key="cart.order_id"
                 :class="[
-                    'rounded-lg bg-white dark:bg-gray-800',
+                    'rounded-lg bg-gray-100 dark:bg-gray-800',
                     activeTab === index ? '' : 'hidden',
                 ]"
                 :id="`tab-content-${index}`"
@@ -299,11 +299,11 @@ const error = computed(() => store.getters['cart/error']);
                         </div>
                     </div>
 
-                    <div class="order-items overflow-y-auto h-[718px] pl-6 pr-6 scrollbar-thin">
+                    <div class="order-items overflow-y-auto h-[745px] pl-6 pr-6 scrollbar-thin">
                         <div
                             v-for="(item, itemIndex) in cart.order_detail"
                             :key="item.id"
-                            class="order-item mb-4 cursor-pointer shadow-lg hover:shadow-xl rounded-xl"
+                            class="p-3 bg-white rounded-xl mb-4 cursor-pointer shadow-lg hover:shadow-xl rounded-xl"
                             @click="toggleToppings(item.id)"
                         >
                             <!-- Product Details -->
@@ -397,14 +397,11 @@ const error = computed(() => store.getters['cart/error']);
                             </transition>
                         </div>
                     </div>
-
-                    <div class="flex justify-between h-full p-4">
-                        <div class="order-total flex h-full justify-center flex-col items-center font-semibold">
-                            <span>Total: {{ formatVietnameseCurrency(cart.total_price) }}</span>
-                        </div>
+                    <div class="flex items-center justify-between h-full p-4 pl-6 pb-0 sticky bottom-0 right-0">
+                        <span class="flex h-full justify-center flex-col items-center font-semibold">Total: {{ formatVietnameseCurrency(cart.total_price) }}</span>
                         <div class="flex gap-1">
                             <button
-                                class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-full border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
+                                class="w-full justify-center sm:w-auto text-gray-500 bg-white inline-flex items-center bg-gray-100 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-full border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
                                 @click="deleteCart(cart.order_id)"
                             >
                                 Delete
@@ -423,7 +420,7 @@ const error = computed(() => store.getters['cart/error']);
          class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-999 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] md:h-full">
         <div class="relative p-4 w-full max-w-3xl h-full md:h-auto z-9999">
             <!-- Modal content -->
-            <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <div class="relative p-4 bg-gray-100 rounded-lg shadow dark:bg-gray-800 sm:p-5">
                 <!-- Modal header -->
                 <div
                     class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
@@ -474,12 +471,6 @@ const error = computed(() => store.getters['cart/error']);
 
 </template>
 <style scoped>
-.order-item {
-    padding: 15px;
-    background-color: white;
-    border-radius: 5px;
-}
-
 .topping-transition-enter-active, .topping-transition-leave-active {
     transition: all 0.3s ease;
 }

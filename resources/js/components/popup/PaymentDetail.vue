@@ -49,12 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <template>
-    <section v-if="isVisible">
-        <div class="mx-auto max-w-screen-xl pr-6 pl-6 bg-white">
-            <div class="flex flex-col mt-2 justify-center bg-white items-center sm:mt-4 gap-4">
-                <div class="flex gap-2 bg-white w-full">
+    <section v-if="isVisible" class="relative bg-gray-100">
+        <div class="mx-auto max-w-screen-xl pr-6 pl-6 bg-gray-100 relative">
+            <div class="flex flex-col mt-2 justify-center bg-gray-100 items-center sm:mt-4 gap-4">
+                <div class="flex gap-2 bg-gray-100 w-full">
                     <div
-                        class="bg-gray-50 shadow-lg w-[50%] lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg dark:divide-gray-700 dark:border-gray-700 xl:max-w-2xl">
+                        class="bg-white shadow-lg w-[50%] lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg dark:divide-gray-700 dark:border-gray-700 xl:max-w-2xl">
                         <div class="space-y-1 p-5 pt-4">
                             <div class="flex gap-1 items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <div>
                                         <label class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Province</label>
                                         <select
-                                            class="bg-gray-50 border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         >
                                             <option value="">Select Province</option>
                                         </select>
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <div>
                                         <label class="block mb-2 text-sm font-medium text-gray-500  =dark:text-white">District</label>
                                         <select
-                                            class="bg-gray-50 border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         >
 
                                             <option value="">Select District</option>
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <label
                                             class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Ward</label>
                                         <select
-                                            class="bg-gray-50 border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         >
                                             <option value="">Select Ward</option>
                                         </select>
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <label class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
                                             Street </label>
                                         <input type="text"
-                                               class="bg-gray-50 border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                               class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                placeholder="Enter Street">
                                     </div>
                                 </div>
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                     <div
-                        class="bg-gray-50 w-[50%] shadow-lg lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg dark:divide-gray-700 dark:border-gray-700 xl:max-w-2xl">
+                        class="bg-white w-[50%] shadow-lg lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg dark:divide-gray-700 dark:border-gray-700 xl:max-w-2xl">
                         <div class="space-y-1 p-5 pt-4">
                             <div class="flex gap-1 items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         t('LBL_RECIPIENT_NAME')
                                     }}</label>
                                 <input type="text"
-                                       class="bg-gray-50 border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                       class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                        placeholder="Enter Name">
                             </div>
                             <div class="mt-4">
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         t('LBL_PHONE_NUMBER')
                                     }}</label>
                                 <input type="text"
-                                       class="bg-gray-50 border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                       class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                        placeholder="Enter Phone Number">
                             </div>
                             <div class="mt-4">
@@ -140,13 +140,13 @@ document.addEventListener("DOMContentLoaded", function () {
                                         t('LBL_NOTE')
                                     }}</label>
                                 <input type="text"
-                                       class="bg-gray-50 border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                       class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                        placeholder="Enter Note">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="w-full bg-gray-50 shadow-lg pl-6 pr-6 rounded-lg">
+                <div class="w-full bg-white shadow-lg pl-6 pr-6 rounded-lg">
                     <div class="flex gap-1 items-center mt-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                              stroke="#6B4226" class="size-5 mb-[2px]">
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </svg>
                         <label class="font-inter font-bold text-[#6B4226] dark:text-white">Order details</label>
                     </div>
-                    <div class="overflow-y-auto bg-gray-50 w-full h-fit scrollbar-thin ">
+                    <div class="overflow-y-auto bg-white w-full h-fit scrollbar-thin ">
                         <div
                             v-for="(item, itemIndex) in cart.order_detail"
                             :key="item.id"
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
                 <!-- Payment Section -->
-                <div class="mt-6 grow shadow-lg sm:mt-8 rounded-lg bg-gray-50 lg:mt-0 w-full flex flex-col gap-2">
+                <div class="mt-6 grow shadow-lg sm:mt-8 rounded-lg bg-white lg:mt-0 w-full flex flex-col gap-2">
                     <div class="flex gap-1 items-center relative p-4 pb-0">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                              stroke-width="1.5" stroke="#6B4226" class="size-5">
@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <label
                                         class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Branch</label>
                                     <select
-                                        class="bg-gray-50 border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     >
                                         <option value="">Select Branch</option>
                                     </select>
@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <div v-if="voucherModalVisible"
                                  class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-                                <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+                                <div class="bg-gray-100 p-6 rounded-lg shadow-lg max-w-lg w-full">
                                     <div class="flex justify-between items-center">
                                         <h2 class="font-bold text-gray-500 text-lg mb-4">{{ t('LBL_VOUCHER') }}</h2>
                                         <div class="h-6 w-6 text-gray-500 cursor-pointer"
@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                         <div
-                            class="w-full bg-gray-50 dark:bg-gray-800 border-gray-700 p-4 pb-0 pt-0 flex flex-col justify-center">
+                            class="w-full bg-white dark:bg-gray-800 border-gray-700 p-4 pb-0 pt-0 flex flex-col justify-center">
                             <div class="space-y-2">
                                 <div
                                     class="border rounded-lg border-gray-300 h-[33px] flex items-center justify-start">
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
         </div>
-        <div class="flex gap-2 justify-end p-2 mt-4 mr-4">
+        <div class="flex gap-2 justify-end p-2 mt-4 mr-4 pr-4 sticky bottom-0 right-0 bg-gray-100 w-full">
             <button
                 class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-full border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-500 "
                 @click="emit('showPaymentDetail', index)"
