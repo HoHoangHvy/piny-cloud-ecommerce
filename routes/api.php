@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\GHNController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
@@ -75,6 +76,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/cart/deleteCart/{id}', [\App\Http\Controllers\OrderController::class, 'deleteCart']);
     Route::post('/cart/createCart', [\App\Http\Controllers\OrderController::class, 'createCart']);
     Route::post('/customers/save-address/{id}', [\App\Http\Controllers\CustomerController::class, 'saveAddress']);
+    Route::get('/ghn/wards', [GHNController::class, 'getWards']);
 
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);

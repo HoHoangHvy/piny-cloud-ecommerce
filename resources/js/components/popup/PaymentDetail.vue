@@ -7,7 +7,6 @@ import { notify } from "notiwind";
 import { formatVietnameseCurrency } from "@/js/helpers/currencyFormat.js";
 import provincesData from '@/assets/js/tinh_tp.json';
 import districtsData from '@/assets/js/quan_huyen.json';
-import wardsData from '@/assets/js/xa_phuong.json';
 import axios from "axios";
 
 const store = useStore();
@@ -20,6 +19,8 @@ const props = defineProps({
 const { t } = useI18n();
 const voucherModalVisible = ref(false);
 const dayAfterTomorrow = ref('');
+const discountAmount = ref(0);
+const deliveryAmount = ref(0);
 
 // Initialize the form with values from the store
 const form = ref({
@@ -59,19 +60,44 @@ onMounted(() => {
 
     provinces.value = provincesData;
     districts.value = Object.values(districtsData); // Convert to array
-    wards.value = Object.values(wardsData); // Convert to array
+
+    // Fetch wards for the initial district (if available)
+    if (form.value.district !== '') {
+        fetchWards(form.value.district);
+    }
+});
+
+const totalAmount = computed(() => {
+    return props.cart.total_price - discountAmount.value + deliveryAmount.value;
 });
 
 const filteredDistricts = computed(() => {
-    console.log('filteredDistricts re-evaluating');
+    debugger
     if (!form.value.province) return [];
-    return districts.value.filter(d => d.parent_code === form.value.province);
+    return districts.value.filter(d => d.ProvinceID.toString() === form.value.province);
 });
 
-const filteredWards = computed(() => {
-    console.log('filteredWards re-evaluating');
-    if (!form.value.district) return [];
-    return wards.value.filter(w => w.parent_code === form.value.district);
+// Fetch wards from the GHN API via Laravel backend
+const fetchWards = async (districtId) => {
+    try {
+        const response = await axios.get('/api/ghn/wards', {
+            params: {
+                district_id: districtId,
+            },
+        });
+        wards.value = response.data.data; // Update the wards array
+    } catch (error) {
+        console.error('Error fetching wards:', error);
+    }
+};
+
+// Watch for changes in the district and fetch wards
+watch(() => form.value.district, (newDistrictId) => {
+    if (newDistrictId) {
+        fetchWards(newDistrictId);
+    } else {
+        wards.value = []; // Clear wards if no district is selected
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -87,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
 watch(
     () => store.getters['customerInfo'], // Watch the customerInfo getter
     (newCustomerInfo) => {
+        debugger
         // Update the form with the new values from the store
         form.value.province = newCustomerInfo.province;
         form.value.district = newCustomerInfo.district;
@@ -102,8 +129,8 @@ const saveAddress = () => {
     store.dispatch('customers/saveAddress', {
         id: store.getters['customerInfo'].id,
         addressData: {
-            province: form.value.province,
-            district: form.value.district,
+            province: form.value.province.toString(),
+            district: form.value.district.toString(),
             ward: form.value.ward,
             street: form.value.street,
         }
@@ -151,8 +178,8 @@ const saveAddress = () => {
                                         <select v-model="form.province" @change="form.district = ''; form.ward = ''"
                                                 class="bg-white border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option value="">Select Province</option>
-                                            <option v-for="(province, code) in provinces" :key="code" :value="code">
-                                                {{ province.name_with_type }}
+                                            <option v-for="(province, code) in provinces" :key="province.ProvinceID" :value="province.ProvinceID">
+                                                {{ province.ProvinceName }}
                                             </option>
                                         </select>
                                     </div>
@@ -162,8 +189,8 @@ const saveAddress = () => {
                                         <select v-model="form.district" @change="form.ward = ''"
                                                 class="bg-white border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option value="">Select District</option>
-                                            <option v-for="district in filteredDistricts" :key="district.code"
-                                                    :value="district.code">{{ district.name_with_type }}
+                                            <option v-for="district in filteredDistricts" :key="district.DistrictID"
+                                                    :value="district.DistrictID">{{ district.DistrictName }}
                                             </option>
                                         </select>
                                     </div>
@@ -176,8 +203,8 @@ const saveAddress = () => {
                                         <select v-model="form.ward"
                                                 class="bg-white border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option value="">Select Ward</option>
-                                            <option v-for="ward in filteredWards" :key="ward.code" :value="ward.code">
-                                                {{ ward.name_with_type }}
+                                            <option v-for="ward in wards" :key="ward.WardCode" :value="ward.WardCode">
+                                                {{ ward.WardName }}
                                             </option>
                                         </select>
                                     </div>
@@ -373,24 +400,19 @@ const saveAddress = () => {
                                         <dt class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">
                                             {{ t('LBL_PRICE') }}
                                         </dt>
-                                        <dd class="font-inter text-gray-500 dark:text-white">157.000 VND</dd>
+                                        <dd class="font-inter text-gray-500 dark:text-white">{{formatVietnameseCurrency(cart.total_price)}}</dd>
                                     </dl>
                                     <dl class="flex items-center justify-between gap-4">
                                         <dt class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
                                             {{ t('LBL_DISCOUNT') }}
                                         </dt>
-                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
-                                            -20.000
-                                            VND
-                                        </dd>
+                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">- {{formatVietnameseCurrency(discountAmount)}}</dd>
                                     </dl>
                                     <dl class="flex items-center justify-between gap-4">
                                         <dt class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
                                             {{ t('LBL_DELIVERY_FEE') }}
                                         </dt>
-                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">20.000
-                                            VND
-                                        </dd>
+                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">{{formatVietnameseCurrency(deliveryAmount)}}</dd>
                                     </dl>
                                 </div>
                             </div>
@@ -398,7 +420,7 @@ const saveAddress = () => {
                     </div>
                     <dl class="flex items-center m-4 mt-0 justify-between gap-4 pl-2 border-t border-gray-200 pt-2 dark:border-gray-700">
                         <dt class="text-lg font-bold text-gray-500 dark:text-white">{{ t('LBL_TOTAL') }}</dt>
-                        <dd class="text-lg font-bold text-gray-500 dark:text-white">157.000 VND</dd>
+                        <dd class="text-lg font-bold text-gray-500 dark:text-white">{{formatVietnameseCurrency(totalAmount)}}</dd>
                     </dl>
                 </div>
             </div>
