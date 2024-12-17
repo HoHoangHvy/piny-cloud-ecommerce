@@ -72,7 +72,6 @@ const totalAmount = computed(() => {
 });
 
 const filteredDistricts = computed(() => {
-    debugger
     if (!form.value.province) return [];
     return districts.value.filter(d => d.ProvinceID.toString() === form.value.province);
 });
@@ -90,7 +89,33 @@ const fetchWards = async (districtId) => {
         console.error('Error fetching wards:', error);
     }
 };
-
+watch(() => form.value.branch, (newTeamId) => {
+    if (newTeamId) {
+        fetchShippingFee(newTeamId);
+    } else {
+        deliveryAmount.value = 0; // Reset delivery amount if no team is selected
+    }
+});
+const fetchShippingFee = async (teamId) => {
+    try {
+        const response = await axios.get('/api/ghn/shipping-fee', {
+            params: {
+                team_id: teamId,
+                to_ward_code: form.value.ward.toString(),
+                to_district_id: form.value.district.toString(),
+                insurance_value: props.cart.total_price,
+            },
+        });
+        deliveryAmount.value = response.data.data.total; // Update the delivery amount
+    } catch (error) {
+        console.error('Error fetching shipping fee:', error);
+        notify({
+            group: "foo",
+            title: "Error",
+            text: "Failed to fetch shipping fee. Please try again.",
+        }, 4000);
+    }
+};
 // Watch for changes in the district and fetch wards
 watch(() => form.value.district, (newDistrictId) => {
     if (newDistrictId) {
@@ -113,7 +138,6 @@ document.addEventListener("DOMContentLoaded", function () {
 watch(
     () => store.getters['customerInfo'], // Watch the customerInfo getter
     (newCustomerInfo) => {
-        debugger
         // Update the form with the new values from the store
         form.value.province = newCustomerInfo.province;
         form.value.district = newCustomerInfo.district;
@@ -345,10 +369,10 @@ const saveAddress = () => {
                                         class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Branch</label>
                                     <select
                                         v-model="form.branch"
+                                        @change="fetchShippingFee(form.branch)"
                                         class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     >
-                                        <option value="">Select Branch</option>
-                                        <!-- Add branch options here -->
+                                        <option v-for="team in store.getters['teams/allTeamsOption']" :value="team.id" :key="team.id">{{ team.name }}</option>
                                     </select>
                                 </div>
                             </div>

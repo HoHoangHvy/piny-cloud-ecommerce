@@ -40,6 +40,7 @@ async function fetchUser() {
     try {
         const response = await axios.get('/api/auth/me');
         store.commit('setUser', response.data.data); // Example with Vuex; adjust as needed
+        await store.dispatch('teams/fetchTeamOptions')
     } catch (error) {
         // Handle 401 Unauthorized to redirect to login
         if (error.response && error.response.status === 401) {

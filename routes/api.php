@@ -77,6 +77,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/cart/createCart', [\App\Http\Controllers\OrderController::class, 'createCart']);
     Route::post('/customers/save-address/{id}', [\App\Http\Controllers\CustomerController::class, 'saveAddress']);
     Route::get('/ghn/wards', [GHNController::class, 'getWards']);
+    Route::get('/ghn/shipping-fee', [GHNController::class, 'getShippingFee']);
 
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);
