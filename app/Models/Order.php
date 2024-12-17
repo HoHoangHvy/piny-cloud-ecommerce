@@ -28,6 +28,10 @@ class Order extends Model
         'created_by',
         'custom_name',
         'type',
+        'province',
+        'district',
+        'ward',
+        'street',
     ];
 
     // Relationship with the host customer

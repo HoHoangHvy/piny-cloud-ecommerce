@@ -35,6 +35,8 @@ export default {
         },
     },
     actions: {
+        // Existing actions...
+
         async fetchCustomers({ commit }) {
             commit('SET_LOADING', true);
             try {
@@ -66,7 +68,6 @@ export default {
         async createCustomer({ commit }, customerData) {
             commit('SET_LOADING', true);
             try {
-
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.post('/api/customers', customerData);
                 commit('ADD_CUSTOMER', response.data.data);
@@ -100,6 +101,23 @@ export default {
             } catch (error) {
                 console.error('Error deleting customer:', error);
                 commit('SET_ERROR', error.response?.data || 'Error deleting customer.');
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+
+        // New action to save customer address
+        async saveAddress({ commit }, { id, addressData }) {
+            commit('SET_LOADING', true);
+            try {
+                const response = await axios.post(`/api/customers/save-address/${id}`, addressData);
+
+                // Update the customer in the state with the updated address
+                commit('UPDATE_CUSTOMER', response.data.customer);
+                commit('SET_ERROR', null);
+            } catch (error) {
+                console.error('Error saving customer address:', error);
+                commit('SET_ERROR', error.response?.data || 'Error saving customer address.');
             } finally {
                 commit('SET_LOADING', false);
             }

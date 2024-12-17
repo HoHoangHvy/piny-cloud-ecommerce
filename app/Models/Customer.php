@@ -20,7 +20,11 @@ class Customer extends Model
         'email',
         'user_id',
         'team_id',
-        'created_by'
+        'created_by',
+        'province',
+        'district',
+        'ward',
+        'street',
     ];
 
     protected static function booted()

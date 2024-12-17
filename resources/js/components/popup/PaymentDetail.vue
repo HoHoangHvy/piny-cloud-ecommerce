@@ -1,21 +1,43 @@
 <script setup>
-import {ref, onMounted} from 'vue';
-import {useI18n} from "vue-i18n";
-import {defineProps, defineEmits} from 'vue';
-import {useStore} from 'vuex';
-import {notify} from "notiwind";
-import {formatVietnameseCurrency} from "@/js/helpers/currencyFormat.js";
+import { ref, onMounted, computed, watch } from 'vue';
+import { useI18n } from "vue-i18n";
+import { defineProps, defineEmits } from 'vue';
+import { useStore } from 'vuex';
+import { notify } from "notiwind";
+import { formatVietnameseCurrency } from "@/js/helpers/currencyFormat.js";
+import provincesData from '@/assets/js/tinh_tp.json';
+import districtsData from '@/assets/js/quan_huyen.json';
+import wardsData from '@/assets/js/xa_phuong.json';
+import axios from "axios";
 
 const store = useStore();
 const emit = defineEmits(['showPaymentDetail']);
 const props = defineProps({
-    isVisible: {type: Boolean, required: true},
-    index: {type: Number, required: true},
-    cart: {type: Object, required: true}
+    isVisible: { type: Boolean, required: true },
+    index: { type: Number, required: true },
+    cart: { type: Object, required: true }
 });
-const {t} = useI18n();
+const { t } = useI18n();
 const voucherModalVisible = ref(false);
 const dayAfterTomorrow = ref('');
+
+// Initialize the form with values from the store
+const form = ref({
+    province: store.getters['customerInfo'].province,
+    district: store.getters['customerInfo'].district,
+    ward: store.getters['customerInfo'].ward,
+    street: store.getters['customerInfo'].street,
+    receiverName: store.getters['customerInfo'].full_name,
+    phoneNumber: store.getters['customerInfo'].phone_number,
+    note: '',
+    paymentMethod: 'cash',
+    branch: '',
+    voucher: ''
+});
+
+const provinces = ref([]);
+const districts = ref([]);
+const wards = ref([]);
 
 function openVoucherModal() {
     voucherModalVisible.value = true;
@@ -34,6 +56,22 @@ onMounted(() => {
     const year = date.getFullYear();
 
     dayAfterTomorrow.value = `${day}/${month}/${year}`;
+
+    provinces.value = provincesData;
+    districts.value = Object.values(districtsData); // Convert to array
+    wards.value = Object.values(wardsData); // Convert to array
+});
+
+const filteredDistricts = computed(() => {
+    console.log('filteredDistricts re-evaluating');
+    if (!form.value.province) return [];
+    return districts.value.filter(d => d.parent_code === form.value.province);
+});
+
+const filteredWards = computed(() => {
+    console.log('filteredWards re-evaluating');
+    if (!form.value.district) return [];
+    return wards.value.filter(w => w.parent_code === form.value.district);
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -45,63 +83,109 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Watch the Vuex store for changes and update the form
+watch(
+    () => store.getters['customerInfo'], // Watch the customerInfo getter
+    (newCustomerInfo) => {
+        // Update the form with the new values from the store
+        form.value.province = newCustomerInfo.province;
+        form.value.district = newCustomerInfo.district;
+        form.value.ward = newCustomerInfo.ward;
+        form.value.street = newCustomerInfo.street;
+        form.value.receiverName = newCustomerInfo.full_name;
+        form.value.phoneNumber = newCustomerInfo.phone_number;
+    },
+    { deep: true } // Deep watch to detect nested changes
+);
 
+const saveAddress = () => {
+    store.dispatch('customers/saveAddress', {
+        id: store.getters['customerInfo'].id,
+        addressData: {
+            province: form.value.province,
+            district: form.value.district,
+            ward: form.value.ward,
+            street: form.value.street,
+        }
+    }).then(async () => {
+        const response = await axios.get('/api/auth/me');
+        store.commit('setUser', response.data.data);
+        notify({
+            group: "foo",
+            title: "Success",
+            text: "Address saved successfully",
+        }, 4000);
+    });
+};
 </script>
-
 <template>
     <section v-if="isVisible" class="relative bg-gray-100">
         <div class="mx-auto max-w-screen-xl pr-6 pl-6 bg-gray-100 relative">
             <div class="flex flex-col mt-2 justify-center bg-gray-100 items-center sm:mt-4 gap-4">
                 <div class="flex gap-2 bg-gray-100 w-full">
                     <div
-                        class="bg-white shadow-lg w-[50%] lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg dark:divide-gray-700 dark:border-gray-700 xl:max-w-2xl">
+                        class="bg-white shadow-lg w-[70%] lg:max-w-md h-full divide-y divide-gray-200 overflow-hidden rounded-lg dark:divide-gray-700 dark:border-gray-700 xl:max-w-2xl">
                         <div class="space-y-1 p-5 pt-4">
-                            <div class="flex gap-1 items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     stroke-width="1.5" stroke="#6B4226" class="size-6 mb-[2px]">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
-                                </svg>
-                                <label class="font-bold text-[#6B4226] dark:text-white">
-                                    {{
-                                        t('LBL_DELIVERY')
-                                    }}</label>
+                            <div class="flex w-full justify-between">
+                                <div class="flex gap-1 items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         stroke-width="1.5" stroke="#6B4226" class="size-6 mb-[2px]">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
+                                    </svg>
+                                    <label class="font-bold text-[#6B4226] dark:text-white">
+                                        {{
+                                            t('LBL_DELIVERY')
+                                        }}
+                                    </label>
+                                </div>
+                                <button class="hover:bg-gray-100 text-[#6B4226] text-sm p-1 rounded-lg" @click="saveAddress">
+                                    Save
+                                </button>
                             </div>
                             <div class="mt-4">
                                 <div class="grid grid-cols-2 gap-2">
+                                    <!-- Province Dropdown -->
                                     <div>
-                                        <label class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Province</label>
-                                        <select
-                                            class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        >
+                                        <label class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">Province</label>
+                                        <select v-model="form.province" @change="form.district = ''; form.ward = ''"
+                                                class="bg-white border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option value="">Select Province</option>
+                                            <option v-for="(province, code) in provinces" :key="code" :value="code">
+                                                {{ province.name_with_type }}
+                                            </option>
                                         </select>
                                     </div>
+                                    <!-- District Dropdown -->
                                     <div>
-                                        <label class="block mb-2 text-sm font-medium text-gray-500  =dark:text-white">District</label>
-                                        <select
-                                            class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        >
-
+                                        <label class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">District</label>
+                                        <select v-model="form.district" @change="form.ward = ''"
+                                                class="bg-white border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option value="">Select District</option>
+                                            <option v-for="district in filteredDistricts" :key="district.code"
+                                                    :value="district.code">{{ district.name_with_type }}
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 gap-2">
+                                    <!-- Ward Dropdown -->
                                     <div>
                                         <label
-                                            class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Ward</label>
-                                        <select
-                                            class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        >
+                                            class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">Ward</label>
+                                        <select v-model="form.ward"
+                                                class="bg-white border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option value="">Select Ward</option>
+                                            <option v-for="ward in filteredWards" :key="ward.code" :value="ward.code">
+                                                {{ ward.name_with_type }}
+                                            </option>
                                         </select>
                                     </div>
+                                    <!-- Street Input -->
                                     <div>
-                                        <label class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
-                                            Street </label>
-                                        <input type="text"
-                                               class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        <label class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">Street</label>
+                                        <input type="text" v-model="form.street"
+                                               class="bg-white border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                placeholder="Enter Street">
                                     </div>
                                 </div>
@@ -124,6 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         t('LBL_RECIPIENT_NAME')
                                     }}</label>
                                 <input type="text"
+                                       v-model="form.receiverName"
                                        class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                        placeholder="Enter Name">
                             </div>
@@ -132,6 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         t('LBL_PHONE_NUMBER')
                                     }}</label>
                                 <input type="text"
+                                       v-model="form.phoneNumber"
                                        class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                        placeholder="Enter Phone Number">
                             </div>
@@ -140,6 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         t('LBL_NOTE')
                                     }}</label>
                                 <input type="text"
+                                       v-model="form.note"
                                        class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                        placeholder="Enter Note">
                             </div>
@@ -167,8 +254,12 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <div class="flex items-center justify-between w-[100%]">
                                         <div class="flex w-full gap-1 items-center">
                                             <span class="text-sm">{{ item.quantity }} x </span>
-                                            <span class="font-semibold text-md">{{ item.product_name }} ({{item.size}})</span>
-                                            <span v-if="item.note !== ''" class="text-sm text-gray-500">- {{ item.note }}</span>
+                                            <span class="font-semibold text-md">{{ item.product_name }} ({{
+                                                    item.size
+                                                }})</span>
+                                            <span v-if="item.note !== ''" class="text-sm text-gray-500">- {{
+                                                    item.note
+                                                }}</span>
                                         </div>
                                         <div class="font-semibold text-md">{{
                                                 formatVietnameseCurrency(item.total_price)
@@ -210,12 +301,14 @@ document.addEventListener("DOMContentLoaded", function () {
                                     class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Method</label>
                                 <div class="flex gap-4">
                                     <div class="flex items-center space-x-2">
-                                        <input id="cash" type="radio" name="payment" class="form-radio" checked>
+                                        <input id="cash" type="radio" name="payment" class="form-radio"
+                                               v-model="form.paymentMethod" value="cash">
                                         <label for="cash" class="text-gray-500">{{ t('LBL_CASH') }}</label>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <input id="cash" type="radio" name="payment" class="form-radio" checked>
-                                        <label for="cash" class="text-gray-500">Online</label>
+                                        <input id="online" type="radio" name="payment" class="form-radio"
+                                               v-model="form.paymentMethod" value="online">
+                                        <label for="online" class="text-gray-500">Online</label>
                                     </div>
                                 </div>
                             </div>
@@ -224,9 +317,11 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <label
                                         class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Branch</label>
                                     <select
+                                        v-model="form.branch"
                                         class="bg-white border border-gray-300 text-gray-500  text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     >
                                         <option value="">Select Branch</option>
+                                        <!-- Add branch options here -->
                                     </select>
                                 </div>
                             </div>
@@ -263,10 +358,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             <div class="space-y-2">
                                 <div
                                     class="border rounded-lg border-gray-300 h-[33px] flex items-center justify-start">
-                                    <button @click="openVoucherModal" class="bg-[#6B4226] h-full p-1.5 rounded-l-lg w-fit flex items-center gap-1">
+                                    <button @click="openVoucherModal"
+                                            class="bg-[#6B4226] h-full p-1.5 rounded-l-lg w-fit flex items-center gap-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                              stroke-width="2" stroke="white" class="size-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z"/>
                                         </svg>
                                         <span class="text-white text-sm">Voucher</span>
                                     </button>
@@ -279,12 +376,20 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <dd class="font-inter text-gray-500 dark:text-white">157.000 VND</dd>
                                     </dl>
                                     <dl class="flex items-center justify-between gap-4">
-                                        <dt class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">{{ t('LBL_DISCOUNT') }} </dt>
-                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">-20.000 VND</dd>
+                                        <dt class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
+                                            {{ t('LBL_DISCOUNT') }}
+                                        </dt>
+                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
+                                            -20.000
+                                            VND
+                                        </dd>
                                     </dl>
                                     <dl class="flex items-center justify-between gap-4">
-                                        <dt class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">{{ t('LBL_DELIVERY_FEE') }}</dt>
-                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">20.000 VND
+                                        <dt class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
+                                            {{ t('LBL_DELIVERY_FEE') }}
+                                        </dt>
+                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">20.000
+                                            VND
                                         </dd>
                                     </dl>
                                 </div>
@@ -315,7 +420,6 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
     </section>
 </template>
-
 <style scoped>
 .form-radio {
     @apply appearance-none w-4 h-4 border-2 border-[#6B4226] rounded-full cursor-pointer transition-all;

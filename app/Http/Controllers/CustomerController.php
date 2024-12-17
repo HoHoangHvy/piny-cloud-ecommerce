@@ -14,6 +14,45 @@ class CustomerController extends Controller
     /**
      * Store a new customer and create a corresponding user.
      */
+    public function saveAddress(Request $request, $id)
+    {
+        // Find the customer by ID
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            return response()->json(['error' => 'Customer not found'], 404);
+        }
+
+        // Validate the incoming request data
+        $validator = Validator::make($request->all(), [
+            'province' => 'required|string',
+            'district' => 'required|string',
+            'ward' => 'required|string',
+            'street' => 'required|string',
+        ]);
+
+        // If validation fails, return the error response
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        try {
+            // Update the customer's address fields
+            $customer->update([
+                'province' => $request->input('province'),
+                'district' => $request->input('district'),
+                'ward' => $request->input('ward'),
+                'street' => $request->input('street'),
+            ]);
+
+            return response()->json([
+                'message' => 'Customer address updated successfully.',
+                'customer' => $customer,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
     public function store(Request $request)
     {
         // Validate the incoming request data

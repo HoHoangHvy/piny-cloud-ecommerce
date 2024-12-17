@@ -74,6 +74,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/cart/loadCart/{id}', [\App\Http\Controllers\OrderController::class, 'loadCartDetail']);
     Route::delete('/cart/deleteCart/{id}', [\App\Http\Controllers\OrderController::class, 'deleteCart']);
     Route::post('/cart/createCart', [\App\Http\Controllers\OrderController::class, 'createCart']);
+    Route::post('/customers/save-address/{id}', [\App\Http\Controllers\CustomerController::class, 'saveAddress']);
 
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);

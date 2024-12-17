@@ -48,6 +48,7 @@
         "firebase": "^11.0.2",
         "flowbite": "^2.5.2",
         "flowbite-vue": "^0.1.6",
+        "hanhchinhvn": "^1.6.0",
         "laravel-permission-to-vuejs": "^3.0.8",
         "notiwind": "^2.0.2",
         "swiper": "^11.1.14",
