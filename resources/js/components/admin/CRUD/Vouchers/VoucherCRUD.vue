@@ -37,7 +37,7 @@
                         </form>
                     </div>
                     <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                        <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'create'})" type="button" id="createVoucherButton" data-modal-target="create-Voucher-modal" data-modal-toggle="create-Voucher-modal" class="flex items-center justify-center text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-primary-800">
+                        <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'create'})" type="button" id="createVoucherButton" data-modal-target="create-voucher-modal" data-modal-toggle="create-voucher-modal" class="flex items-center justify-center text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-primary-800">
                             <svg class="h-3.5 w-3.5 mr-1.5 -ml-1" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                             </svg>
@@ -207,14 +207,14 @@
             </div>
         </div>
     </section>    <!-- End block -->
-    <div id="create-Voucher-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-999 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] md:h-full">
+    <div id="create-voucher-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-999 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] md:h-full">
         <div class="relative p-4 w-full max-w-3xl h-full md:h-auto z-9999">
             <!-- Modal content -->
             <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                 <!-- Modal header -->
                 <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Voucher</h3>
-                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="create-Voucher-modal">
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="create-voucher-modal">
                         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
@@ -259,7 +259,7 @@
                             <input v-model="form.discount_percent" type="number" id="discount_percent" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Discount Percent" required>
                         </div>
                     </div>
-                    <div class="grid mb-4 gap-2 sm:grid-cols-3">
+                    <div class="grid mb-4 gap-2 sm:grid-cols-2">
                         <div>
                             <label for="apply_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apply for</label>
                             <select v-model="form.apply_type" id="discount_type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
@@ -268,12 +268,16 @@
                             </select>
                         </div>
                         <div>
-                            <label for="limit_per_order" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Limit per order</label>
+                            <label for="limit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Limit</label>
+                            <input v-model="form.limit" type="number" id="limit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Limit" required>
+                        </div>
+                        <div>
+                            <label for="limit_per_order" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Maximum value</label>
                             <input v-model="form.limit_per_order" type="number" id="limit_per_order" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Limit" required>
                         </div>
                         <div>
-                            <label for="limit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Limit</label>
-                            <input v-model="form.limit" type="number" id="limit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Limit" required>
+                            <label for="minimum" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Minimum value</label>
+                            <input v-model="form.minimum" type="number" id="minimum" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Minimum value" required>
                         </div>
                     </div>
                     <div class="grid mb-4 sm:grid-cols-1">
@@ -349,6 +353,21 @@
                         <label for="limit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Limit</label>
                         <input v-model="formEdit.limit" type="number" name="limit" id="limit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Limit" required="">
                     </div>
+                </div>
+                <div>
+                    <label for="apply_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apply for</label>
+                    <select v-model="formEdit.apply_type" id="discount_type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                        <option value="shipping_fee">Shipping</option>
+                        <option value="discount">Order</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="limit_per_order" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Maximum value</label>
+                    <input v-model="formEdit.limit_per_order" type="number" id="limit_per_order" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Limit" required>
+                </div>
+                <div>
+                    <label for="minimum" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Minimum value</label>
+                    <input v-model="formEdit.minimum" type="number" id="minimum" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Minimum value" required>
                 </div>
             </div>
             <div class="grid gap-4 mb-4 sm:grid-cols-1">
@@ -434,6 +453,7 @@ const form = reactive({
     discount_amount: 0,
     discount_percent: 0,
     limit: 0,
+    minimum: 0,
     limit_per_order: 0,
     apply_type: 'discount'
 });
@@ -447,6 +467,7 @@ const formEdit = reactive({
     discount_amount: 0,
     discount_percent: 0,
     limit: 0,
+    minimum: 0,
     limit_per_order: 0,
     apply_type: 'discount',
     teams_id: [],

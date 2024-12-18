@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('vouchers', function (Blueprint $table) {
-            $table->decimal('least_amount')->nullable();
+            $table->decimal('minimum')->nullable();
         });
     }
 

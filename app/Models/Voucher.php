@@ -19,6 +19,9 @@ class Voucher extends Model
         'discount_amount',
         'discount_percent',
         'config',
+        'minimum',
+        'limit_per_order',
+        'apply_type',
         'limit'
     ];
     public function teams()

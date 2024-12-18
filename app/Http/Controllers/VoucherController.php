@@ -36,6 +36,7 @@ class VoucherController extends BaseController
             'teams_id.*' => 'exists:teams,id',
             'apply_type' => 'required|in:shipping_fee,discount',
             'limit_per_order' => 'nullable|numeric|min:0',
+            'minimum' => 'nullable|numeric|min:0',
         ]);
         $validated['config'] = '{}';
         $voucher = Voucher::create($validated);
@@ -89,7 +90,8 @@ class VoucherController extends BaseController
     {
         $voucher = Voucher::findOrFail($id);
         $voucher['teams_id'] = $voucher->teams()->pluck('id');
-
+        $voucher['minimum'] = (int) $voucher->minimum;
+        $voucher['limit_per_order'] = (int) $voucher->limit_per_order;
         return response()->json([
             'success' => true,
             'data' => $voucher
@@ -101,6 +103,7 @@ class VoucherController extends BaseController
      */
     public function update(Request $request, string $id)
     {
+
         $validated = $request->validate([
             'vourcher_code' => 'nullable|string|unique:vouchers,vourcher_code,' . $id . '|max:255',
             'status' => 'nullable|in:active,inactive',
@@ -110,15 +113,21 @@ class VoucherController extends BaseController
             'discount_amount' => 'nullable|numeric|min:0',
             'discount_percent' => 'nullable|numeric|min:0|max:100',
             'limit' => 'nullable|integer|min:1',
+            'apply_type' => 'required|in:shipping_fee,discount',
+            'limit_per_order' => 'nullable|integer|min:1',
+            'minimum' => 'nullable|integer|min:1',
             'config' => 'nullable|json',
             'teams_id' => 'nullable'
         ]);
+        try {
+            $voucher = Voucher::findOrFail($id);
+            $voucher->update($validated);
+            $voucher->teams()->sync($validated['teams_id']);
 
-        $voucher = Voucher::findOrFail($id);
-        $voucher->update($validated);
-        $voucher->teams()->sync($validated['teams_id']);
-
-        return response()->json(['message' => 'Voucher updated successfully.', 'data' => $voucher]);
+            return response()->json(['message' => 'Voucher updated successfully.', 'data' => $voucher]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
