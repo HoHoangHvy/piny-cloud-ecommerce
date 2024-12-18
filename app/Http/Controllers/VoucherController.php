@@ -34,6 +34,8 @@ class VoucherController extends BaseController
             'limit' => 'required|integer|min:1',
             'teams_id' => 'required|array|min:1', // Ensure it's a list
             'teams_id.*' => 'exists:teams,id',
+            'apply_type' => 'required|in:shipping_fee,discount',
+            'limit_per_order' => 'nullable|numeric|min:0',
         ]);
         $validated['config'] = '{}';
         $voucher = Voucher::create($validated);
@@ -41,7 +43,45 @@ class VoucherController extends BaseController
 
         return response()->json(['message' => 'Voucher created successfully.', 'data' => $voucher], 201);
     }
+    /**
+     * Load vouchers based on current date and team_id.
+     */
+    public function loadVouchersByDateAndTeam(Request $request)
+    {
+        // Validate the request to ensure team_id is provided
+        $validated = $request->validate([
+            'team_id' => 'required|uuid|exists:teams,id',
+        ]);
 
+        // Get the current date
+        $currentDate = now()->toDateString();
+
+        // Fetch vouchers that are active, within the current date range, and associated with the provided team_id
+        $vouchers = Voucher::where('status', 'active')
+            ->whereDate('start_date', '<=', $currentDate)
+            ->whereDate('end_date', '>=', $currentDate)
+            ->whereHas('teams', function ($query) use ($validated) {
+                $query->where('teams.id', $validated['team_id']);
+            })
+            ->get();
+
+        $return_data = [];
+        foreach($vouchers as $voucher) {
+            $return_data[$voucher['apply_type']][] = [
+                'voucher_code' => $voucher['voucher_code'],
+                'discount_type' => $voucher['discount_type'],
+                'discount_amount' => $voucher['discount_amount'],
+                'discount_percent' => $voucher['discount_percent'],
+                'limit' => $voucher['limit'],
+                'limit_per_order' => $voucher['limit_per_order'],
+
+            ];
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $vouchers
+        ], 200);
+    }
     /**
      * Display the specified voucher.
      */
@@ -71,12 +111,12 @@ class VoucherController extends BaseController
             'discount_percent' => 'nullable|numeric|min:0|max:100',
             'limit' => 'nullable|integer|min:1',
             'config' => 'nullable|json',
-            'team_id' => 'nullable|uuid|exists:teams,id',
-            'created_by' => 'nullable|uuid|exists:users,id',
+            'teams_id' => 'nullable'
         ]);
 
         $voucher = Voucher::findOrFail($id);
         $voucher->update($validated);
+        $voucher->teams()->sync($validated['teams_id']);
 
         return response()->json(['message' => 'Voucher updated successfully.', 'data' => $voucher]);
     }

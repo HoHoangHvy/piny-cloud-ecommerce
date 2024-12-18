@@ -250,13 +250,26 @@
                                 <option value="fixed">Fixed</option>
                             </select>
                         </div>
-                        <div>
+                        <div v-if="form.discount_type == 'fixed'">
                             <label for="discount_amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount Amount</label>
                             <input v-model="form.discount_amount" type="number" id="discount_amount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Discount Amount" required>
                         </div>
-                        <div>
+                        <div v-if="form.discount_type == 'percent'">
                             <label for="discount_percent" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount Percent</label>
                             <input v-model="form.discount_percent" type="number" id="discount_percent" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Discount Percent" required>
+                        </div>
+                    </div>
+                    <div class="grid mb-4 gap-2 sm:grid-cols-3">
+                        <div>
+                            <label for="apply_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apply for</label>
+                            <select v-model="form.apply_type" id="discount_type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <option value="shipping_fee">Shipping</option>
+                                <option value="discount">Order</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="limit_per_order" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Limit per order</label>
+                            <input v-model="form.limit_per_order" type="number" id="limit_per_order" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Limit" required>
                         </div>
                         <div>
                             <label for="limit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Limit</label>
@@ -266,10 +279,12 @@
                     <div class="grid mb-4 sm:grid-cols-1">
                         <label for="team_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apply on Teams</label>
                         <Multiselect
+                            :classes="{  tag: 'bg-primary text-white text-sm font-semibold py-0.5 pl-2 rounded mr-1 mb-1 flex items-center whitespace-nowrap min-w-0 rtl:pl-0 rtl:pr-2 rtl:mr-0 rtl:ml-1',}"
                             v-model="form.teams_id"
                             :options="options"
                             :close-on-select="false"
-                            mode="multiple"
+                            mode="tags"
+                            :searchable="true"
                         />
                     </div>
                     <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
@@ -339,10 +354,12 @@
             <div class="grid gap-4 mb-4 sm:grid-cols-1">
                 <label for="team_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apply on Teams</label>
                 <Multiselect
+                    :classes="{  tag: 'bg-primary text-white text-sm font-semibold py-0.5 pl-2 rounded mr-1 mb-1 flex items-center whitespace-nowrap min-w-0 rtl:pl-0 rtl:pr-2 rtl:mr-0 rtl:ml-1',}"
                     v-model="formEdit.teams_id"
                     :options="options"
                     :close-on-select="false"
-                    mode="multiple"
+                    mode="tags"
+                    :searchable="true"
                 />
             </div>
         </div>
@@ -417,6 +434,8 @@ const form = reactive({
     discount_amount: 0,
     discount_percent: 0,
     limit: 0,
+    limit_per_order: 0,
+    apply_type: 'discount'
 });
 
 const formEdit = reactive({
@@ -428,6 +447,8 @@ const formEdit = reactive({
     discount_amount: 0,
     discount_percent: 0,
     limit: 0,
+    limit_per_order: 0,
+    apply_type: 'discount',
     teams_id: [],
 });
 
@@ -465,13 +486,13 @@ const handleCreateVoucher = async () => {
 // Handle update voucher
 const updateVoucher = async () => {
     try {
-        await store.dispatch('vouchers/updateVoucher', { id: formEdit.id, ...formEdit });
+        debugger
+            await store.dispatch('vouchers/updateVoucher', { id: formEdit.id ,voucherData: formEdit });
         notify({
             group: "foo",
             title: "Success",
             text: "Voucher updated successfully!",
         }, 4000);
-        updateDrawerInstance.hide();
         fetchData(); // Refresh the list after updating a voucher
     } catch (error) {
         notify({

@@ -9,6 +9,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRolePermissionController;
+use App\Http\Controllers\VoucherController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -78,6 +79,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/customers/save-address/{id}', [\App\Http\Controllers\CustomerController::class, 'saveAddress']);
     Route::get('/ghn/wards', [GHNController::class, 'getWards']);
     Route::get('/ghn/shipping-fee', [GHNController::class, 'getShippingFee']);
+    Route::get('/vouchers/loadCustomerVoucher', [VoucherController::class, 'loadVouchersByDateAndTeam']);
 
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);

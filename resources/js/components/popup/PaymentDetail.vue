@@ -35,6 +35,7 @@ const form = ref({
     branch: '',
     voucher: ''
 });
+const vouchers = ref([]);
 
 const provinces = ref([]);
 const districts = ref([]);
@@ -72,7 +73,6 @@ const totalAmount = computed(() => {
 });
 
 const filteredDistricts = computed(() => {
-    debugger
     if (!form.value.province) return [];
     return districts.value.filter(d => d.ProvinceID.toString() === form.value.province.toString());
 });
@@ -90,13 +90,6 @@ const fetchWards = async (districtId) => {
         console.error('Error fetching wards:', error);
     }
 };
-watch(() => form.value.branch, (newTeamId) => {
-    if (newTeamId) {
-        fetchShippingFee(newTeamId);
-    } else {
-        deliveryAmount.value = 0; // Reset delivery amount if no team is selected
-    }
-});
 const fetchShippingFee = async (teamId) => {
     try {
         const response = await axios.get('/api/ghn/shipping-fee', {
@@ -168,6 +161,57 @@ const saveAddress = () => {
             text: "Address saved successfully",
         }, 4000);
     });
+};
+
+watch(() => form.value.branch, async (newTeamId) => {
+    if(newTeamId === '487b2a5a-1ebf-4035-a9ea-45a99539db80' && form.value.province === '202') {
+        notify({
+            group: "error",
+            title: "Error",
+            text: "Shipping is support for distance <10km, choose another branch",
+        }, 4000);
+        form.value.branch = '';
+    } else {
+        if (newTeamId) {
+            await fetchShippingFee(newTeamId);
+            await fetchVouchers(newTeamId); // Fetch vouchers when the team changes
+        } else {
+            deliveryAmount.value = 0; // Reset delivery amount if no team is selected
+        }
+    }
+});
+
+const fetchVouchers = async (teamId) => {
+    try {
+        const response = await axios.get('/api/vouchers/loadCustomerVoucher', {
+            params: {
+                team_id: teamId,
+            },
+        });
+        vouchers.value = response.data.data; // Store the fetched vouchers
+    } catch (error) {
+        console.error('Error fetching vouchers:', error);
+        notify({
+            group: "foo",
+            title: "Error",
+            text: "Failed to fetch vouchers. Please try again.",
+        }, 4000);
+    }
+};
+const applyVoucher = (voucher) => {
+    // Update the discount amount based on the voucher
+    if (voucher.discount_type === 'percent') {
+        discountAmount.value = (props.cart.total_price * voucher.discount_percent) / 100;
+    } else {
+        discountAmount.value = voucher.discount_amount;
+    }
+    form.value.voucher = voucher.vourcher_code; // Store the voucher code in the form
+    closeVoucherModal(); // Close the modal after applying the voucher
+    notify({
+        group: "foo",
+        title: "Success",
+        text: "Voucher applied successfully!",
+    }, 4000);
 };
 </script>
 <template>
@@ -383,24 +427,24 @@ const saveAddress = () => {
                                 <div class="bg-gray-100 p-6 rounded-lg shadow-lg max-w-lg w-full">
                                     <div class="flex justify-between items-center">
                                         <h2 class="font-bold text-gray-500 text-lg mb-4">{{ t('LBL_VOUCHER') }}</h2>
-                                        <div class="h-6 w-6 text-gray-500 cursor-pointer"
-                                             @click="closeVoucherModal"> >
+                                        <div class="h-6 w-6 text-gray-500 cursor-pointer" @click="closeVoucherModal">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-1 gap-4">
-                                        <div class="flex items-center justify-between border p-4 rounded-lg">
+                                        <div v-for="voucher in vouchers" :key="voucher.id" class="flex items-center justify-between border p-4 rounded-lg">
                                             <div class="ml-4">
-                                                <p class="text-gray-500 font-inter">Freeship</p>
+                                                <p class="text-gray-500 font-inter">{{ voucher.vourcher_code }}</p>
+                                                <p class="text-sm text-gray-500">{{ voucher.discount_type === 'percent' ? voucher.discount_percent + '%' : formatVietnameseCurrency(voucher.discount_amount) }}</p>
                                             </div>
-                                            <button class="bg-[#6B4226] text-white px-4 py-2 rounded-lg">
+                                            <button class="bg-[#6B4226] text-white px-4 py-2 rounded-lg" @click="applyVoucher(voucher)">
                                                 {{ t('LBL_USE_NOW') }}
                                             </button>
                                         </div>
-                                        <!-- Add more vouchers here -->
                                     </div>
-                                    <button class="mt-4 text-sm text-gray-500 hover:underline"
-                                            @click="closeVoucherModal">{{ t('LBL_CLOSE') }}
-                                    </button>
+                                    <button class="mt-4 text-sm text-gray-500 hover:underline" @click="closeVoucherModal">{{ t('LBL_CLOSE') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -446,7 +490,7 @@ const saveAddress = () => {
                         <dt class="text-lg font-bold text-gray-500 dark:text-white">{{ t('LBL_TOTAL') }}</dt>
                         <dd class="text-lg font-bold text-gray-500 dark:text-white">{{formatVietnameseCurrency(totalAmount)}}</dd>
                     </dl>
-                </div>z
+                </div>
             </div>
         </div>
         <div class="flex gap-2 justify-end mt-4 mr-4 pr-4 sticky bottom-0 right-0 bg-gray-100 w-full p-4 pl-6 pb-4">
