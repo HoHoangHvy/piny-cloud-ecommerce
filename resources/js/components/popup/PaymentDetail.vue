@@ -33,7 +33,8 @@ const form = ref({
     note: '',
     paymentMethod: 'cash',
     branch: '',
-    voucher: ''
+    voucher: '',
+    voucher_shipping: '',
 });
 const vouchers = ref([]);
 
@@ -188,6 +189,7 @@ const fetchVouchers = async (teamId) => {
                 team_id: teamId,
             },
         });
+        debugger
         vouchers.value = response.data.data; // Store the fetched vouchers
     } catch (error) {
         console.error('Error fetching vouchers:', error);
@@ -197,6 +199,12 @@ const fetchVouchers = async (teamId) => {
             text: "Failed to fetch vouchers. Please try again.",
         }, 4000);
     }
+};
+const chooseVoucher = (voucherId) => {
+    form.value.voucher = voucherId;
+};
+const chooseVoucherShipping = (voucherId) => {
+    form.value.voucher_shipping = voucherId;
 };
 const applyVoucher = (voucher) => {
     // Update the discount amount based on the voucher
@@ -423,28 +431,69 @@ const applyVoucher = (voucher) => {
                             <div class="grid grid-cols-1 gap-2">
                             </div>
                             <div v-if="voucherModalVisible"
-                                 class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-                                <div class="bg-gray-100 p-6 rounded-lg shadow-lg max-w-lg w-full">
+                                 class="fixed inset-0 z-9999 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+                                <div class="bg-gray-100 p-6 pb-4 rounded-lg shadow-lg max-w-lg w-full">
                                     <div class="flex justify-between items-center">
-                                        <h2 class="font-bold text-gray-500 text-lg mb-4">{{ t('LBL_VOUCHER') }}</h2>
+                                        <h2 class="font-bold text-[#6B4226] text-lg mb-4">{{ t('LBL_VOUCHER') }}</h2>
                                         <div class="h-6 w-6 text-gray-500 cursor-pointer" @click="closeVoucherModal">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                             </svg>
                                         </div>
                                     </div>
-                                    <div class="grid grid-cols-1 gap-4">
-                                        <div v-for="voucher in vouchers" :key="voucher.id" class="flex items-center justify-between border p-4 rounded-lg">
-                                            <div class="ml-4">
-                                                <p class="text-gray-500 font-inter">{{ voucher.vourcher_code }}</p>
-                                                <p class="text-sm text-gray-500">{{ voucher.discount_type === 'percent' ? voucher.discount_percent + '%' : formatVietnameseCurrency(voucher.discount_amount) }}</p>
+                                    <div>
+                                        <span class="font-semibold text-gray-500">Shipping voucher</span>
+                                        <div class="flex flex-col items-center gap-3 mt-2">
+                                            <div v-for="voucher in vouchers.shipping_fee" :key="voucher.id" @click="chooseVoucherShipping(voucher.id)" class="shadow-item h-[80px] hover:shadow-xl flex items-center w-[95%] bg-white justify-between gap-4 shadow-lg rounded-lg pr-4">
+                                                <div class="flex gap-1 h-full w-[90%] border-[#6B4226]">
+                                                    <div class="bg-[#ABBA7C] p-4 h-full rounded-l-lg flex items-center justify-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="white" class="size-12">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="ml-4 flex h-full flex-col justify-center">
+                                                        <p class="text-gray-500 font-inter font-semibold">{{ voucher.voucher_code }}</p>
+                                                        <p class="text-sm text-gray-500">Discount <span class="font-semibold">{{ voucher.discount_type === 'percent' ? voucher.discount_percent + '%' : formatVietnameseCurrency(voucher.discount_amount) }}</span> <span v-if="voucher.discount_type == 'percent'"> up to <span class="font-semibold">{{formatVietnameseCurrency(voucher.limit_per_order)}}</span></span></p>
+                                                        <p class="text-sm text-gray-500">Minimum order of {{ formatVietnameseCurrency(voucher.minimum) }}</p>
+                                                    </div>
+                                                </div>
+                                                <input id="online" type="radio" name="voucher_shipping" class="form-radio"
+                                                       v-model="form.voucher_shipping" :value="voucher.id">
                                             </div>
-                                            <button class="bg-[#6B4226] text-white px-4 py-2 rounded-lg" @click="applyVoucher(voucher)">
-                                                {{ t('LBL_USE_NOW') }}
-                                            </button>
                                         </div>
                                     </div>
-                                    <button class="mt-4 text-sm text-gray-500 hover:underline" @click="closeVoucherModal">{{ t('LBL_CLOSE') }}</button>
+                                    <div class="mt-4">
+                                        <span class="font-semibold text-gray-500">Discount voucher</span>
+                                        <div class="flex flex-col items-center gap-3 mt-2">
+                                            <div v-for="voucher in vouchers.discount" :key="voucher.id" @click="chooseVoucher(voucher.id)" class="shadow-item h-[80px] hover:shadow-xl flex items-center w-[95%] bg-white justify-between gap-4 shadow-lg rounded-lg pr-4">
+                                                <div class="flex gap-1 h-full w-[90%] border-[#6B4226]">
+                                                    <div class="bg-[#6B4226] p-4 h-full rounded-l-lg flex items-center justify-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="white" class="size-12">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="ml-4 flex h-full flex-col justify-center">
+                                                        <p class="text-gray-500 font-inter font-semibold">{{ voucher.voucher_code }}</p>
+                                                        <p class="text-sm text-gray-500">Discount <span class="font-semibold">{{ voucher.discount_type === 'percent' ? voucher.discount_percent + '%' : formatVietnameseCurrency(voucher.discount_amount) }}</span> <span v-if="voucher.discount_type == 'percent'"> up to <span class="font-semibold">{{formatVietnameseCurrency(voucher.limit_per_order)}}</span></span></p>
+                                                        <p class="text-sm text-gray-500">Minimum order of {{ formatVietnameseCurrency(voucher.minimum) }}</p>
+                                                    </div>
+                                                </div>
+                                                <input id="online" type="radio" name="voucher" class="form-radio"
+                                                       v-model="form.voucher" :value="voucher.id">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 justify-end bg-gray-100 w-full pt-4">
+                                        <button
+                                            class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-full border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-500 "
+                                            @click="closeVoucherModal"
+                                        >
+                                            Close
+                                        </button>
+                                        <button class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
+                                            Apply
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -528,5 +577,12 @@ const applyVoucher = (voucher) => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+.shadow-item {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.shadow-item:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
 }
 </style>

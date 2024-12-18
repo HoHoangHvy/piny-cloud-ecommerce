@@ -69,19 +69,26 @@ class VoucherController extends BaseController
         $return_data = [];
         foreach($vouchers as $voucher) {
             $return_data[$voucher['apply_type']][] = [
-                'voucher_code' => $voucher['voucher_code'],
+                'id' => $voucher['id'],
+                'voucher_code' => $voucher['vourcher_code'],
                 'discount_type' => $voucher['discount_type'],
                 'discount_amount' => $voucher['discount_amount'],
                 'discount_percent' => $voucher['discount_percent'],
                 'limit' => $voucher['limit'],
                 'limit_per_order' => $voucher['limit_per_order'],
-
+                'minimum' => $voucher['minimum'],
+                'apply_type' => $voucher['apply_type'],
+                'remaining' => $voucher['limit'] - $this->calculateUsedVouchers($voucher),
             ];
         }
         return response()->json([
             'success' => true,
-            'data' => $vouchers
+            'data' => $return_data
         ], 200);
+    }
+    public function calculateUsedVouchers($voucher)
+    {
+        return 0;
     }
     /**
      * Display the specified voucher.
