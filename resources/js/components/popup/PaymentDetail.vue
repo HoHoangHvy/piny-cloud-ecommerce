@@ -446,10 +446,10 @@ const saveAddress = () => {
                         <dt class="text-lg font-bold text-gray-500 dark:text-white">{{ t('LBL_TOTAL') }}</dt>
                         <dd class="text-lg font-bold text-gray-500 dark:text-white">{{formatVietnameseCurrency(totalAmount)}}</dd>
                     </dl>
-                </div>
+                </div>z
             </div>
         </div>
-        <div class="flex gap-2 justify-end p-2 mt-4 mr-4 pr-4 sticky bottom-0 right-0 bg-gray-100 w-full">
+        <div class="flex gap-2 justify-end mt-4 mr-4 pr-4 sticky bottom-0 right-0 bg-gray-100 w-full p-4 pl-6 pb-4">
             <button
                 class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-full border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-500 "
                 @click="emit('showPaymentDetail', index)"

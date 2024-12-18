@@ -397,7 +397,7 @@ const error = computed(() => store.getters['cart/error']);
                             </transition>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between h-full p-4 pl-6 pb-0 sticky bottom-0 right-0">
+                    <div class="flex items-center justify-between h-full p-4 pl-6 pb-4 sticky bottom-0 right-0">
                         <span class="flex h-full justify-center flex-col items-center font-semibold">Total: {{ formatVietnameseCurrency(cart.total_price) }}</span>
                         <div class="flex gap-1">
                             <button

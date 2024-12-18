@@ -27,7 +27,13 @@ class TeamController extends Controller
     public function getTeamOptions(): JsonResponse
     {
         // Retrieve all teams with only id and name fields
-        $teams = Team::all(['id', 'name']);
+        $currentUser = auth()->user();
+
+        if($currentUser->user_type == 'user') {
+            $teams = Team::all(['id', 'name']);
+        } else {
+            $teams = Team::where('id', '!=', '1')->get();
+        }
 
         // Add the total number of employees to each team
         $teams = $teams->map(function ($team) {
