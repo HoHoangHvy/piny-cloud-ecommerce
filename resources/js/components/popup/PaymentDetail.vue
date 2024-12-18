@@ -37,6 +37,9 @@ const form = ref({
     voucher_shipping: '',
 });
 const vouchers = ref([]);
+const deliveryDiscount = ref(0);
+const deliveryDiscountName = ref('');
+const discountName = ref('');
 
 const provinces = ref([]);
 const districts = ref([]);
@@ -189,7 +192,6 @@ const fetchVouchers = async (teamId) => {
                 team_id: teamId,
             },
         });
-        debugger
         vouchers.value = response.data.data; // Store the fetched vouchers
     } catch (error) {
         console.error('Error fetching vouchers:', error);
@@ -201,19 +203,51 @@ const fetchVouchers = async (teamId) => {
     }
 };
 const chooseVoucher = (voucherId) => {
-    form.value.voucher = voucherId;
+    if(voucherId === form.value.voucher) {
+        form.value.voucher = '';
+    } else {
+        form.value.voucher = voucherId;
+    }
 };
 const chooseVoucherShipping = (voucherId) => {
-    form.value.voucher_shipping = voucherId;
-};
-const applyVoucher = (voucher) => {
-    // Update the discount amount based on the voucher
-    if (voucher.discount_type === 'percent') {
-        discountAmount.value = (props.cart.total_price * voucher.discount_percent) / 100;
+    if(voucherId === form.value.voucher_shipping) {
+        form.value.voucher_shipping = '';
     } else {
-        discountAmount.value = voucher.discount_amount;
+        form.value.voucher_shipping = voucherId;
     }
-    form.value.voucher = voucher.vourcher_code; // Store the voucher code in the form
+};
+const applyVoucher = () => {
+
+    if (form.value.voucher !== '') {
+        const voucher = vouchers.value.discount.find(v => v.id === form.value.voucher);
+        if (voucher.discount_type === 'percent') {
+            let value = (props.cart.total_price * voucher.discount_percent) / 100;
+            if(value > voucher.limit_per_order) {
+                discountAmount.value = voucher.limit_per_order;
+            } else {
+                discountAmount.value = value;
+            }
+        } else {
+            discountAmount.value = voucher.discount_amount;
+        }
+        discountName.value = voucher.voucher_code;
+    }
+
+    if (form.value.voucher_shipping !== '') {
+        const voucher = vouchers.value.shipping_fee.find(v => v.id === form.value.voucher_shipping);
+        if (voucher.discount_type === 'percent') {
+            let value = (props.cart.total_price * voucher.discount_percent) / 100;
+            if(value > voucher.limit_per_order) {
+                deliveryDiscount.value = voucher.limit_per_order;
+            } else {
+                deliveryDiscount.value = value;
+            }
+        } else {
+            deliveryDiscount.value = voucher.discount_amount;
+        }
+        deliveryDiscountName.value = voucher.voucher_code;
+    }
+
     closeVoucherModal(); // Close the modal after applying the voucher
     notify({
         group: "foo",
@@ -249,7 +283,6 @@ const applyVoucher = (voucher) => {
                             </div>
                             <div class="mt-4">
                                 <div class="grid grid-cols-2 gap-2">
-                                    <!-- Province Dropdown -->
                                     <div>
                                         <label class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">Province</label>
                                         <select v-model="form.province" @change="form.district = ''; form.ward = ''"
@@ -260,7 +293,6 @@ const applyVoucher = (voucher) => {
                                             </option>
                                         </select>
                                     </div>
-                                    <!-- District Dropdown -->
                                     <div>
                                         <label class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">District</label>
                                         <select v-model="form.district" @change="form.ward = ''"
@@ -273,7 +305,6 @@ const applyVoucher = (voucher) => {
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 gap-2">
-                                    <!-- Ward Dropdown -->
                                     <div>
                                         <label
                                             class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">Ward</label>
@@ -285,7 +316,6 @@ const applyVoucher = (voucher) => {
                                             </option>
                                         </select>
                                     </div>
-                                    <!-- Street Input -->
                                     <div>
                                         <label class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">Street</label>
                                         <input type="text" v-model="form.street"
@@ -490,7 +520,7 @@ const applyVoucher = (voucher) => {
                                         >
                                             Close
                                         </button>
-                                        <button class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
+                                        <button @click="applyVoucher" class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold">
                                             Apply
                                         </button>
                                     </div>
@@ -511,6 +541,14 @@ const applyVoucher = (voucher) => {
                                         </svg>
                                         <span class="text-white text-sm">Voucher</span>
                                     </button>
+                                    <div class="flex justify-end w-full pr-2 gap-1">
+                                        <span class="border p-1 pr-2 pl-2 bg-[#6B4226] text-white font-semibold rounded-lg text-xs" v-if="deliveryDiscountName">
+                                            {{ deliveryDiscountName }}
+                                        </span>
+                                        <span class="border p-1 pr-2 pl-2 bg-[#ABBA7C] border-[#ABBA7C] text-white font-semibold rounded-lg text-xs" v-if="discountName">
+                                            {{ discountName }}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="pt-0">
                                     <dl class="flex items-center justify-between gap-4">
@@ -529,7 +567,7 @@ const applyVoucher = (voucher) => {
                                         <dt class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">
                                             {{ t('LBL_DELIVERY_FEE') }}
                                         </dt>
-                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">{{formatVietnameseCurrency(deliveryAmount)}}</dd>
+                                        <dd class="block mb-2 text-sm font-medium text-gray-500  dark:text-white"> <span v-if="deliveryDiscount">( -{{formatVietnameseCurrency(deliveryDiscount, false)}})</span> {{formatVietnameseCurrency(deliveryAmount - deliveryDiscount)}}</dd>
                                     </dl>
                                 </div>
                             </div>
