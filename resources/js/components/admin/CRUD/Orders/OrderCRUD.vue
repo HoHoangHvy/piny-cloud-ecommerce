@@ -103,13 +103,14 @@
                                 </div>
                             </th>
                             <th scope="col" class="p-4">Order</th>
-                            <th scope="col" class="p-4">Gender</th>
-                            <th scope="col" class="p-4">Level</th>
-                            <th scope="col" class="p-4">Date of Birth</th>
-                            <th scope="col" class="p-4">Phone</th>
-                            <th scope="col" class="p-4">Email</th>
-                            <th scope="col" class="p-4">Team</th>
-                            <th scope="col" class="p-4">Create At</th>
+                            <th scope="col" class="p-4">Created At</th>
+                            <th scope="col" class="p-4">Total</th>
+                            <th scope="col" class="p-4">Status</th>
+                            <th scope="col" class="p-4">Source</th>
+                            <th scope="col" class="p-4">Payment Status</th>
+                            <th scope="col" class="p-4">Payment Method</th>
+                            <th scope="col" class="p-4">Created By</th>
+                            <th scope="col" class="p-4">Branch</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -125,14 +126,15 @@
                                     <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                                 </div>
                             </td>
-                            <td class="p-4">{{ item.full_name }}</td>
-                            <td class="p-4">{{ item.gender }}</td>
-                            <td class="p-4">{{ item.level }}</td>
-                            <td class="p-4">{{ formatDateTime(item.date_of_birth) }}</td>
-                            <td class="p-4">{{ item.phone_number }}</td>
-                            <td class="p-4">{{ item.email }}</td>
-                            <td class="p-4">{{ item.team_name }}</td>
+                            <td class="p-4">{{ item.order_number }}</td>
                             <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
+                            <td class="p-4">{{ formatVietnameseCurrency(item.order_total) }}</td>
+                            <td class="p-4">{{ item.status }}</td>
+                            <td class="p-4">{{ item.source }}</td>
+                            <td class="p-4">{{ item.payment_status }}</td>
+                            <td class="p-4">{{ item.payment_method }}</td>
+                            <td class="p-4">{{ item.created_by_name }}</td>
+                            <td class="p-4">{{ item.team_name }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
                                     <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item.id)" data-drawer-target="drawer-update-order" data-drawer-show="drawer-update-order"  class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
@@ -347,6 +349,7 @@ import { useStore } from 'vuex';
 import { initFlowbite, Drawer, Modal } from 'flowbite';
 import { notify } from 'notiwind';
 import { formatDateTime } from "@/js/helpers/dateFormat.js";
+import {formatVietnameseCurrency} from "../../../../helpers/currencyFormat.js";
 
 const store = useStore();
 const list = ref([]);
