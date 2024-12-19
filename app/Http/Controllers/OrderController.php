@@ -9,6 +9,7 @@ use App\Models\CustomerOrder;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -87,6 +88,92 @@ class OrderController extends Controller
         $order->customers()->attach($customer->id);
 
         return response()->json(['message' => 'Cart created successfully.', 'data' => $order]);
+    }
+    public function proceedOrder(Request $request)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'receiver_name' => 'required|string|max:255',
+            'receiver_address' => 'required|string|max:255',
+            'payment_method' => 'required|in:cash,online',
+            'branch' => 'required|uuid|exists:teams,id',
+            'voucher' => 'nullable|string',
+            'voucher_shipping' => 'nullable|string',
+            'note' => 'nullable|string',
+            'province' => 'required|string',
+            'district' => 'required|string',
+            'ward' => 'required|string',
+            'street' => 'required|string',
+            'phone_number' => 'required|string',
+            'shipping_fee' => 'required|numeric',
+        ]);
+
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch the order
+        $order = Order::findOrFail($validated['order_id']);
+
+        // Ensure the order belongs to the current customer
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('order_id', $order->id)
+            ->first();
+
+        if (!$customerOrder) {
+            return response()->json(['message' => 'Unauthorized or invalid order.'], 403);
+        }
+        // Update the order with the new details
+        $order->update([
+            'receiver_name' => $validated['receiver_name'],
+            'receiver_address' => $validated['receiver_address'],
+            'receiver_phone' => $validated['phone_number'],
+            'payment_method' => $validated['payment_method'],
+            'order_status' => 'Wait For Approval', // Update the status to 'Pending'
+            'note' => $validated['note'],
+            'province' => $validated['province'],
+            'district' => $validated['district'],
+            'ward' => $validated['ward'],
+            'street' => $validated['street'],
+            'phone_number' => $validated['phone_number'],
+            'team_id' => $validated['branch'],
+            'shipping_fee' => $validated['shipping_fee'],
+        ]);
+
+        // Apply vouchers if provided
+        if (!empty($validated['voucher'])) {
+            $order->vouchers()->attach($validated['voucher']);
+        }
+
+        if (!empty($validated['voucher_shipping'])) {
+            $order->vouchers()->attach($validated['voucher_shipping']);
+        }
+
+        // Save the updated order
+        $order->save();
+
+        return response()->json([
+            'message' => 'Order proceeded successfully.',
+            'data' => $order,
+        ]);
+    }
+    function calculateDiscount($voucherCode, $orderTotal) {
+        // Fetch voucher details from the database
+        $voucher = Voucher::where('code', $voucherCode)->first();
+
+        if (!$voucher) {
+            return 0; // Voucher not found
+        }
+
+        if ($voucher->discount_type === 'percent') {
+            $discountAmount = ($orderTotal * $voucher->discount_percent) / 100;
+            return min($discountAmount, $voucher->limit_per_order);
+        } else {
+            return $voucher->discount_amount;
+        }
     }
     public function addProductToCart(Request $request)
     {

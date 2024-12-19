@@ -32,6 +32,7 @@ class Order extends Model
         'district',
         'ward',
         'street',
+        'shipping_fee',
     ];
 
     // Relationship with the host customer
@@ -60,5 +61,9 @@ class Order extends Model
     public function team()
     {
         return $this->belongsTo(Team::class); // Singular: "team"
+    }
+
+    public function vouchers() {
+        return $this->belongsToMany(Voucher::class, 'order_voucher');
     }
 }

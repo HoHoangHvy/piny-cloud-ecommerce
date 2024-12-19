@@ -41,4 +41,9 @@ class Voucher extends Model
     {
         return $this->belongsTo(Team::class); // Singular: "team"
     }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_voucher');
+    }
 }

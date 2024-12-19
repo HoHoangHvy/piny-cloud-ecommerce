@@ -80,6 +80,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/ghn/wards', [GHNController::class, 'getWards']);
     Route::get('/ghn/shipping-fee', [GHNController::class, 'getShippingFee']);
     Route::get('/vouchers/loadCustomerVoucher', [VoucherController::class, 'loadVouchersByDateAndTeam']);
+    Route::post('/orders/proceed', [\App\Http\Controllers\OrderController::class, 'proceedOrder']);
 
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);

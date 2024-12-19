@@ -33,7 +33,10 @@ const form = {
     cart_name: '',
     type: ''
 }
-
+const closeDrawer = () => {
+    isVisible.value = false;
+    updateDrawerInstance.hide();
+};
 const handleCreateCart = async () => {
     await store.dispatch('cart/createCart', {
         custom_name: form.cart_name,
@@ -288,7 +291,7 @@ const error = computed(() => store.getters['cart/error']);
                 role="tabpanel"
                 :aria-labelledby="`tab-${index}`"
             >
-                <PaymentDetail :cart="cart" :is-visible="showPaymentDetail[index]" :index="index" @showPaymentDetail="togglePaymentDetail"/>
+                <PaymentDetail :cart="cart" :is-visible="showPaymentDetail[index]" :index="index" @showPaymentDetail="togglePaymentDetail" @refetchData="fetchData" @closeDrawer="closeDrawer"/>
                 <div v-if="!showPaymentDetail[index]">
                     <div class="order-summary flex justify-between pl-6 pr-6 pb-4">
                         <div>
