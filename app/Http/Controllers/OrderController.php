@@ -89,6 +89,141 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Cart created successfully.', 'data' => $order]);
     }
+    public function loadCustomerOrders(Request $request)
+    {
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch all orders that belong to the customer
+        $orders = Order::where('order_status', '<>', 'Draft')
+        ->whereHas('customers', function ($query) use ($customer) {
+            $query->where('customer_id', $customer->id);
+        })->get();
+
+        $return_data = [];
+        foreach($orders as $order) {
+            $orderCustomer = $order->customers()->where('customer_id', $customer->id)->first();
+
+            $orderDetails = $orderCustomer->pivot->orderDetails()
+                ->where('parent_id', null)
+                ->with('toppings.product') // Include topping product details
+                ->get();
+
+            $data = [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'date_created' => $order->created_at,
+                'host_id' => $order->host_id,
+                'payment_method' => $order->payment_method,
+                'status' => $order->order_status,
+                'count_product' => $orderDetails->count(),
+                'order_date' => $order->updated_at,
+            ];
+            $total_price = 0;
+            foreach ($orderDetails as $orderDetail) {
+                $total_price += $orderDetail->total_price;
+                $data['order_detail'][] = [
+                    'id' => $orderDetail->id,
+                    'order_detail_number' => $orderDetail->order_detail_number,
+                    'product_id' => $orderDetail->product->id,
+                    'product_name' => $orderDetail->product->name,
+                    'product_price' => $orderDetail->product->price,
+                    'size' => $orderDetail->size,
+                    'quantity' => $orderDetail->quantity,
+                    'image' => $orderDetail->product->product_image ? asset($orderDetail->product->product_image) : null,
+                    'note' => $orderDetail->note,
+                    'total_price' => $orderDetail->total_price,
+                    'count_topping' => $orderDetail->toppings->count(),
+                ];
+            }
+            $data['total_price'] = $total_price;
+            $return_data[$order->order_status][] = $data;
+        }
+
+        return response()->json([
+            'message' => 'Orders fetched successfully.',
+            'data' => $return_data,
+        ]);
+    }
+    public function loadOrderDetail(Request $request, $orderId)
+    {
+        try {
+            $currentUser = auth()->user();
+            $customer = Customer::where('user_id', $currentUser->id)->first();
+
+            if (!$customer) {
+                return response()->json(['message' => 'Customer not found.'], 404);
+            }
+
+            // Fetch the order
+            $order = Order::findOrFail($orderId);
+
+            $orderCustomer = $order->customers()->where('customer_id', $customer->id)->first();
+
+            if ($orderCustomer) {
+                // Get order details if the relationship exists
+                $orderDetails = $orderCustomer->pivot->orderDetails()
+                    ->where('parent_id', null)
+                    ->with('toppings.product') // Include topping product details
+                    ->get();
+
+                $data = [
+                    'type' => $order->type,
+                    'name' => !empty($order->custom_name) ? $order->custom_name : $order->order_number,
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'date_created' => $order->created_at,
+                    'host_id' => $order->host_id,
+                    'payment_method' => $order->payment_method,
+                    'status' => $order->order_status,
+                    'total_price' => $order->order_total,
+                    'count_product' => $orderDetails->count() ?? 0,
+                    'order_detail' => []
+                ];
+                $total_price = 0;
+                foreach ($orderDetails as $orderDetail) {
+                    $total_price += $orderDetail->total_price;
+                    $data['order_detail'][] = [
+                        'id' => $orderDetail->id,
+                        'order_detail_number' => $orderDetail->order_detail_number,
+                        'product_id' => $orderDetail->product->id,
+                        'product_name' => $orderDetail->product->name,
+                        'product_price' => $orderDetail->product->price,
+                        'size' => $orderDetail->size,
+                        'quantity' => $orderDetail->quantity,
+                        'image' => $orderDetail->product->product_image ? asset($orderDetail->product->product_image) : null,
+                        'note' => $orderDetail->note,
+                        'total_price' => $orderDetail->total_price,
+                        'count_topping' => $orderDetail->toppings->count(),
+                        'toppings' => $orderDetail->toppings->map(function ($topping) {
+                            return [
+                                'id' => $topping->id,
+                                'topping_id' => $topping->product->id,
+                                'name' => $topping->product->name,
+                                'price' => $topping->product->price,
+                            ];
+                        }),
+                    ];
+                }
+                $data['total_price'] = $total_price;
+                $return_data[] = $data;
+            }
+
+            return response()->json([
+                'message' => 'Cart details fetched successfully.',
+                'data' => $return_data
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+    }
     public function proceedOrder(Request $request)
     {
         $validated = $request->validate([
@@ -672,6 +807,35 @@ class OrderController extends Controller
         $topping->delete();
 
         return response()->json(['message' => 'Topping removed from cart successfully.']);
+    }
+    public function cancelOrder(Request $request) {
+        $validated = $request->validate([
+            'order_id' => 'required | exists:orders,id',
+        ]);
+
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch the order
+        $order = Order::findOrFail($validated['order_id']);
+
+        // Ensure the order belongs to the current customer
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('order_id', $order->id)
+            ->first();
+
+        if (!$customerOrder) {
+            return response()->json(['message' => 'Unauthorized or invalid order.'], 403);
+        }
+
+        // Update the order status to 'Cancelled'
+        $order->update(['order_status' => 'Cancelled']);
+
+        return response()->json(['message' => 'Order cancelled successfully.']);
     }
     /**
      * Store a newly created order in storage.
