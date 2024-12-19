@@ -129,7 +129,7 @@
                             <td class="p-4">{{ item.order_number }}</td>
                             <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
                             <td class="p-4">{{ formatVietnameseCurrency(item.order_total) }}</td>
-                            <td class="p-4">{{ item.status }}</td>
+                            <td class="p-4">{{ item.order_status }}</td>
                             <td class="p-4">{{ item.source }}</td>
                             <td class="p-4">{{ item.payment_status }}</td>
                             <td class="p-4">{{ item.payment_method }}</td>
@@ -137,7 +137,7 @@
                             <td class="p-4">{{ item.team_name }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
-                                    <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item.id)" data-drawer-target="drawer-update-order" data-drawer-show="drawer-update-order"  class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
+                                    <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item)" data-drawer-target="drawer-update-order" data-drawer-show="drawer-update-order"  class="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
                                             <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
@@ -212,7 +212,7 @@
                 <!-- Modal header -->
                 <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Order</h3>
-                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="create-Order-modal">
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="create-order-modal">
                         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
@@ -265,7 +265,7 @@
                     </div>
                     <div class="items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
                         <button type="submit" class="w-full sm:w-auto justify-center text-white inline-flex bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Add Order</button>
-                        <button data-modal-toggle="create-Order-modal" type="button" class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                        <button data-modal-toggle="create-order-modal" type="button" class="w-full justify-center sm:w-auto text-gray-500 inline-flex items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                             <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
@@ -288,42 +288,58 @@
             <div class="grid gap-4 mb-4 sm:grid-cols-2">
                 <div class="grid gap-4 sm:col-span-2 md:gap-6 sm:grid-cols-1">
                     <div>
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Order Name</label>
-                        <input v-model="formEdit.name" type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Order name" required="">
+                        <label for="order_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Order Number</label>
+                        <input v-model="formEdit.order_number" type="text" id="order_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Order Number" required>
                     </div>
                     <div>
-                        <label for="adress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
-                        <input v-model="formEdit.address" type="text" name="brand" id="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Order Address" required="">
+                        <label for="receiver_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Receiver Name</label>
+                        <input v-model="formEdit.receiver_name" type="text" id="receiver_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Receiver Name" required>
+                    </div>
+                    <div>
+                        <label for="receiver_address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Receiver Address</label>
+                        <input v-model="formEdit.receiver_address" type="text" id="receiver_address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Receiver Address" required>
+                    </div>
+                    <div>
+                        <label for="payment_method" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Payment Method</label>
+                        <select v-model="formEdit.payment_method" id="payment_method" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                            <option value="Banking">Banking</option>
+                            <option value="Cash">Cash</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="order_status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Order Status</label>
+                        <select v-model="formEdit.order_status" id="order_status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                            <option value="Wait for Approval">Wait for Approval</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Delivering">Delivering</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="order_total" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Order Total</label>
+                        <input v-model="formEdit.order_total" type="number" id="order_total" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Order Total" required>
+                    </div>
+                    <div>
+                        <label for="team_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Branch</label>
+                        <select v-model="formEdit.team_id" id="team_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                            <option v-for="team in store.getters['teams/allTeamsOption']" :value="team.id" :key="team.id">{{ team.name }}</option>
+                        </select>
                     </div>
                 </div>
-                <div class="grid gap-4 sm:col-span-2 md:gap-6 sm:grid-cols-3">
-                    <div>
-                        <label for="ward" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ward</label>
-                        <input v-model="formEdit.ward" type="text" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Ward" required="">
-                    </div>
-                    <div>
-                        <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">State</label>
-                        <input v-model="formEdit.state" type="text" name="brand" id="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="State" required="">
-                    </div>
-                    <div>
-                        <label for="city" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City</label>
-                        <input v-model="formEdit.city" type="text" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="City" required="">
-                    </div>
-                </div>
-                <div class="sm:col-span-2"><label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label><textarea v-model="formEdit.description" id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Write Order description here"></textarea></div>
             </div>
         </div>
         <div class="grid grid-cols-2 gap-4 mt-6 sm:w-1/2">
-            <button @click="updateOrder" type="submit" class="text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Update Order</button>
-            <button @click="deletOrder" type="button" class="text-red-600 inline-flex justify-center items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+            <button @click="handleUpdateOrder" type="submit" class="text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary dark:focus:ring-primary-800">Update Order</button>
+            <button @click="handleDeleteOrder(formEdit.id)" type="button" class="text-red-600 inline-flex justify-center items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
                 <svg aria-hidden="true" class="w-5 h-5 mr-1 -ml-1" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                 </svg>
                 Delete
             </button>
         </div>
-    </form>
-    <!-- Delete Modal -->
+    </form>    <!-- Delete Modal -->
     <div id="delete-modal" tabindex="-1" class="fixed top-0 left-0 right-0 z-999 hidden p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center">
         <div class="relative w-full h-auto max-w-md max-h-full">
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -352,6 +368,7 @@ import { initFlowbite, Drawer, Modal } from 'flowbite';
 import { notify } from 'notiwind';
 import { formatDateTime } from "@/js/helpers/dateFormat.js";
 import {formatVietnameseCurrency} from "../../../../helpers/currencyFormat.js";
+import axios from "axios";
 
 const store = useStore();
 const list = ref([]);
@@ -363,23 +380,24 @@ const moduleName = 'orders'; // Module name for the CRUD operations
 
 // Reactive form data
 const form = reactive({
-    name: '',
-    date_of_birth: '',
-    phone_number: '',
-    email: '',
-    gender: '',
-    level: '',
+    order_number: '',
+    receiver_name: '',
+    receiver_address: '',
+    payment_method: 'Banking',
+    order_status: 'Wait for Approval',
+    order_total: 0,
     team_id: '',
-    date_registered: '',
 });
+
 const formEdit = reactive({
     id: null,
-    name: '',
-    address: '',
-    city: '',
-    state: '',
-    ward: '',
-    description: '',
+    order_number: '',
+    receiver_name: '',
+    receiver_address: '',
+    payment_method: 'Banking',
+    order_status: 'Wait for Approval',
+    order_total: 0,
+    team_id: '',
 });
 
 const fetchTeamOptions = async () => {
@@ -389,11 +407,11 @@ const fetchTeamOptions = async () => {
         console.error("Failed to fetch teams:", error);
     }
 }
+
 // Fetch Orders data from Vuex store
 const fetchData = async () => {
     try {
         await store.dispatch('orders/fetchOrders');
-
         list.value = store.state.orders.orders; // Adjusted based on the store state
     } catch (error) {
         console.error("Failed to fetch orders:", error);
@@ -420,27 +438,28 @@ const handleCreateOrder = async () => {
         console.error(error);
     }
 };
- const triggerNoti = () => {
-        notify({
-            group: "foo",
-            title: "Success",
-            text: "Order created successfully!",
-        }, 4000);
-    }
+
 // Handle update Order
 const handleUpdateOrder = async () => {
     try {
-        await store.dispatch('Orders/updateOrder', {
-            id: formEdit.id,
-            orderData: { ...formEdit },
+        await axios.post(`/api/orders/${formEdit.id}`, { ...formEdit }).then(response => {
+            if(response.status === 200) {
+                notify({
+                    group: "foo",
+                    title: "Success",
+                    text: "Order updated successfully!",
+                }, 4000);
+                fetchData();
+                updateDrawerInstance.hide();
+            } else {
+                notify({
+                    group: "foo",
+                    title: "Error",
+                    text: "An error occurred while updating the order.",
+                }, 2000);
+            }
         });
-        notify({
-            group: "foo",
-            title: "Success",
-            text: "Order updated successfully!",
-        }, 4000);
-        fetchData();
-        updateDrawerInstance.hide(); // Close the update drawer
+
     } catch (error) {
         notify({
             group: "foo",
@@ -454,12 +473,13 @@ const handleUpdateOrder = async () => {
 // Drawer open/close logic
 const openUpdateModal = (order) => {
     formEdit.id = order.id;
-    formEdit.name = order.name;
-    formEdit.address = order.address;
-    formEdit.city = order.city;
-    formEdit.state = order.state;
-    formEdit.ward = order.ward;
-    formEdit.description = order.description;
+    formEdit.order_number = order.order_number;
+    formEdit.receiver_name = order.receiver_name;
+    formEdit.receiver_address = order.receiver_address;
+    formEdit.payment_method = order.payment_method;
+    formEdit.order_status = order.order_status;
+    formEdit.order_total = order.order_total;
+    formEdit.team_id = order.team_id;
     if (updateDrawerInstance) {
         updateDrawerInstance.show();
     }
@@ -468,7 +488,7 @@ const openUpdateModal = (order) => {
 // Delete Order
 const handleDeleteOrder = async (id) => {
     try {
-        await store.dispatch('Orders/deleteOrder', id);
+        await store.dispatch('orders/deleteOrder', id);
         notify({
             group: "foo",
             title: "Success",
@@ -488,12 +508,13 @@ const handleDeleteOrder = async (id) => {
 
 // Reset form fields
 const resetForm = () => {
-    form.name = '';
-    form.address = '';
-    form.city = '';
-    form.state = '';
-    form.ward = '';
-    form.description = '';
+    form.order_number = '';
+    form.receiver_name = '';
+    form.receiver_address = '';
+    form.payment_method = 'Banking';
+    form.order_status = 'Wait for Approval';
+    form.order_total = 0;
+    form.team_id = '';
 };
 
 // Initialize the drawer and modal instances

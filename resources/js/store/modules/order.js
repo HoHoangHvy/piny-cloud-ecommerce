@@ -81,7 +81,9 @@ export default {
         async updateOrder({ commit }, { id, orderData }) {
             commit('SET_LOADING', true);
             try {
-                const response = await axios.put(`/api/orders/${id}`, orderData);
+                await axios.get('sanctum/csrf-cookie');
+                const response = await axios.post(`/api/orders/${id}`, orderData);
+                debugger
                 commit('UPDATE_ORDER', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {

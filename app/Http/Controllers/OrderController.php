@@ -886,7 +886,7 @@ class OrderController extends Controller
             'receiver_address' => 'nullable | string | max:255',
             'payment_method' => 'nullable | in:Banking,Cash',
             'payment_status' => 'nullable | in:pending,paid',
-            'order_status' => 'nullable | in:Wait for Approval, In Progress, Delivering, Delivered, Completed, Cancelled',
+            'order_status' => 'nullable',
             'date_created' => 'nullable | date',
             'order_total' => 'nullable | numeric | min:0',
             'rate' => 'nullable | integer | min:0 | max:5',
