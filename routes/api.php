@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GHNController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\PayOSWebhookController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeamController;
@@ -88,6 +89,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/customer/giveFeedback', [\App\Http\Controllers\OrderController::class, 'giveFeedback']);
     Route::post('/customer/markReceived', [\App\Http\Controllers\OrderController::class, 'markReceived']);
 
+    //PayOs api
+    Route::post('/payos/create-payment-link', [\App\Http\Controllers\PayOSController::class, 'createPayment']);
+
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);
     Route::get('/{module}/{id}', [\App\Http\Controllers\ModuleController::class, 'show']);
@@ -109,3 +113,4 @@ Route::post('/auth/login', [AuthenticationController::class, 'login']);
 Route::post('/auth/auth-otp', [AuthenticationController::class, 'loginWithOtp']);
 Route::post('/auth/register', [AuthenticationController::class, 'register']);
 Route::post('/auth/gen-otp', [AuthenticationController::class, 'generate']);
+Route::post('/webhook/payos', [PayOSWebhookController::class, 'handlePayOSWebhook']);

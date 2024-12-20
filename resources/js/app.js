@@ -15,6 +15,11 @@ import axios from 'axios';
 import configuration from '@/config.js';
 import Notifications from 'notiwind'
 
+const script = document.createElement('script');
+script.src = 'https://cdn.payos.vn/payos-checkout/v1/stable/payos-initialize.js';
+script.async = true;
+document.body.appendChild(script);
+
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = configuration.baseUrl;
 axios.defaults.headers.common['Accept'] = 'application/json';

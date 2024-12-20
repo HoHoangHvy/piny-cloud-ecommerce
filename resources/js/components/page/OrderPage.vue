@@ -231,13 +231,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="w-full flex justify-between items-center">
+                            <div>
+                                <span class="text-sm" v-if="order.payment_method === 'Cash'">Method: Pay on receiving</span>
+                                <span class="text-sm" v-else>Method: Online banking <span v-if="order.payment_status == 'paid'">- Paid</span> <span v-if="order.payment_status != 'paid'">- Unpaid</span></span>
+                            </div>
+                            <div class="w-full flex justify-between items-center mt-2">
                                 <div>
                                     <button
                                         @click="cancelOrder(order.order_id)"
-                                        class="text-sm text-red-500 font-semibold hover:text-red-700 focus:outline-none hover:bg-red-200 px-2 py-1 rounded-full"
+                                        class="text-sm border border-red-300 mr-2 text-red-500 font-semibold hover:text-red-700 focus:outline-none hover:bg-red-200 px-2 py-1 rounded-full"
                                     >
                                         Cancel
+                                    </button>
+                                    <button
+                                        v-if="order.payment_status === 'pending' && order.payment_method === 'Banking'"
+                                        @click="payNow(order)"
+                                        class="text-sm bg-[#ABBA7C] text-white font-semibold hover:text-red-700 focus:outline-none px-2 py-1 rounded-full"
+                                    >
+                                        Pay now
                                     </button>
                                 </div>
                                 <p class="text-gray-500">Total price ({{ order.count_product }} products): <span
@@ -694,6 +705,17 @@
             </div>
         </div>
     </div>
+    <div v-if="isVisiblePaymentPopup" class="payment-popup">
+        <div class="payment-popup-content">
+            <button class="close-button" @click="closePaymentPopup">Close</button>
+            <iframe
+                :src="iframeUrl"
+                width="100%"
+                height="97%"
+                frameborder="0"
+            ></iframe>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -706,7 +728,10 @@ import {FwbButton} from "flowbite-vue";
 import {formatDateTime} from "../../helpers/dateFormat.js";
 import {notify} from "notiwind";
 import StarRating from "@/js/components/StarRating.vue";
+import io from 'socket.io-client';
 
+const socketStatus = ref(false);
+let socket = null;
 // State variables
 const orders = ref([]); // Holds the list of orders
 const selectedOrder = ref({
@@ -749,6 +774,9 @@ const triggerReceived = async (orderId) => {
         fetchOrders();
     }
 }
+const iframeUrl = ref('');
+const isVisiblePaymentPopup = ref(false);
+
 // Cancel the selected order
 const cancelOrder = async (orderId) => {
     if (confirm('Are you sure you want to cancel this order?')) {
@@ -790,6 +818,12 @@ onMounted(() => {
     fetchOrders();
 });
 
+const payNow = async (order) => {
+    selectedOrder.value = order;
+    getCheckoutUrl();
+    initSocketListener();
+};
+
 const openFeedbackPopup = (order) => {
     isFeedbackModalOpen.value = true;
     selectedOrder.value.order_id = order.order_id;
@@ -798,6 +832,74 @@ const openFeedbackPopup = (order) => {
 };
 const closeFeedbackModal = () => {
     isFeedbackModalOpen.value = false;
+};
+const initSocketListener = () => {
+    const socketURL = "https://socket.dotb.cloud/";
+    socket = io.connect(socketURL, {
+        path: "",
+        transports: ["websocket"],
+        reconnection: true,
+    });
+
+    // Handle socket connection
+    socket.on('connect', () => {
+        console.log('Socket server is live!');
+        socket.emit('join', `triggerPaymentStatus/${selectedOrder.value.order_id}`);
+        console.log('Joining room:', `triggerPaymentStatus/${selectedOrder.value.order_id}`);
+    });
+
+    // Handle socket errors
+    socket.on('error', () => {
+        console.log('Cannot connect to socket server!');
+    });
+
+    // Handle custom events
+    socket.on('event-phenikaa', (msg) => {
+        debugger
+        if(msg.success) {
+            debugger
+            if(!socketStatus.value) {
+                let message = 'Successfully pay for order ' + selectedOrder.value.order_number + ' with amount ' + formatVietnameseCurrency(selectedOrder.value.total_price);
+                notify({
+                    group: "foo",
+                    title: "Success",
+                    text: message,
+                }, 4000);
+                isVisiblePaymentPopup.value = false;
+                socketStatus.value = true;
+                fetchOrders();
+            }
+        } else {
+            notify({
+                group: "error",
+                title: "Error",
+                text: "Payment failed. Please try again.",
+            }, 4000);
+        }
+    });
+};
+const getCheckoutUrl = async () => {
+    try {
+        const response = await axios.post('/api/payos/create-payment-link', {
+            order_id: selectedOrder.value.order_id,
+        });
+        socketStatus.value = false;
+        iframeUrl.value = response.data.checkoutUrl;
+        isVisiblePaymentPopup.value = true;
+    } catch (error) {
+        console.error('Error fetching checkout URL:', error);
+    }
+}
+const closePaymentPopup = () => {
+    isVisiblePaymentPopup.value = false;
+};
+// Cleanup function to disconnect the socket
+const cleanupSocket = () => {
+    if (socket) {
+        socket.disconnect();
+        socket = null;
+        console.log('Socket disconnected');
+    }
 };
 </script>
 
@@ -849,5 +951,30 @@ const closeFeedbackModal = () => {
     outline: none;
     border: none;
 }
+.payment-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
+.payment-popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 1080px;
+    height: 700px;
+}
+
+.close-button {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
 </style>

@@ -102,7 +102,9 @@ class OrderController extends Controller
         $orders = Order::where('order_status', '<>', 'Draft')
         ->whereHas('customers', function ($query) use ($customer) {
             $query->where('customer_id', $customer->id);
-        })->get();
+        })
+        ->orderBy('updated_at', 'DESC')
+        ->get();
 
         $return_data = [];
         foreach($orders as $order) {
@@ -119,15 +121,15 @@ class OrderController extends Controller
                 'date_created' => $order->created_at,
                 'host_id' => $order->host_id,
                 'payment_method' => $order->payment_method,
+                'payment_status' => $order->payment_status,
                 'status' => $order->order_status,
                 'count_product' => $orderDetails->count(),
+                'total_price' => $order->order_total,
                 'order_date' => $order->updated_at,
                 'rate' => $order->rate,
                 'feedback' => $order->customer_feedback,
             ];
-            $total_price = 0;
             foreach ($orderDetails as $orderDetail) {
-                $total_price += $orderDetail->total_price;
                 $data['order_detail'][] = [
                     'id' => $orderDetail->id,
                     'order_detail_number' => $orderDetail->order_detail_number,
@@ -142,7 +144,6 @@ class OrderController extends Controller
                     'count_topping' => $orderDetail->toppings->count(),
                 ];
             }
-            $data['total_price'] = $total_price;
             $return_data[$order->order_status][] = $data;
         }
 
@@ -232,7 +233,7 @@ class OrderController extends Controller
             'order_id' => 'required|exists:orders,id',
             'receiver_name' => 'required|string|max:255',
             'receiver_address' => 'required|string|max:255',
-            'payment_method' => 'required|in:cash,online',
+            'payment_method' => 'required|in:Cash,Banking',
             'branch' => 'required|uuid|exists:teams,id',
             'voucher' => 'nullable|string',
             'voucher_shipping' => 'nullable|string',
@@ -243,6 +244,8 @@ class OrderController extends Controller
             'street' => 'required|string',
             'phone_number' => 'required|string',
             'shipping_fee' => 'required|numeric',
+            'discount_number' => 'nullable|numeric',
+            'order_total' => 'nullable|numeric',
         ]);
 
         $currentUser = auth()->user();
@@ -270,6 +273,7 @@ class OrderController extends Controller
             'receiver_phone' => $validated['phone_number'],
             'payment_method' => $validated['payment_method'],
             'order_status' => 'Wait For Approval', // Update the status to 'Pending'
+            'order_total' => $validated['order_total'],
             'note' => $validated['note'],
             'province' => $validated['province'],
             'district' => $validated['district'],

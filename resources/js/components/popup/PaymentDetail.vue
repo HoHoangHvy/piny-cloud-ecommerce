@@ -9,7 +9,10 @@ import provincesData from '@/assets/js/tinh_tp.json';
 import districtsData from '@/assets/js/quan_huyen.json';
 import axios from "axios";
 import router from "@/js/router/index.js";
+import io from 'socket.io-client';
 
+const socketStatus = ref(false);
+let socket = null;
 const store = useStore();
 const emit = defineEmits(['showPaymentDetail', 'refetchData', 'closeDrawer']);
 const props = defineProps({
@@ -20,11 +23,14 @@ const props = defineProps({
 const { t } = useI18n();
 const voucherModalVisible = ref(false);
 const dayAfterTomorrow = ref('');
+const iframeUrl = ref('');
 const discountAmount = ref(0);
 const deliveryAmount = ref(0);
 const showSuccess = ref(false);
 const isProcessing = ref(false);
+const isVisiblePaymentPopup = ref(false);
 const showButtons = ref(false);
+const showPaynowButton = ref(false);
 
 // Initialize the form with values from the store
 const form = ref({
@@ -35,7 +41,7 @@ const form = ref({
     receiverName: store.getters['customerInfo'].full_name,
     phoneNumber: store.getters['customerInfo'].phone_number,
     note: '',
-    paymentMethod: 'cash',
+    paymentMethod: 'Cash',
     branch: '',
     voucher: '',
     voucher_shipping: '',
@@ -74,6 +80,7 @@ onMounted(() => {
     if (form.value.district !== '') {
         fetchWards(form.value.district);
     }
+    initSocketListener();
 });
 
 const totalAmount = computed(() => {
@@ -221,7 +228,6 @@ const chooseVoucherShipping = (voucherId) => {
     }
 };
 const applyVoucher = () => {
-
     if (form.value.voucher !== '') {
         const voucher = vouchers.value.discount.find(v => v.id === form.value.voucher);
         if (voucher.discount_type === 'percent') {
@@ -281,6 +287,8 @@ const proceedOrder = async () => {
             street: form.value.street,
             phone_number: form.value.phoneNumber,
             shipping_fee: deliveryAmount.value - deliveryDiscount.value,
+            discount_number: discountAmount.value,
+            order_total: props.cart.total_price - discountAmount.value + deliveryAmount.value,
         };
 
         // Send the order data to the backend API
@@ -293,12 +301,13 @@ const proceedOrder = async () => {
                 title: "Success",
                 text: "Order proceeded successfully!",
             }, 4000);
-
+            if(form.value.paymentMethod === 'Banking') {
+                showPaynowButton.value = true;
+            }
             showSuccess.value = true;
             setTimeout(() => {
                 showButtons.value = true;
             }, 1000);
-            emit('order-proceeded', response.data.data);
         } else {
             notify({
                 group: "error",
@@ -327,13 +336,81 @@ const showOrderDetail = () => {
     emit('closeDrawer');
     router.push('/order');
 };
+
+const getCheckoutUrl = async () => {
+    try {
+        const response = await axios.post('/api/payos/create-payment-link', {
+            order_id: props.cart.order_id,
+        });
+        iframeUrl.value = response.data.checkoutUrl;
+        isVisiblePaymentPopup.value = true;
+    } catch (error) {
+        console.error('Error fetching checkout URL:', error);
+    }
+}
+const closePaymentPopup = () => {
+    isVisiblePaymentPopup.value = false;
+};
+
+const initSocketListener = () => {
+    const socketURL = "https://socket.dotb.cloud/";
+    socket = io.connect(socketURL, {
+        path: "",
+        transports: ["websocket"],
+        reconnection: true,
+    });
+
+    // Handle socket connection
+    socket.on('connect', () => {
+        console.log('Socket server is live!');
+        socket.emit('join', `triggerPaymentStatus/${props.cart.order_id}`);
+    });
+
+    // Handle socket errors
+    socket.on('error', () => {
+        console.log('Cannot connect to socket server!');
+    });
+
+    // Handle custom events
+    socket.on('event-phenikaa', (msg) => {
+        if(msg.success) {
+            if(!socketStatus.value) {
+                let message = 'Successfully pay for order ' + props.cart.name + ' with amount ' + formatVietnameseCurrency(props.cart.total_price);
+                notify({
+                    group: "foo",
+                    title: "Success",
+                    text: message,
+                }, 4000);
+                isVisiblePaymentPopup.value = false;
+                showPaynowButton.value = false;
+                socketStatus.value = true;
+            }
+        } else {
+            notify({
+                group: "error",
+                title: "Error",
+                text: "Payment failed. Please try again.",
+            }, 4000);
+        }
+    });
+};
+
+// Cleanup function to disconnect the socket
+const cleanupSocket = () => {
+    if (socket) {
+        socket.disconnect();
+        socket = null;
+        console.log('Socket disconnected');
+    }
+};
 </script>
 <template>
     <div v-if="showSuccess" class="flex flex-col h-full w-full justify-center items-center mt-55">
         <div class="success-animation">
             <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" /><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" /></svg>
         </div>
-        <span class="text-xl mt-4">Place order successfully!</span>
+        <span v-if="!socketStatus" class="text-xl mt-4 flex flex-col items-center">Place order successfully! <span v-if="showPaynowButton">Please pay the order to proceed, you can pay now or later!</span></span>
+        <span v-if="socketStatus" class="text-xl mt-4 flex flex-col items-center">Pay successfully!</span>
         <transition name="fade-in">
             <div v-if="showButtons" class="flex gap-2 pt-4">
                 <button
@@ -345,6 +422,10 @@ const showOrderDetail = () => {
                 <button class="bg-[#6B4226] text-white px-4 py-2 rounded-full font-bold"
                     @click="showOrderDetail">
                     View order
+                </button>
+                <button v-if="form.paymentMethod === 'Banking' && showPaynowButton" class="bg-[#ABBA7C] text-white px-4 py-2 rounded-full font-bold"
+                    @click="getCheckoutUrl">
+                    Pay now
                 </button>
             </div>
         </transition>
@@ -534,14 +615,14 @@ const showOrderDetail = () => {
                                         class="block mb-2 text-sm font-medium text-gray-500  dark:text-white">Method</label>
                                     <div class="flex gap-4">
                                         <div class="flex items-center space-x-2">
-                                            <input id="cash" type="radio" name="payment" class="form-radio"
-                                                   v-model="form.paymentMethod" value="cash">
-                                            <label for="cash" class="text-gray-500">{{ t('LBL_CASH') }}</label>
+                                            <input id="Cash" type="radio" name="payment" class="form-radio"
+                                                   v-model="form.paymentMethod" value="Cash">
+                                            <label for="Cash" class="text-gray-500">{{ t('LBL_CASH') }}</label>
                                         </div>
                                         <div class="flex items-center space-x-2">
-                                            <input id="online" type="radio" name="payment" class="form-radio"
-                                                   v-model="form.paymentMethod" value="online">
-                                            <label for="online" class="text-gray-500">Online</label>
+                                            <input id="Banking" type="radio" name="payment" class="form-radio"
+                                                   v-model="form.paymentMethod" value="Banking">
+                                            <label for="Banking" class="text-gray-500">Online</label>
                                         </div>
                                     </div>
                                 </div>
@@ -586,7 +667,7 @@ const showOrderDetail = () => {
                                                             <p class="text-sm text-gray-500">Minimum order of {{ formatVietnameseCurrency(voucher.minimum) }}</p>
                                                         </div>
                                                     </div>
-                                                    <input id="online" type="radio" name="voucher_shipping" class="form-radio"
+                                                    <input id="voucher_shipping" type="radio" name="voucher_shipping" class="form-radio"
                                                            v-model="form.voucher_shipping" :value="voucher.id">
                                                 </div>
                                             </div>
@@ -607,7 +688,7 @@ const showOrderDetail = () => {
                                                             <p class="text-sm text-gray-500">Minimum order of {{ formatVietnameseCurrency(voucher.minimum) }}</p>
                                                         </div>
                                                     </div>
-                                                    <input id="online" type="radio" name="voucher" class="form-radio"
+                                                    <input id="voucher_normal" type="radio" name="voucher" class="form-radio"
                                                            v-model="form.voucher" :value="voucher.id">
                                                 </div>
                                             </div>
@@ -697,9 +778,45 @@ const showOrderDetail = () => {
             </div>
         </section>
     </transition>
+    <div v-if="isVisiblePaymentPopup" class="payment-popup">
+        <div class="payment-popup-content">
+            <button class="close-button" @click="closePaymentPopup">Close</button>
+            <iframe
+                :src="iframeUrl"
+                width="100%"
+                height="97%"
+                frameborder="0"
+            ></iframe>
+        </div>
+    </div>
 </template>
 <style scoped>
+.payment-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
+.payment-popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 1080px;
+    height: 700px;
+}
+
+.close-button {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
 .checkmark {
     width: 120px;
     height: 120px;

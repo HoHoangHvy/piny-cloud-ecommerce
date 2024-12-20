@@ -33,6 +33,7 @@ class Order extends Model
         'ward',
         'street',
         'shipping_fee',
+        'payment_link'
     ];
 
     // Relationship with the host customer
