@@ -195,7 +195,7 @@
                                         <div class="flex flex-col w-full">
                                             <div
                                                 class="flex items-center justify-between w-[100%] max-h-[200px] overflow-y-auto scrollbar-thin">
-                                                <div class="w-[8%]">
+                                                <div class="w-[8%] min-w-[60px]">
                                                     <img
                                                         v-if="item.image === null"
                                                         src="@/assets/images/empty-image.jpg"
@@ -272,7 +272,7 @@
                                         <div class="flex flex-col w-full">
                                             <div
                                                 class="flex items-center justify-between w-[100%] max-h-[200px] overflow-y-auto scrollbar-thin">
-                                                <div class="w-[8%]">
+                                                <div class="w-[8%] min-w-[60px]">
                                                     <img
                                                         v-if="item.image === null"
                                                         src="@/assets/images/empty-image.jpg"
@@ -343,7 +343,7 @@
                                         <div class="flex flex-col w-full">
                                             <div
                                                 class="flex items-center justify-between w-[100%] max-h-[200px] overflow-y-auto scrollbar-thin">
-                                                <div class="w-[8%]">
+                                                <div class="w-[8%] min-w-[60px]">
                                                     <img
                                                         v-if="item.image === null"
                                                         src="@/assets/images/empty-image.jpg"
@@ -414,7 +414,7 @@
                                         <div class="flex flex-col w-full">
                                             <div
                                                 class="flex items-center justify-between w-[100%] max-h-[200px] overflow-y-auto scrollbar-thin">
-                                                <div class="w-[8%]">
+                                                <div class="w-[8%] min-w-[60px]">
                                                     <img
                                                         v-if="item.image === null"
                                                         src="@/assets/images/empty-image.jpg"
@@ -507,7 +507,7 @@
                                     <div class="flex h-full pt-2 pl-3 w-full pb-2">
                                         <div class="flex flex-col w-full">
                                             <div class="flex items-center justify-between w-[100%]">
-                                                <div class="w-[8%]">
+                                                <div class="w-[8%] min-w-[60px]">
                                                     <img
                                                         v-if="item.image === null"
                                                         src="@/assets/images/empty-image.jpg"
@@ -588,7 +588,7 @@
                                     <div class="flex h-full pt-2 pl-3 w-full pb-2">
                                         <div class="flex flex-col w-full">
                                             <div class="flex items-center justify-between w-[100%]">
-                                                <div class="w-[8%]">
+                                                <div class="w-[8%] min-w-[60px]">
                                                     <img
                                                         v-if="item.image === null"
                                                         src="@/assets/images/empty-image.jpg"
