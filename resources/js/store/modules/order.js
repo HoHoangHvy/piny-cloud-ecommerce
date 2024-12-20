@@ -83,7 +83,7 @@ export default {
             try {
                 await axios.get('sanctum/csrf-cookie');
                 const response = await axios.post(`/api/orders/${id}`, orderData);
-                debugger
+
                 commit('UPDATE_ORDER', response.data.data);
                 commit('SET_ERROR', null);
             } catch (error) {

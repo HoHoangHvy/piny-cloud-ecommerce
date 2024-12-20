@@ -264,7 +264,7 @@ const proceedOrder = async () => {
     try {
         //Disable button
         isProcessing.value = true;
-        debugger
+
         // Gather all the necessary data from the form
         const orderData = {
             order_id: props.cart.order_id, // Assuming the order ID is part of the cart object

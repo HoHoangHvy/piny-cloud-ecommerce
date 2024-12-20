@@ -507,7 +507,7 @@ const handleCreateVoucher = async () => {
 // Handle update voucher
 const updateVoucher = async () => {
     try {
-        debugger
+
             await store.dispatch('vouchers/updateVoucher', { id: formEdit.id ,voucherData: formEdit });
         notify({
             group: "foo",
