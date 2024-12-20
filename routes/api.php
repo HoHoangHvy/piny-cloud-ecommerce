@@ -85,6 +85,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/loadCustomerOrders', [\App\Http\Controllers\OrderController::class, 'loadCustomerOrders']);
     Route::get('/loadOrderDetail/{id}', [\App\Http\Controllers\OrderController::class, 'loadOrderDetail']);
     Route::post('/customer/cancelOrder', [\App\Http\Controllers\OrderController::class, 'cancelOrder']);
+    Route::post('/customer/giveFeedback', [\App\Http\Controllers\OrderController::class, 'giveFeedback']);
+    Route::post('/customer/markReceived', [\App\Http\Controllers\OrderController::class, 'markReceived']);
 
     //Module api
     Route::get('/{module}', [\App\Http\Controllers\ModuleController::class, 'index']);

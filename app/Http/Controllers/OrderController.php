@@ -122,6 +122,8 @@ class OrderController extends Controller
                 'status' => $order->order_status,
                 'count_product' => $orderDetails->count(),
                 'order_date' => $order->updated_at,
+                'rate' => $order->rate,
+                'feedback' => $order->customer_feedback,
             ];
             $total_price = 0;
             foreach ($orderDetails as $orderDetail) {
@@ -292,6 +294,77 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'Order proceeded successfully.',
+            'data' => $order,
+        ]);
+    }
+    function markReceived(Request $request) {
+        $validated = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+        ]);
+
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch the order
+        $order = Order::findOrFail($validated['order_id']);
+
+        // Ensure the order belongs to the current customer
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('order_id', $order->id)
+            ->first();
+
+        if (!$customerOrder) {
+            return response()->json(['message' => 'Unauthorized or invalid order.'], 403);
+        }
+
+        // Update the order status to 'Delivered'
+        $order->update([
+            'order_status' => 'Completed',
+        ]);
+
+        return response()->json([
+            'message' => 'Order marked as delivered successfully.',
+            'data' => $order,
+        ]);
+    }
+    function giveFeedback(Request $request) {
+        $validated = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'rate' => 'required|integer|min:1|max:5',
+            'feedback' => 'required|string|max:255',
+        ]);
+
+        $currentUser = auth()->user();
+        $customer = Customer::where('user_id', $currentUser->id)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch the order
+        $order = Order::findOrFail($validated['order_id']);
+
+        // Ensure the order belongs to the current customer
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('order_id', $order->id)
+            ->first();
+
+        if (!$customerOrder) {
+            return response()->json(['message' => 'Unauthorized or invalid order.'], 403);
+        }
+
+        // Update the order with the feedback
+        $order->update([
+            'rate' => $validated['rate'],
+            'customer_feedback' => $validated['feedback'],
+        ]);
+
+        return response()->json([
+            'message' => 'Feedback submitted successfully.',
             'data' => $order,
         ]);
     }
