@@ -99,6 +99,7 @@ import {ref, onMounted, nextTick, defineEmits, defineProps} from 'vue';
 import {useI18n} from 'vue-i18n';
 import {useStore} from 'vuex';
 import {FwbToast} from 'flowbite-vue';
+import {notify} from "notiwind";
 
 const store = useStore();
 const {t} = useI18n();
@@ -171,6 +172,11 @@ const authenticateOtp = async () => {
         });
         if (response.success) {
             showOtpPopup.value = false;
+            notify({
+                group: "foo",
+                title: "Success",
+                text: "Login successfully!",
+            }, 4000);
             close();
         } else {
             statusMessage.value = response.message;
