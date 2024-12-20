@@ -10,6 +10,7 @@ import SignInOtpPopup from "@/js/components/popup/SignInOtpPopup.vue";
 import SignInPasswordPopup from "@/js/components/popup/SignInPasswordPopup.vue";
 import ForgotPasswordPopup from "@/js/components/popup/ForgotPasswordPopup.vue";
 import { useStore } from 'vuex';
+import UserProfile from "@/js/components/popup/UserProfile.vue";
 
 const store = useStore();
 const route = useRoute();
@@ -34,14 +35,6 @@ updateCurrentTab();
 
 const userNavigation = [
     {
-        name: 'LBL_MY_PROFILE',
-        href: '/profile',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
-            `
-    },
-    {
         name: 'LBL_SETTINGS',
         href: '/order-history',
         icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -49,7 +42,6 @@ const userNavigation = [
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
             `
-
     },
 ]
 const closePopup = () => {
@@ -62,7 +54,9 @@ defineOptions({
 const switchPopup = (popupName) => {
     currentPopup.value = popupName;
 };
-
+const openProfileModal = () => {
+    currentPopup.value = 'profile';
+}
 const signOut = async () => {
     await store.dispatch('signOut', {}); // Trigger the authenticate OTP action
 }
@@ -137,6 +131,14 @@ const signOut = async () => {
                                         leave-to-class="transform opacity-0 scale-95">
                                 <MenuItems
                                     class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-gra">
+                                    <MenuItem>
+                                        <div @click="openProfileModal" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                            </svg>
+                                            <span>{{$lang('LBL_PROFILE')}}</span>
+                                        </div>
+                                    </MenuItem>
                                     <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
                                         <router-link :to="item.href"
                                                      :class="[active ? 'bg-gray-100' : '', 'flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray']">
@@ -221,6 +223,7 @@ const signOut = async () => {
     <SignInPasswordPopup :isVisible="currentPopup === 'sign-in-password'" @closePopup="closePopup" @switchPopup="switchPopup"/>
     <SignInOtpPopup :isVisible="currentPopup === 'sign-in' || store.getters.popupVisible" @closePopup="closePopup" @switchPopup="switchPopup"/>
     <SignUpPopup :isVisible="currentPopup === 'sign-up'" @closePopup="closePopup" @switchPopup="switchPopup"/>
+    <UserProfile :isVisible="currentPopup === 'profile'" @closePopup="closePopup" />
 </template>
 <style>
 </style>
