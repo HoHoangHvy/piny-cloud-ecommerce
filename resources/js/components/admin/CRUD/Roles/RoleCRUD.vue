@@ -151,7 +151,6 @@
                             <th scope="col" class="p-4">Is Admin</th>
                             <th scope="col" class="p-4">Team Visibility</th>
                             <th scope="col" class="p-4">Created At</th>
-                            <th scope="col" class="p-4">Created At</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -193,7 +192,6 @@
                                 </div>
                             </td>
                             <td class="p-4">{{ formatDateTime(item.updated_at) }}</td>
-                            <td class="p-4">{{ formatDateTime(item.created_at) }}</td>
                             <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="flex items-center space-x-3 justify-end">
                                     <button v-show="store.getters.hasPermission({'module': moduleName, 'action': 'edit', 'created_by': item.created_by})" type="button" @click="openUpdateModal(item.id)"

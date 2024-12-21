@@ -855,9 +855,9 @@ const initSocketListener = () => {
 
     // Handle custom events
     socket.on('event-phenikaa', (msg) => {
-        debugger
+
         if(msg.success) {
-            debugger
+
             if(!socketStatus.value) {
                 let message = 'Successfully pay for order ' + selectedOrder.value.order_number + ' with amount ' + formatVietnameseCurrency(selectedOrder.value.total_price);
                 notify({

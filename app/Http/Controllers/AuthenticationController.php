@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Helpers\SpeedSMSAPI;
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 use Twilio\Rest\Client;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Http\Controllers\ReportController;
 
 
 class AuthenticationController extends BaseController
@@ -240,20 +242,27 @@ class AuthenticationController extends BaseController
             });
 
             $customer_info = [];
+            $report_data = [];
             if($user->user_type == 'customer') {
                 $customer_info = Customer::where('user_id', $user->id)->first();
 
                 //Count the number of carts
                 $customer_info['count_cart'] = $customer_info->orders()->where('order_status', 'Draft')->count();
+            } else {
+                $report_data = [
+                    'total' => (new ReportController())->getSummaryReport($user),
+                    'detail_month' => (new ReportController())->getOrdersByMonth($user),
+                    'detail_week' => (new ReportController())->getOrdersByWeek($user),
+                ];
             }
-
             // Prepare the response
             return $this->sendResponse([
                 'user' => $user->only(['id', 'name', 'email', 'user_type', 'phone_number', 'is_admin', 'team_id']), // Include only relevant user fields
                 'roles' => $roles, // Custom roles without permissions
                 'permissions' => $permissions, // Permissions at the top level
                 'visible_module' => $this->getVisibleModules($user, $permissions), // Visible modules based on user's role
-                'customer_info' => $customer_info
+                'customer_info' => $customer_info,
+                'report' => $report_data
             ], 'User retrieved successfully.');
         } catch (\Exception $e) {
             return $this->sendError('User Not Found.', ['error' => $e->getMessage()]);

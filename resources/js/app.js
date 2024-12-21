@@ -44,6 +44,7 @@ axios.interceptors.response.use(
 async function fetchUser() {
     try {
         const response = await axios.get('/api/auth/me');
+        store.commit('setReport', response.data.data.report); // Example with Vuex; adjust as needed
         store.commit('setUser', response.data.data); // Example with Vuex; adjust as needed
         await store.dispatch('teams/fetchTeamOptions')
     } catch (error) {

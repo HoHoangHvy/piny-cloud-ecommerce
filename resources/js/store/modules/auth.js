@@ -11,8 +11,10 @@ const state = {
     visibleModule: null,
     token: localStorage.getItem('token') || null,
     status: "",
+    report: null,
 };
 const getters = {
+    report: state => state.report,
     customerInfo: state => state.customerInfo,
     modules: state => state.visibleModule,
     role: state => state.role,
@@ -165,7 +167,9 @@ const actions = {
 
                         axios.get('/api/auth/me').then(
                             response => {
+
                                 store.commit('setUser', response.data.data); // Example with Vuex; adjust as needed
+                                store.commit('setReport', response.data.data.report); // Example with Vuex; adjust as needed
                                 if(response.data.data.user.user_type === 'user') {
                                     router.push('/admin')
                                 } else {
@@ -202,6 +206,9 @@ const mutations = {
     authSuccess(state, args) {
         state.token = args.token;
         state.status = "success";
+    },
+    setReport(state, args) {
+        state.report = args;
     },
     logOutSuccess(state, args) {
         state.user = {};

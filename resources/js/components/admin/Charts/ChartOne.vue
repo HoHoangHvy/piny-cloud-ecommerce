@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import {useStore} from 'vuex'
+import {formatVietnameseCurrency} from '@/js/helpers/currencyFormat.js';
+
+const store = useStore()
 // @ts-ignore
 import VueApexCharts from 'vue3-apexcharts'
 
+const report = ref(store.getters['report'].detail_month.orders_by_month)
 const chartData = {
   series: [
     {
-      name: 'Product One',
-      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45]
+      name: 'Online',
+      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, store.getters['report'].total.total_orders_online]
     },
 
     {
-      name: 'Product Two',
-      data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51]
+      name: 'Offline',
+      data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, store.getters['report'].total.total_orders_offline]
     }
   ],
   labels: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']
@@ -135,8 +140,7 @@ const apexOptions = {
             <span class="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
           </span>
           <div class="w-full">
-            <p class="font-semibold text-primary">Total Revenue</p>
-            <p class="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+            <p class="font-semibold text-primary">Online</p>
           </div>
         </div>
         <div class="flex min-w-47.5">
@@ -146,8 +150,7 @@ const apexOptions = {
             <span class="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
           </span>
           <div class="w-full">
-            <p class="font-semibold text-secondary">Total Sales</p>
-            <p class="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+            <p class="font-semibold text-secondary">Offline</p>
           </div>
         </div>
       </div>

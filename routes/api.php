@@ -103,6 +103,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/images/{imageName}', [ImageController::class, 'getImage']);
     Route::post('/upload-image', [ImageController::class, 'upload']);
 
+    //Report
+    Route::get('/reports/summary', [\App\Http\Controllers\ReportController::class, 'getSummaryReport']);
+    Route::get('/reports/getOrdersByMonth', [\App\Http\Controllers\ReportController::class, 'getOrdersByMonth']);
+
 });
 
 Route::get('/customer/product/{id}', [ProductController::class, 'getProductDetail']);

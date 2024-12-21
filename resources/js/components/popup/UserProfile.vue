@@ -188,7 +188,7 @@ const isProfileModalOpen = ref(false);
 const defaultAvatar = 'https://via.placeholder.com/150';
 
 // User profile data
-const userProfile = ref({});
+const userProfile = ref(store.getters['customerInfo']);
 
 // Open the profile modal
 const openProfileModal = () => {
@@ -226,15 +226,17 @@ const fetchWards = async (districtId) => {
     }
 };
 onMounted(() => {
-    debugger
     userProfile.value = store.getters['customerInfo'];
     provinces.value = provincesData;
     districts.value = Object.values(districtsData); // Convert to array
 
-    // Fetch wards for the initial district (if available)
-    if (userProfile.value.district !== '') {
-        fetchWards(userProfile.value.district);
+    if(userProfile.value) {
+        // Fetch wards for the initial district (if available)
+        if (userProfile.value.district !== '') {
+            fetchWards(userProfile.value.district);
+        }
     }
+
 });
 const filteredDistricts = computed(() => {
     if (!userProfile.value.province) return [];
