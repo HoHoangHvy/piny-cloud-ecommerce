@@ -49,7 +49,7 @@ const handleCreateCart = async () => {
             text: "Cart created successfully!",
         }, 4000);
         fetchData();
-        store.commit('setCartCount', store.getters['cart/allCart'].length);
+        store.commit('setCartCount', store.getters['cart/allCart'].length + 1);
     }
 }
 const fetchData = async () => {
