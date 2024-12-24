@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Employee;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\VerificationCode;
@@ -96,7 +97,7 @@ class AuthenticationController extends BaseController
         }
         # Generate An OTP
         $verificationCode = $this->generateOtp($request->mobile_no);
-        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
+//        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
         return $this->sendResponse($verificationCode, 'OTP generated successfully.');
     }
     public function sendOtp($number, $otp)
@@ -220,6 +221,16 @@ class AuthenticationController extends BaseController
     public function authSuccess($user) : array {
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
         $success['user'] =  $user->load('roles');
+        if($user->user_type == 'user' && $user->is_admin == 0) {
+            $employee = Employee::where('user_id', $user->id)->first();
+            $success['user']['role_name'] = $user->roles->first()->name;
+            $success['user']['team_name'] = Team::find($user->team_id)->name;
+            $success['user']['level'] = $employee->level;
+            $success['user']['image'] = $employee->image ?? '';
+            $success['user']['date_of_birth'] = $employee->date_of_birth;
+            $success['user']['date_registered'] = $employee->date_registered;
+
+        }
         return $success;
     }
 
