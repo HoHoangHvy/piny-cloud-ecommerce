@@ -84,6 +84,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/orders/proceed', [\App\Http\Controllers\OrderController::class, 'proceedOrder']);
     Route::post('/orders/{id}', [\App\Http\Controllers\OrderController::class, 'update']);
     Route::get('/loadCustomerOrders', [\App\Http\Controllers\OrderController::class, 'loadCustomerOrders']);
+    Route::get('/loadCustomerOrdersHistory', [\App\Http\Controllers\OrderController::class, 'loadCustomerOrdersHistory']);
     Route::get('/loadOrderDetail/{id}', [\App\Http\Controllers\OrderController::class, 'loadOrderDetail']);
     Route::post('/customer/cancelOrder', [\App\Http\Controllers\OrderController::class, 'cancelOrder']);
     Route::post('/customer/giveFeedback', [\App\Http\Controllers\OrderController::class, 'giveFeedback']);

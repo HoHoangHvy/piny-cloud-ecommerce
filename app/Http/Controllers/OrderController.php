@@ -92,7 +92,11 @@ class OrderController extends Controller
     public function loadCustomerOrders(Request $request)
     {
         $currentUser = auth()->user();
-        $customer = Customer::where('user_id', $currentUser->id)->first();
+        if($currentUser->user_type == 'user') {
+            $customer = Customer::find($_GET["customerId"]);
+        } else {
+            $customer = Customer::where('user_id', $currentUser->id)->first();
+        }
 
         if (!$customer) {
             return response()->json(['message' => 'Customer not found.'], 404);
@@ -122,6 +126,7 @@ class OrderController extends Controller
                 'host_id' => $order->host_id,
                 'payment_method' => $order->payment_method,
                 'payment_status' => $order->payment_status,
+                'receiver_name' => $order->receiver_name,
                 'status' => $order->order_status,
                 'count_product' => $orderDetails->count(),
                 'total_price' => $order->order_total,
@@ -152,6 +157,55 @@ class OrderController extends Controller
             'data' => $return_data,
         ]);
     }
+    public function loadCustomerOrdersHistory(Request $request)
+    {
+        $customer = Customer::find($_GET["customerId"]);
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        // Fetch all orders that belong to the customer
+        $orders = Order::where('order_status', '<>', 'Draft')
+            ->whereHas('customers', function ($query) use ($customer) {
+                $query->where('customer_id', $customer->id);
+            })
+            ->orderBy('updated_at', 'DESC')
+            ->get();
+
+        $return_data = [];
+        foreach($orders as $order) {
+            $orderCustomer = $order->customers()->where('customer_id', $customer->id)->first();
+
+            $orderDetails = $orderCustomer->pivot->orderDetails()
+                ->where('parent_id', null)
+                ->with('toppings.product') // Include topping product details
+                ->get();
+
+            $data = [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'date_created' => $order->created_at,
+                'host_id' => $order->host_id,
+                'payment_method' => $order->payment_method,
+                'payment_status' => $order->payment_status,
+                'receiver_name' => $order->receiver_name,
+                'status' => $order->order_status,
+                'count_product' => $orderDetails->count(),
+                'total_price' => $order->order_total,
+                'order_date' => $order->updated_at,
+                'rate' => $order->rate,
+                'feedback' => $order->customer_feedback,
+            ];
+            $return_data[] = $data;
+        }
+
+        return response()->json([
+            'message' => 'Orders fetched successfully.',
+            'data' => $return_data,
+        ]);
+    }
+
     public function loadOrderDetail(Request $request, $orderId)
     {
         try {
@@ -646,6 +700,7 @@ class OrderController extends Controller
                     'count_product' => $orderDetails->count() ?? 0,
                     'order_detail' => []
                 ];
+
 
                 foreach ($orderDetails as $orderDetail) {
                     $total_price += $orderDetail->total_price;
