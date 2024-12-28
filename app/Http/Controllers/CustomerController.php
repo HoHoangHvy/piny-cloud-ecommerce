@@ -58,9 +58,7 @@ class CustomerController extends Controller
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|string|unique:users,phone_number',
-            'date_of_birth' => 'required|date',
             'gender' => 'required|in:Male,Female',
         ]);
 
@@ -70,11 +68,15 @@ class CustomerController extends Controller
         }
 
         // Prepare user data to create a new user
+        //Generate random email if empty
+        if($request->input('email') == null){
+            $email = Str::random(10).'@gmail.com';
+        }
         $userData = [
             'name' => $request->input('full_name'),
-            'email' => $request->input('email'),
+            'email' => $request->input('email') ?? $email,
             'phone_number' => $request->input('phone_number'),
-            'date_of_birth' => $request->input('date_of_birth'),
+            'date_of_birth' => $request->input('date_of_birth') ?? now(),
             'gender' => $request->input('gender'),
             'password' => Hash::make(Str::random(10)), // Random password or handle it as needed
             'user_type' => 'customer', // Specify user type as 'customer'
@@ -92,11 +94,12 @@ class CustomerController extends Controller
 
             // Now create the Customer and associate it with the created User
             $customer = Customer::create([
+                'customer_number' => 'C' . Str::random(3),
                 'user_id' => $user->id,
                 'full_name' => $request->input('full_name'),
-                'email' => $request->input('email'),
+                'email' => $request->input('email') ?? $email,
                 'phone_number' => $request->input('phone_number'),
-                'date_of_birth' => $request->input('date_of_birth'),
+                'date_of_birth' => $request->input('date_of_birth') ?? now(),
                 'gender' => $request->input('gender'),
                 'date_registered' => now(),
             ]);
