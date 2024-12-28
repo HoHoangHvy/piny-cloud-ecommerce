@@ -3,11 +3,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\User;
+use BcMath\Number;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Type\Integer;
 
 class CustomerController extends Controller
 {
@@ -94,7 +96,7 @@ class CustomerController extends Controller
 
             // Now create the Customer and associate it with the created User
             $customer = Customer::create([
-                'customer_number' => 'C' . Str::random(3),
+                'customer_number' => 'C' . rand(100, 999),
                 'user_id' => $user->id,
                 'full_name' => $request->input('full_name'),
                 'email' => $request->input('email') ?? $email,
