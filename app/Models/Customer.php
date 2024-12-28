@@ -25,6 +25,7 @@ class Customer extends Model
         'district',
         'ward',
         'street',
+        'customer_number'
     ];
 
     protected static function booted()
