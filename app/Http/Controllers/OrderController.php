@@ -426,6 +426,23 @@ class OrderController extends Controller
             'data' => $order,
         ]);
     }
+
+    public function getCustomFields($data)
+    {
+        $customFields = [];
+        foreach ($data as $item) {
+            $orderCustomer = $item->customers()->where('customer_id', $item->host_id)->first();
+            $oderDetail = $orderCustomer->pivot->orderDetails()
+                ->where('parent_id', null)
+                ->with('toppings.product') // Include topping product details
+                ->get();
+            $customFields[$item->id] = [
+                'count_product' => $oderDetail->count(),
+            ];
+        }
+        return $customFields;
+    }
+
     function calculateDiscount($voucherCode, $orderTotal) {
         // Fetch voucher details from the database
         $voucher = Voucher::where('code', $voucherCode)->first();

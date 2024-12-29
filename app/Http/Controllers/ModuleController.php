@@ -54,9 +54,50 @@ class ModuleController extends BaseController
                 return $item;
             });
 
-            return $this->sendResponse($data, 'Retrieve date successfully');
+            // Retrieve and map custom fields
+            $data = $this->retrieveCustomField($module, $data);
+
+            return $this->sendResponse($data, 'Retrieve data successfully');
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getCode());
+        }
+    }
+    private function retrieveCustomField($module, $data)
+    {
+        try {
+            $module_name = rtrim($module, 's');
+            // Dynamically resolve the controller name based on the module
+            $controllerName = 'App\\Http\\Controllers\\' . ucfirst($module_name) . 'Controller';
+
+            // Check if the controller exists
+            if (!class_exists($controllerName)) {
+                return $data; // If the controller doesn't exist, return the data as is
+            }
+
+            // Instantiate the controller
+            $controller = app($controllerName);
+
+            // Check if the method exists in the controller
+            if (!method_exists($controller, 'getCustomFields')) {
+                return $data; // If the method doesn't exist, return the data as is
+            }
+
+            // Call the method and get the custom fields
+            $customFields = app()->call([$controller, 'getCustomFields'], ['data' => $data]);
+
+            // Map the custom fields to the data
+            foreach ($data as $item) {
+                if (isset($customFields[$item->id])) {
+                    $item->custom_fields = $customFields[$item->id];
+                } else {
+                    $item->custom_fields = [];
+                }
+            }
+
+            return $data;
+        } catch (\Exception $e) {
+            // Log the error or handle it as needed
+            return $data; // Return the data as is in case of an error
         }
     }
     private $specific_module = [
