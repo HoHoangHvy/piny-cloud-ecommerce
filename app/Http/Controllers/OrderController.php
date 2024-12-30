@@ -9,6 +9,7 @@ use App\Models\CustomerOrder;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use App\Models\Team;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 
@@ -209,17 +210,22 @@ class OrderController extends Controller
     public function loadOrderDetail(Request $request, $orderId)
     {
         try {
-            $currentUser = auth()->user();
-            $customer = Customer::where('user_id', $currentUser->id)->first();
+            $order = Order::findOrFail($orderId);
 
-            if (!$customer) {
-                return response()->json(['message' => 'Customer not found.'], 404);
+            $currentUser = auth()->user();
+
+            if($currentUser->user_type == 'user') {
+                $customer_id = $order->host_id;
+            } else {
+                $customer_id = Customer::where('user_id', $currentUser->id)->first()->id;
+
+                if (!$customer_id) {
+                    return response()->json(['message' => 'Customer not found.'], 404);
+                }
             }
 
             // Fetch the order
-            $order = Order::findOrFail($orderId);
-
-            $orderCustomer = $order->customers()->where('customer_id', $customer->id)->first();
+            $orderCustomer = $order->customers()->where('customer_id', $customer_id)->first();
 
             if ($orderCustomer) {
                 // Get order details if the relationship exists
@@ -228,18 +234,33 @@ class OrderController extends Controller
                     ->with('toppings.product') // Include topping product details
                     ->get();
 
+                $team = Team::find($order->team_id);
+                $customer = Customer::find($order->host_id);
                 $data = [
                     'type' => $order->type,
-                    'name' => !empty($order->custom_name) ? $order->custom_name : $order->order_number,
+                    'order_number' => !empty($order->custom_name) ? $order->custom_name : $order->order_number,
                     'order_id' => $order->id,
-                    'order_number' => $order->order_number,
                     'date_created' => $order->created_at,
                     'host_id' => $order->host_id,
-                    'payment_method' => $order->payment_method,
                     'status' => $order->order_status,
                     'total_price' => $order->order_total,
                     'count_product' => $orderDetails->count() ?? 0,
-                    'order_detail' => []
+                    'order_detail' => [],
+                    'customer_name' => $order->receiver_name,
+                    'customer_phone' => $customer->phone_number,
+                    'customer_level' => $customer->rank,
+                    'from_name' => $team->name,
+                    'from_address' => $team->address,
+                    'to_name' => $order->receiver_name,
+                    'to_address' => $order->receiver_address,
+                    'shipping_fee' => $order->shipping_fee,
+                    'discount' => $this->calculateDiscount($order),
+                    'payment_method' => $order->payment_method,
+                    'feedback' => [
+                        'rating' => $order->rate ?? 0,
+                        'content' => $order->customer_feedback,
+                        'feedback_time' => $order->updated_at,
+                    ]
                 ];
                 $total_price = 0;
                 foreach ($orderDetails as $orderDetail) {
@@ -443,20 +464,17 @@ class OrderController extends Controller
         return $customFields;
     }
 
-    function calculateDiscount($voucherCode, $orderTotal) {
-        // Fetch voucher details from the database
-        $voucher = Voucher::where('code', $voucherCode)->first();
-
-        if (!$voucher) {
-            return 0; // Voucher not found
+    function calculateDiscount($order) {
+        $totalDiscount = 0;
+        foreach ($order->vouchers as $voucher) {
+            if($voucher->apply_type == 'shipping_fee') continue;
+            if ($voucher->discount_type == 'percent') {
+                $totalDiscount += $order->order_total * $voucher->discount_amount / 100;
+            } else {
+                $totalDiscount += $voucher->discount_amount;
+            }
         }
-
-        if ($voucher->discount_type === 'percent') {
-            $discountAmount = ($orderTotal * $voucher->discount_percent) / 100;
-            return min($discountAmount, $voucher->limit_per_order);
-        } else {
-            return $voucher->discount_amount;
-        }
+        return $totalDiscount;
     }
     public function addProductToCart(Request $request)
     {
