@@ -264,8 +264,9 @@ class OrderController extends Controller
                     'vouchers' => $order->vouchers->map(function ($voucher) {
                         return [
                             'id' => $voucher->id,
-                            'voucher_code' => $voucher->voucher_code,
+                            'voucher_code' => $voucher->vourcher_code,
                             'discount_amount' => $voucher->discount_amount,
+                            'discount_percent' => $voucher->discount_percent,
                             'discount_type' => $voucher->discount_type,
                             'apply_type' => $voucher->apply_type,
                         ];
