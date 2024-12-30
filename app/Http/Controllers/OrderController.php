@@ -243,7 +243,7 @@ class OrderController extends Controller
                     'date_created' => $order->created_at,
                     'host_id' => $order->host_id,
                     'status' => $order->order_status,
-                    'total_price' => $order->order_total,
+                    'order_total' => $order->order_total,
                     'count_product' => $orderDetails->count() ?? 0,
                     'order_detail' => [],
                     'customer_name' => $order->receiver_name,
@@ -260,7 +260,16 @@ class OrderController extends Controller
                         'rating' => $order->rate ?? 0,
                         'content' => $order->customer_feedback,
                         'feedback_time' => $order->updated_at,
-                    ]
+                    ],
+                    'vouchers' => $order->vouchers->map(function ($voucher) {
+                        return [
+                            'id' => $voucher->id,
+                            'voucher_code' => $voucher->voucher_code,
+                            'discount_amount' => $voucher->discount_amount,
+                            'discount_type' => $voucher->discount_type,
+                            'apply_type' => $voucher->apply_type,
+                        ];
+                    }),
                 ];
                 $total_price = 0;
                 foreach ($orderDetails as $orderDetail) {
