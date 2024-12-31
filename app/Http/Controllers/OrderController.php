@@ -243,7 +243,7 @@ class OrderController extends Controller
                     'date_created' => $order->created_at,
                     'host_id' => $order->host_id,
                     'status' => $order->order_status,
-                    'order_total' => $order->order_total,
+                    'order_total' => $order->order_total - $this->calculateDiscount($order),
                     'count_product' => $orderDetails->count() ?? 0,
                     'order_detail' => [],
                     'customer_name' => $order->receiver_name,
@@ -283,7 +283,7 @@ class OrderController extends Controller
                         'product_price' => $orderDetail->product->price,
                         'size' => $orderDetail->size,
                         'quantity' => $orderDetail->quantity,
-                        'image' => $orderDetail->product->product_image ? asset($orderDetail->product->product_image) : null,
+                        'image' => $orderDetail->product->image ? 'https://weevil-exotic-thankfully.ngrok-free.app/storage/' .$orderDetail->product->image : 'https://weevil-exotic-thankfully.ngrok-free.app/resources/assets/images/empty-image.jpg',
                         'note' => $orderDetail->note,
                         'total_price' => $orderDetail->total_price,
                         'count_topping' => $orderDetail->toppings->count(),
@@ -479,7 +479,7 @@ class OrderController extends Controller
         foreach ($order->vouchers as $voucher) {
             if($voucher->apply_type == 'shipping_fee') continue;
             if ($voucher->discount_type == 'percent') {
-                $totalDiscount += $order->order_total * $voucher->discount_amount / 100;
+                $totalDiscount += $order->order_total * $voucher->discount_percent / 100;
             } else {
                 $totalDiscount += $voucher->discount_amount;
             }
