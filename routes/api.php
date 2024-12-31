@@ -83,6 +83,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/vouchers/loadCustomerVoucher', [VoucherController::class, 'loadVouchersByDateAndTeam']);
     Route::post('/orders/proceed', [\App\Http\Controllers\OrderController::class, 'proceedOrder']);
     Route::post('/orders/{id}', [\App\Http\Controllers\OrderController::class, 'update']);
+    Route::post('/orders/status/{id}', [\App\Http\Controllers\OrderController::class, 'updateStatus']);
     Route::get('/loadCustomerOrders', [\App\Http\Controllers\OrderController::class, 'loadCustomerOrders']);
     Route::get('/loadCustomerOrdersHistory', [\App\Http\Controllers\OrderController::class, 'loadCustomerOrdersHistory']);
     Route::get('/loadOrderDetail/{id}', [\App\Http\Controllers\OrderController::class, 'loadOrderDetail']);

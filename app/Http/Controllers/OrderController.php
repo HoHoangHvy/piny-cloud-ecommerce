@@ -1081,6 +1081,18 @@ class OrderController extends Controller
         return response()->json(['message' => 'Order updated successfully . ', 'data' => $order]);
     }
 
+    public function updateStatus(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'order_status' => 'required',
+        ]);
+
+        $order = Order::findOrFail($id);
+        $order->update($validated);
+
+        return response()->json(['message' => 'Order updated successfully . ', 'data' => $order]);
+    }
+
     /**
      * Remove the specified order from storage (soft delete).
      */
