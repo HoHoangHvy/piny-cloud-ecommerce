@@ -235,9 +235,9 @@ class ProductController extends BaseController
         $product_name = $request->input('product_name');
         // Retrieve all teams with only id and name fields
         if($product_name != null) {
-            $products = Product::where('name', 'like', '%' . $product_name . '%')->get(['id', 'name', 'image']);
+            $products = Product::where('name', 'like', '%' . $product_name . '%')->get();
         } else {
-            $products = Product::all(['id', 'name', 'image']);
+            $products = Product::all();
         }
 
         // Add the total number of employees to each team
@@ -246,6 +246,7 @@ class ProductController extends BaseController
                 'id' => $product->id,
                 'name' => $product->name,
                 'image' => $product->image ? 'https://weevil-exotic-thankfully.ngrok-free.app/storage/' . $product->image : 'https://weevil-exotic-thankfully.ngrok-free.app/resources/assets/images/empty-image.jpg',
+                'price' => $product->price,
             ];
         });
 
