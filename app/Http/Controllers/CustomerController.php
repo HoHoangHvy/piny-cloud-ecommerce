@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\User;
 use BcMath\Number;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -210,5 +211,21 @@ class CustomerController extends Controller
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function getCustomerOptions(Request $request): JsonResponse
+    {
+        $customer_phone = $request->input('phone_number');
+        // Retrieve all teams with only id and name fields
+        if($customer_phone != null) {
+            $customers = Customer::where('phone_number', 'like', '%' . $customer_phone . '%')->get(['id', 'full_name', 'phone_number']);
+        } else {
+            $customers = Customer::all(['id', 'full_name', 'phone_number']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $customers
+        ], 200);
     }
 }

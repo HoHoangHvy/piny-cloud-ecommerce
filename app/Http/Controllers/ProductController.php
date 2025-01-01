@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class ProductController extends BaseController
 {
@@ -204,16 +205,47 @@ class ProductController extends BaseController
         // Return the response with the newly created product, including its images
         return response()->json(['message' => 'Product created successfully.', 'data' => $product->load('images')], 201);
     }
-    public function getToppingOptions(): JsonResponse
+    public function getToppingOptions(Request $request): JsonResponse
     {
+        $topping_name = $request->input('topping_name');
+        if($topping_name != null) {
+            // Retrieve all teams with only id and name fields
+            $products = Product::where('is_topping', true)->where('name', 'like', '%' . $topping_name . '%')->get(['id', 'name', 'image']);
+        } else {
+            // Retrieve all teams with only id and name fields
+            $products = Product::where('is_topping', true)->get(['id', 'name', 'image']);
+        }
+        // Add the total number of employees to each team
+        $products = $products->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'image' => $product->image ? 'https://weevil-exotic-thankfully.ngrok-free.app/storage/' . $product->image : 'https://weevil-exotic-thankfully.ngrok-free.app/resources/assets/images/empty-image.jpg',
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ], 200);
+    }
+
+    public function getProductOptions(Request $request): JsonResponse
+    {
+        $product_name = $request->input('product_name');
         // Retrieve all teams with only id and name fields
-        $products = Product::where('is_topping', true)->get(['id', 'name']);
+        if($product_name != null) {
+            $products = Product::where('name', 'like', '%' . $product_name . '%')->get(['id', 'name', 'image']);
+        } else {
+            $products = Product::all(['id', 'name', 'image']);
+        }
 
         // Add the total number of employees to each team
         $products = $products->map(function ($product) {
             return [
                 'id' => $product->id,
-                'name' => $product->name
+                'name' => $product->name,
+                'image' => $product->image ? 'https://weevil-exotic-thankfully.ngrok-free.app/storage/' . $product->image : 'https://weevil-exotic-thankfully.ngrok-free.app/resources/assets/images/empty-image.jpg',
             ];
         });
 

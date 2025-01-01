@@ -66,6 +66,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/teams', [TeamController::class, 'index']);
     Route::get('/teams/options', [TeamController::class, 'getTeamOptions']);
     Route::get('/products/toppings', [\App\Http\Controllers\ProductController::class, 'getToppingOptions']);
+    Route::get('/products/options', [\App\Http\Controllers\ProductController::class, 'getProductOptions']);
+    Route::get('/customer/options', [\App\Http\Controllers\CustomerController::class, 'getCustomerOptions']);
 
 
     Route::post('/cart/addProductToCart', [\App\Http\Controllers\OrderController::class, 'addProductToCart']);
@@ -82,8 +84,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/ghn/shipping-fee', [GHNController::class, 'getShippingFee']);
     Route::get('/vouchers/loadCustomerVoucher', [VoucherController::class, 'loadVouchersByDateAndTeam']);
     Route::post('/orders/proceed', [\App\Http\Controllers\OrderController::class, 'proceedOrder']);
-    Route::post('/orders/{id}', [\App\Http\Controllers\OrderController::class, 'update']);
+//    Route::post('/orders/{id}', [\App\Http\Controllers\OrderController::class, 'update']);
     Route::post('/orders/status/{id}', [\App\Http\Controllers\OrderController::class, 'updateStatus']);
+    Route::post('/orders/create', [\App\Http\Controllers\OrderController::class, 'createOrder']);
     Route::get('/loadCustomerOrders', [\App\Http\Controllers\OrderController::class, 'loadCustomerOrders']);
     Route::get('/loadCustomerOrdersHistory', [\App\Http\Controllers\OrderController::class, 'loadCustomerOrdersHistory']);
     Route::get('/loadOrderDetail/{id}', [\App\Http\Controllers\OrderController::class, 'loadOrderDetail']);

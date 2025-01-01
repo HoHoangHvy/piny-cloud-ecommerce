@@ -276,7 +276,6 @@ class OrderController extends Controller
                 foreach ($orderDetails as $orderDetail) {
                     $total_price += $orderDetail->total_price;
                     $data['order_detail'][] = [
-                        'id' => $orderDetail->id,
                         'order_detail_number' => $orderDetail->order_detail_number,
                         'product_id' => $orderDetail->product->id,
                         'product_name' => $orderDetail->product->name,
@@ -289,8 +288,7 @@ class OrderController extends Controller
                         'count_topping' => $orderDetail->toppings->count(),
                         'toppings' => $orderDetail->toppings->map(function ($topping) {
                             return [
-                                'id' => $topping->id,
-                                'topping_id' => $topping->product->id,
+                                'topping_id' => $topping->id,
                                 'name' => $topping->product->name,
                                 'price' => $topping->product->price,
                             ];
@@ -1124,5 +1122,95 @@ class OrderController extends Controller
         $order->forceDelete();
 
         return response()->json(['message' => 'Order permanently deleted . ']);
+    }
+
+    /**
+     * Create a new order.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createOrder(Request $request)
+    {
+        // Validate the request data
+        $validated = $request->validate([
+            'payment_method' => 'required|in:Cash,Banking',
+            'customer_id' => 'required|exists:customers,id'
+        ]);
+
+        // Fetch the customer
+        $customer = Customer::findOrFail($validated['customer_id']);
+
+        // Get the current user
+        $currentUser = auth()->user();
+
+        // Create the order
+        $order = Order::create([
+            'order_number' => 'ORD' . time(),
+            'receiver_name' => $customer->full_name,
+            'receiver_address' => $customer->province . ', ' . $customer->district . ', ' . $customer->ward . ', ' . $customer->street,
+            'payment_method' => $validated['payment_method'],
+            'order_status' => 'In Progress',
+            'type' => 'Personal',
+            'custom_name' => '',
+            'source' => 'Offline',
+            'order_total' => 0,
+            'host_id' => $customer->id,
+            'team_id' => $currentUser->team_id,
+            'created_by' => $currentUser->id,
+            'customer_feedback' => '',
+        ]);
+
+        // Attach the customer to the order using the pivot table
+        $order->customers()->attach($customer->id);
+
+        // Retrieve the customer_order_id from the pivot
+        $customerOrder = CustomerOrder::where('customer_id', $customer->id)
+            ->where('order_id', $order->id)
+            ->first();
+
+        $orderTotal = 0;
+
+        // Add order details
+        foreach ($request->get('order_details') as $detail) {
+            // Add order detail using the CustomerOrder pivot
+            $orderDetail = $customerOrder->orderDetails()->create([
+                'order_detail_number' => 'OD' . time(),
+                'customer_order_id' => $customerOrder->id,
+                'product_id' => $detail['product_id'],
+                'parent_id' => null,
+                'size' => $detail['size'],
+                'quantity' => $detail['quantity'],
+                'note' => $detail['note'] ?? '',
+                'total_price' => $detail['total_price'],
+            ]);
+
+            // Add toppings if provided
+            if (isset($detail['toppings_id'])) {
+                foreach ($detail['toppings_id'] as $toppingId) {
+                    $topping = Product::findOrFail($toppingId);
+                    $orderDetail->toppings()->create([
+                        'order_detail_number' => 'ODTP' . time(),
+                        'customer_order_id' => $customerOrder->id,
+                        'product_id' => $topping->id,
+                        'size' => 'S',
+                        'quantity' => 1,
+                        'note' => '',
+                        'parent_id' => $orderDetail->id,
+                    ]);
+                }
+            }
+
+            $orderTotal += $detail['total_price'];
+        }
+
+        // Update the order total
+        $order->order_total = $orderTotal;
+        $order->save();
+
+        return response()->json([
+            'message' => 'Order created successfully.',
+            'data' => $order,
+        ], 200);
     }
 }
