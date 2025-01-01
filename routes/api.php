@@ -83,6 +83,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/ghn/wards', [GHNController::class, 'getWards']);
     Route::get('/ghn/shipping-fee', [GHNController::class, 'getShippingFee']);
     Route::get('/vouchers/loadCustomerVoucher', [VoucherController::class, 'loadVouchersByDateAndTeam']);
+    Route::get('/vouchers/loadEmployeeVoucher', [VoucherController::class, 'loadVouchersByDateAndUser']);
     Route::post('/orders/proceed', [\App\Http\Controllers\OrderController::class, 'proceedOrder']);
 //    Route::post('/orders/{id}', [\App\Http\Controllers\OrderController::class, 'update']);
     Route::post('/orders/status/{id}', [\App\Http\Controllers\OrderController::class, 'updateStatus']);

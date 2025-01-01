@@ -86,6 +86,41 @@ class VoucherController extends BaseController
             'data' => $return_data
         ], 200);
     }
+    public function loadVouchersByDateAndUser(Request $request)
+    {
+        // Get the current date
+        $currentDate = now()->toDateString();
+        $curren_user = auth()->user();
+        // Fetch vouchers that are active, within the current date range, and associated with the provided team_id
+        $vouchers = Voucher::where('status', 'active')
+            ->whereDate('start_date', '<=', $currentDate)
+            ->whereDate('end_date', '>=', $currentDate)
+            ->whereHas('teams', function ($query) use ($curren_user) {
+                $query->where('teams.id', $curren_user->team_id)
+                    ->orWhere('teams.id', '1');
+            })
+            ->get();
+
+        $return_data = [];
+        foreach($vouchers as $voucher) {
+            $return_data[$voucher['apply_type']][] = [
+                'id' => $voucher['id'],
+                'voucher_code' => $voucher['vourcher_code'],
+                'discount_type' => $voucher['discount_type'],
+                'discount_amount' => $voucher['discount_amount'],
+                'discount_percent' => $voucher['discount_percent'],
+                'limit' => $voucher['limit'],
+                'limit_per_order' => $voucher['limit_per_order'],
+                'minimum' => $voucher['minimum'],
+                'apply_type' => $voucher['apply_type'],
+                'remaining' => $voucher['limit'] - $this->calculateUsedVouchers($voucher),
+            ];
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $return_data
+        ], 200);
+    }
     public function calculateUsedVouchers($voucher)
     {
         return 0;
