@@ -97,7 +97,7 @@ class AuthenticationController extends BaseController
         }
         # Generate An OTP
         $verificationCode = $this->generateOtp($request->mobile_no);
-//        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
+        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
         return $this->sendResponse($verificationCode, 'OTP generated successfully.');
     }
     public function sendOtp($number, $otp)

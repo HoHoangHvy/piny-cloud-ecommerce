@@ -87,6 +87,55 @@ class PayOSController extends Controller
             ]);
         }
     }
+    public function genPayment($order_id)
+    {
+        try {
+            $order = Order::findOrfail($order_id);
+            if(!$order) {
+                return response()->json([
+                    "error" => 1,
+                    "message" => "Order not found",
+                ]);
+            }
+
+            if($order->payment_link) {
+                return [
+                    "success" => true,
+                    "checkoutUrl" => $order->payment_link
+                ];
+            }
+            // Initialize PayOS with your credentials
+            $oderCode = intVal(str_replace('ORD', '', $order->order_number));
+            // Prepare payment data
+            $paymentData = [
+                'orderCode' => $oderCode, // Unique order code
+                'amount' => intval($order->order_total), // Payment amount
+                'description' => '#' . $order->order_number, // Payment description
+                'returnUrl' => 'https://weevil-exotic-thankfully.ngrok-free.app', // Redirect URL after payment
+                'cancelUrl' => 'https://weevil-exotic-thankfully.ngrok-free.app', // Redirect URL if payment is canceled
+            ];
+
+            try {
+                $response = $this->payos->createPaymentLink($paymentData);
+                $order->payment_link = $response["checkoutUrl"];
+                $order->save();
+                return [
+                    "success" => true,
+                    "checkoutUrl" => $response["checkoutUrl"]
+                ];
+            } catch (\Throwable $th) {
+                return response()->json([
+                    "error" => 1,
+                    "message" => $th->getMessage(),
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                "error" => 1,
+                "message" => $th->getMessage(),
+            ]);
+        }
+    }
     public function getPaymentLinkInfoOfOrder(string $id)
     {
         try {

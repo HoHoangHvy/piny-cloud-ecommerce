@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Team;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
+use Twilio\TwiML\Voice\Pay;
 
 class OrderController extends Controller
 {
@@ -1210,7 +1211,11 @@ class OrderController extends Controller
         }
         $order->order_total = $orderTotal;
         $order->save();
-
+        if($validated['payment_method'] == 'Banking') {
+            $payos = new PayOSController();
+            $result = $payos->genPayment($order->id);
+            if($result['success']) $order['payment'] = $result['checkoutUrl'];
+        }
         return response()->json([
             'message' => 'Order created successfully.',
             'data' => $order,
