@@ -1186,9 +1186,9 @@ class OrderController extends Controller
             ]);
 
             // Add toppings if provided
-            if (isset($detail['toppings_id'])) {
-                foreach ($detail['toppings_id'] as $toppingId) {
-                    $topping = Product::findOrFail($toppingId);
+            if (isset($detail['toppings'])) {
+                foreach ($detail['toppings'] as $toppingObject) {
+                    $topping = Product::findOrFail($toppingObject['product_id']);
                     $orderDetail->toppings()->create([
                         'order_detail_number' => 'ODTP' . time(),
                         'customer_order_id' => $customerOrder->id,
@@ -1205,6 +1205,9 @@ class OrderController extends Controller
         }
 
         // Update the order total
+        if($request->get('voucher_id')) {
+            $order->vouchers()->attach($request->get('voucher_id'));
+        }
         $order->order_total = $orderTotal;
         $order->save();
 

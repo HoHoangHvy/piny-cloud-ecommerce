@@ -40,6 +40,7 @@ class ModuleController extends BaseController
                     $query = $this->addOwnerVisibility($query, $current_user);
                 }
             }
+            $query->orderBy('created_at', 'desc');
             // Execute the query and get the data
             $data = $query->get();
             $data->map(function ($item) {
