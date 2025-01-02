@@ -460,17 +460,29 @@ class OrderController extends Controller
     public function getCustomFields($data)
     {
         $customFields = [];
-        foreach ($data as $item) {
-            $orderCustomer = $item->customers()->where('customer_id', $item->host_id)->first();
-            $oderDetail = $orderCustomer->pivot->orderDetails()
-                ->where('parent_id', null)
-                ->with('toppings.product') // Include topping product details
-                ->get();
-            $customFields[$item->id] = [
-                'count_product' => $oderDetail->count(),
-            ];
+        try {
+            foreach ($data as $item) {
+                $customFields[$item->id] = [
+                    'count_product' => 0,
+                ];
+                $orderCustomer = $item->customers()->where('customer_id', $item->host_id)->first();
+                if($orderCustomer) {
+                    $oderDetail = $orderCustomer->pivot->orderDetails()
+                        ->where('parent_id', null)
+                        ->with('toppings.product') // Include topping product details
+                        ->get();
+                    if($oderDetail) {
+                        $customFields[$item->id] = [
+                            'count_product' => $oderDetail->count(),
+                        ];
+                    }
+                }
+            }
+            return $customFields;
+        } catch (\Exception $e) {
+            return $customFields;
         }
-        return $customFields;
+
     }
 
     function calculateDiscount($order) {

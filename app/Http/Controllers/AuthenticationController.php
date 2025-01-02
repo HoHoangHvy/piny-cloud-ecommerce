@@ -97,7 +97,7 @@ class AuthenticationController extends BaseController
         }
         # Generate An OTP
         $verificationCode = $this->generateOtp($request->mobile_no);
-        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
+//        $verificationCode['send_status'] = $this->sendOtp($request->mobile_no, $verificationCode->otp);
         return $this->sendResponse($verificationCode, 'OTP generated successfully.');
     }
     public function sendOtp($number, $otp)
@@ -227,6 +227,7 @@ class AuthenticationController extends BaseController
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
         $success['user'] =  $user->load('roles');
         if($user->user_type == 'user' && $user->is_admin == 0) {
+            $user->load('roles');
             $employee = Employee::where('user_id', $user->id)->first();
             $success['user']['role_name'] = $user->roles->first()->name;
             $success['user']['team_name'] = Team::find($user->team_id)->name;
@@ -234,6 +235,8 @@ class AuthenticationController extends BaseController
             $success['user']['image'] = $employee->image ?? '';
             $success['user']['date_of_birth'] = $employee->date_of_birth;
             $success['user']['date_registered'] = $employee->date_registered;
+            $success['user']['permission'] = Permission::reverseConvertPermission($user->getAllPermissions(), $user->is_admin);
+            $success['user']['visible_module'] = $this->getVisibleModules($user, Permission::reverseConvertPermission($user->getAllPermissions(), $user->is_admin));
 
         }
         return $success;
