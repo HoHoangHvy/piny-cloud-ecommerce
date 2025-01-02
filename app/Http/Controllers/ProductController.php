@@ -242,11 +242,24 @@ class ProductController extends BaseController
 
         // Add the total number of employees to each team
         $products = $products->map(function ($product) {
+            $toppingList = $product->toppings()
+                ->select('id', 'name', 'price') // Select only the columns you need
+                ->get()
+                ->map(function ($topping) {
+                    return [
+                        'id' => $topping->id,
+                        'name' => $topping->name,
+                        'price' => $topping->price,
+                        'is_selected' => false
+                    ];
+                });
+
             return [
                 'id' => $product->id,
                 'name' => $product->name,
-                'image' => $product->image ? 'https://weevil-exotic-thankfully.ngrok-free.app/storage/' . $product->image : 'https://weevil-exotic-thankfully.ngrok-free.app/resources/assets/images/empty-image.jpg',
+                'image_url' => $product->image ? 'https://weevil-exotic-thankfully.ngrok-free.app/storage/' . $product->image : 'https://weevil-exotic-thankfully.ngrok-free.app/resources/assets/images/empty-image.jpg',
                 'price' => $product->price,
+                'toppings' => $toppingList,
             ];
         });
 

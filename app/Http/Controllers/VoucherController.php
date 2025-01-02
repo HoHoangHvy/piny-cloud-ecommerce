@@ -93,6 +93,7 @@ class VoucherController extends BaseController
         $curren_user = auth()->user();
         // Fetch vouchers that are active, within the current date range, and associated with the provided team_id
         $vouchers = Voucher::where('status', 'active')
+            ->where('apply_type', 'discount')
             ->whereDate('start_date', '<=', $currentDate)
             ->whereDate('end_date', '>=', $currentDate)
             ->whereHas('teams', function ($query) use ($curren_user) {
@@ -103,7 +104,7 @@ class VoucherController extends BaseController
 
         $return_data = [];
         foreach($vouchers as $voucher) {
-            $return_data[$voucher['apply_type']][] = [
+            $return_data[] = [
                 'id' => $voucher['id'],
                 'voucher_code' => $voucher['vourcher_code'],
                 'discount_type' => $voucher['discount_type'],
