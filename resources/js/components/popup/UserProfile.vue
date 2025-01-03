@@ -206,13 +206,16 @@ const saveProfile = () => {
     // Add your logic to save the profile (e.g., send to an API)
     closeProfileModal();
 };
-watch(() => userProfile.value.district, (newDistrictId) => {
-    if (newDistrictId) {
-        fetchWards(newDistrictId);
-    } else {
-        wards.value = []; // Clear wards if no district is selected
-    }
-});
+if(userProfile.value) {
+    watch(() => userProfile.value.district, (newDistrictId) => {
+        if (newDistrictId) {
+            fetchWards(newDistrictId);
+        } else {
+            wards.value = []; // Clear wards if no district is selected
+        }
+    });
+}
+
 const fetchWards = async (districtId) => {
     try {
         const response = await axios.get('/api/ghn/wards', {
